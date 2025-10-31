@@ -1,0 +1,34 @@
+:root{
+  --bg: 14 25 50; /* #0e1932 - slightly lighter */
+  --bg-card: 4 20 38; /* #041426 */
+  --primary: 14 165 233; /* sky-500 */
+  --accent: 96 165 250; /* blue-400 */
+}
+
+:root[data-theme="dark"]{
+  --bg: 14 25 50; /* #0e1932 - slightly lighter */
+  --bg-card: 4 20 38;
+  --primary: 14 165 233;
+  --accent: 96 165 250;
+}
+
+:root[data-theme="light"]{
+  --bg: 248 250 252;
+  --bg-card: 255 255 255;
+  --primary: 59 130 246;
+  --accent: 96 165 250;
+}
+
+:root[data-theme="matrix"]{
+  --bg: 0 0 0;
+  --bg-card: 0 20 0;
+  --primary: 0 255 0;
+  --accent: 128 255 128;
+}
+
+:root[data-theme="ocean"]{
+  --bg: 5 30 60;
+  --bg-card: 10 40 80;
+  --primary: 59 130 246;
+  --accent: 34 211 238;
+}
