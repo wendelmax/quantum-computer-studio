@@ -54,8 +54,8 @@ const AdvancedStats = ({ data }: StatsProps) => {
   })
 
   return (
-    <div className="p-4 bg-bg-card border border-slate-800 rounded">
-      <h4 className="text-sm font-medium mb-3">Advanced Statistics</h4>
+    <div className="p-4 bg-bg-card border border-theme-border rounded">
+      <h4 className="text-sm font-medium mb-3 text-theme-text">Advanced Statistics</h4>
       
       <div className="space-y-4">
         {stats.map((stat, col) => {
@@ -63,57 +63,57 @@ const AdvancedStats = ({ data }: StatsProps) => {
           
           return (
             <div key={col} className="space-y-2">
-              <div className="text-xs font-medium text-slate-300">
+              <div className="text-xs font-medium text-theme-text">
                 Column {col + 1}
               </div>
               
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Min:</span>
-                  <span className="text-slate-200 font-mono">{stat.min.toFixed(3)}</span>
+                  <span className="text-theme-text-muted">Min:</span>
+                  <span className="text-theme-text font-mono">{stat.min.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Max:</span>
-                  <span className="text-slate-200 font-mono">{stat.max.toFixed(3)}</span>
+                  <span className="text-theme-text-muted">Max:</span>
+                  <span className="text-theme-text font-mono">{stat.max.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Q1:</span>
-                  <span className="text-slate-200 font-mono">{stat.q1.toFixed(3)}</span>
+                  <span className="text-theme-text-muted">Q1:</span>
+                  <span className="text-theme-text font-mono">{stat.q1.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Q3:</span>
-                  <span className="text-slate-200 font-mono">{stat.q3.toFixed(3)}</span>
+                  <span className="text-theme-text-muted">Q3:</span>
+                  <span className="text-theme-text font-mono">{stat.q3.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Median:</span>
-                  <span className="text-slate-200 font-mono">{stat.median.toFixed(3)}</span>
+                  <span className="text-theme-text-muted">Median:</span>
+                  <span className="text-theme-text font-mono">{stat.median.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Mean:</span>
-                  <span className="text-slate-200 font-mono">{stat.mean.toFixed(3)}</span>
+                  <span className="text-theme-text-muted">Mean:</span>
+                  <span className="text-theme-text font-mono">{stat.mean.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Std Dev:</span>
-                  <span className="text-slate-200 font-mono">{stat.stdDev.toFixed(3)}</span>
+                  <span className="text-theme-text-muted">Std Dev:</span>
+                  <span className="text-theme-text font-mono">{stat.stdDev.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Variance:</span>
-                  <span className="text-slate-200 font-mono">{stat.variance.toFixed(3)}</span>
+                  <span className="text-theme-text-muted">Variance:</span>
+                  <span className="text-theme-text font-mono">{stat.variance.toFixed(3)}</span>
                 </div>
               </div>
 
               {stat.correlation !== null && (
-                <div className="mt-2 pt-2 border-t border-slate-800">
+                <div className="mt-2 pt-2 border-t border-theme-border">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-400 text-xs">Correlation with next column:</span>
-                    <span className="text-xs font-mono text-sky-400">
+                    <span className="text-theme-text-muted text-xs">Correlation with next column:</span>
+                    <span className="text-xs font-mono text-primary">
                       {stat.correlation.toFixed(3)}
                     </span>
                   </div>
                 </div>
               )}
               
-              {col < stats.length - 1 && <div className="border-t border-slate-800" />}
+              {col < stats.length - 1 && <div className="border-t border-theme-border" />}
             </div>
           )
         })}

@@ -50,11 +50,11 @@ export default function ExecutionHistory() {
 
   if (history.length === 0) {
     return (
-      <div className="p-4 rounded bg-bg-card border border-slate-800">
+      <div className="p-4 rounded bg-bg-card border border-theme-border">
         <div className="flex items-center justify-between mb-2">
-          <h4 className="text-sm font-medium">Execution History</h4>
+          <h4 className="text-sm font-medium text-theme-text">Execution History</h4>
         </div>
-        <div className="text-xs text-slate-400">No executions yet</div>
+        <div className="text-xs text-theme-text-muted">No executions yet</div>
       </div>
     )
   }
@@ -65,17 +65,17 @@ export default function ExecutionHistory() {
   }
 
   return (
-    <div className="p-4 rounded bg-bg-card border border-slate-800">
+    <div className="p-4 rounded bg-bg-card border border-theme-border">
       <div className="flex items-center justify-between mb-3">
-        <h4 className="text-sm font-medium">Execution History</h4>
+        <h4 className="text-sm font-medium text-theme-text">Execution History</h4>
         <div className="flex items-center gap-2">
-          <button onClick={exportHistory} className="text-xs text-slate-400 hover:text-slate-300 flex items-center gap-1">
+          <button onClick={exportHistory} className="text-xs text-theme-text-muted hover:text-theme-text flex items-center gap-1">
             <FontAwesomeIcon icon={faDownload} className="text-[10px]" />
             Export
           </button>
           <button
             onClick={clearHistory}
-            className="text-xs text-slate-400 hover:text-slate-300"
+            className="text-xs text-theme-text-muted hover:text-theme-text"
           >
             Clear
           </button>
@@ -83,14 +83,14 @@ export default function ExecutionHistory() {
       </div>
       <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin">
         {history.map((record, idx) => (
-          <div key={idx} className="flex items-center justify-between text-xs border-b border-slate-800 pb-2">
+          <div key={idx} className="flex items-center justify-between text-xs border-b border-theme-border pb-2">
             <div className="flex-1 min-w-0">
-              <div className="text-slate-300 truncate">{record.algorithmName}</div>
-              <div className="text-slate-500 text-[10px]">
+              <div className="text-theme-text truncate">{record.algorithmName}</div>
+              <div className="text-theme-text-muted text-[10px]">
                 {new Date(record.timestamp).toLocaleString()}
               </div>
             </div>
-            <div className="ml-2 text-slate-400 text-right">
+            <div className="ml-2 text-theme-text-muted text-right">
               <div>{record.executionTime.toFixed(0)}ms</div>
               <div className="text-[10px]">{record.states} states</div>
             </div>

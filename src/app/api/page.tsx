@@ -112,6 +112,21 @@ result`
 ]
 
 export default function APIPage() {
+  const [monacoTheme, setMonacoTheme] = useState<'vs' | 'vs-dark'>(() => {
+    if (typeof document === 'undefined') return 'vs-dark'
+    return (document.documentElement.getAttribute('data-theme') || 'dark') === 'light' ? 'vs' : 'vs-dark'
+  })
+  useEffect(() => {
+    const update = () => {
+      const theme = document.documentElement.getAttribute('data-theme') || 'dark'
+      setMonacoTheme(theme === 'light' ? 'vs' : 'vs-dark')
+    }
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => observer.disconnect()
+  }, [])
+
   const [history, setHistory] = useState<Command[]>([
     { input: '', output: 'Quantum Computer JS API\nType your code or select an example to begin', type: 'info' }
   ])
@@ -278,31 +293,31 @@ export default function APIPage() {
   }
 
   return (
-    <div className="p-6 grid grid-cols-12 gap-4">
-      <div className="col-span-8 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold">Quantum API</h2>
-            <p className="text-xs text-slate-400 mt-1">Interactive REPL for quantum circuit programming</p>
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-8 flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="text-xl sm:text-2xl font-semibold text-theme-text">Quantum API</h2>
+            <p className="text-xs text-theme-text-muted mt-1">Interactive REPL for quantum circuit programming</p>
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setEditorHeight(Math.max(200, Math.min(600, editorHeight + 50)))}
-              className="px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded hover:border-sky-600 transition-colors"
+              className="px-3 py-2 text-xs rounded border border-theme-border hover:border-primary transition-colors text-theme-text"
               title="Increase editor height"
             >
               +
             </button>
             <button
               onClick={() => setEditorHeight(Math.max(200, Math.min(600, editorHeight - 50)))}
-              className="px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded hover:border-sky-600 transition-colors"
+              className="px-3 py-2 text-xs rounded border border-theme-border hover:border-primary transition-colors text-theme-text"
               title="Decrease editor height"
             >
               -
             </button>
             <button
               onClick={clearHistory}
-              className="px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded hover:border-sky-600 transition-colors"
+              className="px-3 py-2 text-xs rounded border border-theme-border hover:border-primary transition-colors text-theme-text"
             >
               Clear
             </button>
@@ -310,13 +325,13 @@ export default function APIPage() {
         </div>
 
         <Card className="flex flex-col overflow-hidden">
-          <div className="border border-slate-800 rounded-lg overflow-hidden" style={{ height: editorHeight }}>
+          <div className="border border-theme-border rounded-lg overflow-hidden" style={{ height: editorHeight }}>
             <Editor
               height={`${editorHeight}px`}
               defaultLanguage="javascript"
               value={input}
               onChange={(value) => setInput(value || '')}
-              theme="vs-dark"
+              theme={monacoTheme}
               beforeMount={handleEditorWillMount}
               options={{
                 minimap: { enabled: false },
@@ -345,7 +360,7 @@ export default function APIPage() {
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="px-6 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded transition-all disabled:opacity-50 font-medium shadow-lg hover:shadow-cyan-500/50 disabled:shadow-none"
+                className="px-6 py-2 bg-primary hover:bg-primary/90 rounded transition-all disabled:opacity-50 font-medium shadow-lg hover:shadow-primary/30 disabled:shadow-none text-white"
                 disabled={isProcessing || !input.trim()}
               >
                 {isProcessing ? (
@@ -361,13 +376,13 @@ export default function APIPage() {
                 <button
                   type="button"
                   onClick={loadCircuitToStudio}
-                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded transition-all font-medium shadow-lg hover:shadow-purple-500/50"
+                  className="px-6 py-2 bg-theme-surface border border-theme-border hover:border-primary hover:bg-primary/10 rounded transition-all font-medium text-theme-text"
                 >
                   Open in Studio
                 </button>
               )}
             </div>
-            <div className="text-xs text-slate-500 mt-2 flex items-center gap-2">
+            <div className="text-xs text-theme-text-muted mt-2 flex items-center gap-2">
               <span>💡</span>
               <span>{hasCircuit ? 'Execute code or open circuit in Studio' : 'Press Ctrl+Enter or click Execute'}</span>
             </div>
@@ -376,17 +391,17 @@ export default function APIPage() {
 
         <Card className="flex flex-col" style={{ minHeight: '200px' }}>
           <div className="mb-2 px-3 pt-3">
-            <h3 className="text-sm font-medium">Output</h3>
+            <h3 className="text-sm font-medium text-theme-text">Output</h3>
           </div>
           <div 
-            className="flex-1 bg-black rounded-lg p-4 font-mono text-sm overflow-y-auto"
+            className="flex-1 bg-theme-surface rounded-lg p-4 font-mono text-sm overflow-y-auto text-theme-text"
             style={{ minHeight: '200px' }}
           >
             {history.map((cmd, idx) => (
               <div key={idx} className="mb-3 animate-fade-in">
                 {cmd.input && (
-                  <div className="text-cyan-400 mb-1 font-medium">
-                    <span className="text-slate-600">&gt;</span> {cmd.input}
+                  <div className="text-primary mb-1 font-medium">
+                    <span className="text-theme-text-muted">&gt;</span> {cmd.input}
                   </div>
                 )}
                 {cmd.output && (
@@ -394,8 +409,8 @@ export default function APIPage() {
                     cmd.type === 'error' 
                       ? 'text-red-400 bg-red-950/20 border border-red-800/30' 
                       : cmd.type === 'info' 
-                      ? 'text-slate-400' 
-                      : 'text-green-400 bg-green-950/10 border border-green-800/30'
+                      ? 'text-theme-text-muted' 
+                      : 'text-theme-text bg-primary/5 border border-primary/20'
                   } whitespace-pre-wrap p-2 rounded mt-1`}>
                     {cmd.output}
                   </div>
@@ -404,10 +419,10 @@ export default function APIPage() {
             ))}
 
             {isProcessing && (
-              <div className="text-yellow-400 flex items-center gap-2 animate-pulse">
-                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce" style={{animationDelay: '0ms'}} />
-                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}} />
-                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}} />
+              <div className="text-primary flex items-center gap-2 animate-pulse">
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0ms'}} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '150ms'}} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '300ms'}} />
                 <span>Running simulation...</span>
               </div>
             )}
@@ -415,41 +430,41 @@ export default function APIPage() {
         </Card>
 
         <Card title="Quick Reference">
-          <div className="text-xs space-y-2 font-mono text-slate-300">
+          <div className="text-xs space-y-2 font-mono text-theme-text">
             <div>
-              <span className="text-green-400">runSimulation(circuit)</span> - Run simulation
+              <span className="text-primary">runSimulation(circuit)</span> - Run simulation
             </div>
             <div>
-              <span className="text-blue-400">circuit =</span> {'{'}{' '}
+              <span className="text-primary">circuit =</span> {'{'}{' '}
               numQubits, gates: Gate[] {'}'}
             </div>
             <div>
-              <span className="text-yellow-400">Gate =</span> {'{'}{' '}
+              <span className="text-primary">Gate =</span> {'{'}{' '}
               type, target, control?, angle? {'}'}
             </div>
             <div>
-              <span className="text-purple-400">console.log(...)</span> - Debug output
+              <span className="text-primary">console.log(...)</span> - Debug output
             </div>
           </div>
         </Card>
       </div>
 
-      <div className="col-span-4 flex flex-col gap-4">
+      <div className="lg:col-span-4 flex flex-col gap-4">
         <Card title="Library" description="Use in other systems">
           <div className="space-y-2 mt-2">
             <a
               href="/quantum-computer-js-lib.zip"
               download="quantum-computer-js-lib.zip"
-              className="flex items-center gap-2 p-3 rounded bg-slate-900/30 border border-slate-800 hover:border-sky-600 hover:bg-sky-900/10 transition-all text-sm text-slate-200"
+              className="flex items-center gap-2 p-3 rounded bg-theme-surface/50 border border-theme-border hover:border-primary hover:bg-primary/10 transition-all text-sm text-theme-text"
             >
-              <FontAwesomeIcon icon={faDownload} className="text-sky-400" />
+              <FontAwesomeIcon icon={faDownload} className="text-primary" />
               Download library (zip)
             </a>
             <Link
               to="/lib-docs"
-              className="flex items-center gap-2 p-3 rounded bg-slate-900/30 border border-slate-800 hover:border-sky-600 hover:bg-sky-900/10 transition-all text-sm text-slate-200"
+              className="flex items-center gap-2 p-3 rounded bg-theme-surface/50 border border-theme-border hover:border-primary hover:bg-primary/10 transition-all text-sm text-theme-text"
             >
-              <FontAwesomeIcon icon={faBook} className="text-sky-400" />
+              <FontAwesomeIcon icon={faBook} className="text-primary" />
               Library API reference
             </Link>
           </div>
@@ -461,48 +476,48 @@ export default function APIPage() {
               <button
                 key={idx}
                 onClick={() => loadExample(example.code)}
-                className="w-full text-left p-3 bg-slate-900/30 border border-slate-800 rounded hover:border-cyan-600 hover:bg-cyan-900/10 transition-all group"
+                className="w-full text-left p-3 bg-theme-surface/50 border border-theme-border rounded hover:border-primary hover:bg-primary/10 transition-all group"
               >
                 <div className="flex items-center justify-between">
-                  <div className="text-xs font-medium text-slate-200 group-hover:text-cyan-300 transition-colors">{example.name}</div>
-                  <span className="text-slate-600 group-hover:text-cyan-600 transition-colors">›</span>
+                  <div className="text-xs font-medium text-theme-text group-hover:text-primary transition-colors">{example.name}</div>
+                  <span className="text-theme-text-muted group-hover:text-primary transition-colors">›</span>
                 </div>
-                <div className="text-[10px] text-slate-400 mt-1 group-hover:text-slate-300 transition-colors">{example.description}</div>
+                <div className="text-[10px] text-theme-text-muted mt-1 group-hover:text-theme-text transition-colors">{example.description}</div>
               </button>
             ))}
           </div>
         </Card>
 
         <Card title="Available Gates">
-          <div className="text-xs space-y-1 text-slate-300">
-            <div><span className="text-sky-400 font-bold">H</span> - Hadamard (superposition)</div>
-            <div><span className="text-sky-400 font-bold">X</span> - Pauli-X (NOT/Bit flip)</div>
-            <div><span className="text-sky-400 font-bold">Y</span> - Pauli-Y (bit+phase flip)</div>
-            <div><span className="text-sky-400 font-bold">Z</span> - Pauli-Z (Phase flip)</div>
-            <div><span className="text-sky-400 font-bold">CNOT</span> - Controlled NOT</div>
-            <div><span className="text-sky-400 font-bold">RX(θ)</span> - Rotation X-axis</div>
-            <div><span className="text-sky-400 font-bold">RY(θ)</span> - Rotation Y-axis</div>
-            <div><span className="text-sky-400 font-bold">RZ(θ)</span> - Rotation Z-axis</div>
+          <div className="text-xs space-y-1 text-theme-text">
+            <div><span className="text-primary font-bold">H</span> - Hadamard (superposition)</div>
+            <div><span className="text-primary font-bold">X</span> - Pauli-X (NOT/Bit flip)</div>
+            <div><span className="text-primary font-bold">Y</span> - Pauli-Y (bit+phase flip)</div>
+            <div><span className="text-primary font-bold">Z</span> - Pauli-Z (Phase flip)</div>
+            <div><span className="text-primary font-bold">CNOT</span> - Controlled NOT</div>
+            <div><span className="text-primary font-bold">RX(θ)</span> - Rotation X-axis</div>
+            <div><span className="text-primary font-bold">RY(θ)</span> - Rotation Y-axis</div>
+            <div><span className="text-primary font-bold">RZ(θ)</span> - Rotation Z-axis</div>
           </div>
         </Card>
 
         <Card title="Return Value">
-          <div className="text-xs text-slate-300 space-y-2">
+          <div className="text-xs text-theme-text space-y-2">
             <div>
               Returns object with:
             </div>
             <div className="ml-2 space-y-1">
-              <div>• <code className="text-green-400">probabilities</code> - {'{'}{'string: number'}{'}'}</div>
-              <div>• <code className="text-blue-400">stateVector</code> - number[]</div>
+              <div>• <code className="text-primary">probabilities</code> - {'{'}{'string: number'}{'}'}</div>
+              <div>• <code className="text-primary">stateVector</code> - number[]</div>
             </div>
           </div>
         </Card>
 
         <Card title="Tips">
-          <div className="text-xs text-slate-300 space-y-2">
-            <div>• Use <code className="px-1 py-0.5 bg-slate-900 rounded">Math.PI</code> for angles</div>
-            <div>• Use <code className="px-1 py-0.5 bg-slate-900 rounded">await</code> for async</div>
-            <div>• Use <code className="px-1 py-0.5 bg-slate-900 rounded">console.log</code> for debug</div>
+          <div className="text-xs text-theme-text space-y-2">
+            <div>• Use <code className="px-1 py-0.5 bg-theme-surface rounded">Math.PI</code> for angles</div>
+            <div>• Use <code className="px-1 py-0.5 bg-theme-surface rounded">await</code> for async</div>
+            <div>• Use <code className="px-1 py-0.5 bg-theme-surface rounded">console.log</code> for debug</div>
             <div>• Access last result with return</div>
           </div>
         </Card>

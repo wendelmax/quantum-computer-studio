@@ -18,8 +18,8 @@ export default function AmplitudeTable({ stateVector, numQubits }: Props) {
 
   if (!stateVector || stateVector.length === 0) {
     return (
-      <div className="p-4 bg-bg-card border border-slate-800 rounded">
-        <div className="text-xs text-slate-400">No amplitudes to display</div>
+      <div className="p-4 bg-bg-card border border-theme-border rounded">
+        <div className="text-xs text-theme-text-muted">No amplitudes to display</div>
       </div>
     )
   }
@@ -48,13 +48,13 @@ export default function AmplitudeTable({ stateVector, numQubits }: Props) {
   const displayAmps = showAll ? amplitudes : amplitudes.slice(0, 10)
 
   return (
-    <div className="p-4 bg-bg-card border border-slate-800 rounded">
+    <div className="p-4 bg-bg-card border border-theme-border rounded">
       <div className="flex items-center justify-between mb-3">
         <h4 className="text-sm font-medium">Amplitude Table</h4>
         {amplitudes.length > 10 && (
           <button
             onClick={() => setShowAll(!showAll)}
-            className="text-xs px-2 py-1 text-sky-400 hover:text-sky-300 flex items-center gap-1"
+            className="text-xs px-2 py-1 text-primary hover:text-accent flex items-center gap-1"
           >
             <FontAwesomeIcon icon={showAll ? faChevronUp : faChevronDown} />
             <span>{showAll ? 'Show Less' : `Show All (${amplitudes.length})`}</span>
@@ -65,19 +65,19 @@ export default function AmplitudeTable({ stateVector, numQubits }: Props) {
       <div className="overflow-x-auto scrollbar-thin">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-slate-700">
-              <th className="text-left py-2 px-2 text-slate-400">State</th>
-              <th className="text-left py-2 px-2 text-slate-400">Amplitude</th>
-              <th className="text-left py-2 px-2 text-slate-400">Probability</th>
-              <th className="text-left py-2 px-2 text-slate-400">Phase</th>
+            <tr className="border-b border-theme-border">
+              <th className="text-left py-2 px-2 text-theme-text-muted">State</th>
+              <th className="text-left py-2 px-2 text-theme-text-muted">Amplitude</th>
+              <th className="text-left py-2 px-2 text-theme-text-muted">Probability</th>
+              <th className="text-left py-2 px-2 text-theme-text-muted">Phase</th>
             </tr>
           </thead>
           <tbody>
             {displayAmps.map((amp, idx) => (
-              <tr key={idx} className="border-b border-slate-800/50">
-                <td className="py-2 px-2 font-mono text-slate-200">|{amp.state}⟩</td>
-                <td className="py-2 px-2 font-mono text-sky-400">{amp.amp}</td>
-                <td className="py-2 px-2 text-slate-300">
+              <tr key={idx} className="border-b border-theme-border">
+                <td className="py-2 px-2 font-mono text-theme-text">|{amp.state}⟩</td>
+                <td className="py-2 px-2 font-mono text-primary">{amp.amp}</td>
+                <td className="py-2 px-2 text-theme-text">
                   {(amp.prob * 100).toFixed(2)}%
                 </td>
                 <td className="py-2 px-2 text-purple-400">
@@ -90,7 +90,7 @@ export default function AmplitudeTable({ stateVector, numQubits }: Props) {
       </div>
 
       {!showAll && amplitudes.length > 10 && (
-        <div className="mt-2 text-xs text-slate-500 text-center">
+        <div className="mt-2 text-xs text-theme-text-muted text-center">
           Showing 10 of {amplitudes.length} states
         </div>
       )}

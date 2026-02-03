@@ -113,10 +113,10 @@ export default function GatesLibraryPage() {
   }
 
   return (
-    <div className="p-6 grid grid-cols-12 gap-4">
-      <div className="col-span-8 flex flex-col gap-4">
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-8 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Gates Library</h2>
+          <h2 className="text-2xl font-semibold text-theme-text">Gates Library</h2>
           <Button onClick={() => window.location.href = '/circuits'}>Open Quantum Studio</Button>
         </div>
 
@@ -128,8 +128,8 @@ export default function GatesLibraryPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded transition-colors ${
                   selectedCategory === cat
-                    ? 'bg-sky-600 text-white'
-                    : 'bg-slate-900/20 border border-slate-800 hover:border-sky-600'
+                    ? 'bg-primary text-white'
+                    : 'bg-theme-surface/50 border border-theme-border hover:border-primary text-theme-text'
                 }`}
               >
                 {cat}
@@ -138,15 +138,15 @@ export default function GatesLibraryPage() {
           </div>
         </Card>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {filteredGates.map(gate => (
             <Card
               key={gate.symbol}
               title={gate.name}
               description={`${gate.symbol} - ${gate.category}`}
             >
-              <p className="text-sm text-slate-300 mb-3">{gate.description}</p>
-              <div className="text-xs font-mono bg-slate-900/30 p-2 rounded mb-3 text-slate-400">
+              <p className="text-sm text-theme-text mb-3">{gate.description}</p>
+              <div className="text-xs font-mono bg-theme-surface/50 p-2 rounded mb-3 text-theme-text-muted">
                 Matrix: {gate.matrix}
               </div>
               <div className="flex gap-2">
@@ -160,13 +160,13 @@ export default function GatesLibraryPage() {
         </div>
       </div>
 
-      <div className="col-span-4 flex flex-col gap-4">
+      <div className="lg:col-span-4 flex flex-col gap-4">
         <Card title="Selected Gate">
           {selectedGateInfo ? (
             <div className="space-y-3">
               <div className="text-3xl font-bold text-center">{selectedGateInfo.symbol}</div>
-              <div className="text-sm text-slate-300">{selectedGateInfo.description}</div>
-              <div className="text-xs bg-slate-900/30 p-2 rounded font-mono text-slate-400">
+              <div className="text-sm text-theme-text">{selectedGateInfo.description}</div>
+              <div className="text-xs bg-theme-surface/50 p-2 rounded font-mono text-theme-text-muted">
                 {selectedGateInfo.matrix}
               </div>
               <Button className="w-full" onClick={() => addToStudio(selectedGateInfo.symbol)}>
@@ -174,12 +174,12 @@ export default function GatesLibraryPage() {
               </Button>
             </div>
           ) : (
-            <div className="text-sm text-slate-400">Click a gate to see details</div>
+            <div className="text-sm text-theme-text-muted">Click a gate to see details</div>
           )}
         </Card>
 
         <Card title="Quick Reference">
-          <div className="text-xs space-y-2 text-slate-300">
+          <div className="text-xs space-y-2 text-theme-text">
             <div>
               <strong>H:</strong> Superposition gate
             </div>

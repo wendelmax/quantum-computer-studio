@@ -676,18 +676,18 @@ export default function DocsPage() {
   const content = docContents[selected] || '# Documentation\n\nSelect a topic from the sidebar.'
 
   return (
-    <div className="p-6 grid grid-cols-12 gap-4">
-      <div className="col-span-3">
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-3">
         <SidebarDocs items={docItems} onSelect={setSelected} selected={selected} />
       </div>
-      <div className="col-span-9">
+      <div className="lg:col-span-9">
         <div className="mb-4">
-          <h2 className="text-2xl font-semibold">{selected}</h2>
+          <h2 className="text-2xl font-semibold text-theme-text">{selected}</h2>
           {selected === 'API' && (
-            <div className="mt-2 p-3 bg-sky-900/20 border border-sky-700 rounded">
-              <div className="text-sm text-sky-300">
+            <div className="mt-2 p-3 bg-primary/10 border border-primary/50 rounded">
+              <div className="text-sm text-theme-text">
                 <strong>Interactive API Available</strong>: Try the interactive terminal at{' '}
-                <a href="/api" className="underline hover:text-sky-200">/api</a>
+                <a href="/api" className="underline hover:text-primary text-primary">/api</a>
               </div>
             </div>
           )}

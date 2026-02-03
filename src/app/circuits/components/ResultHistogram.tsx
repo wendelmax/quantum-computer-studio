@@ -4,7 +4,7 @@ import Card from '../../../components/Card'
 export default function ResultHistogram() {
   return (
     <Card title="Result Histogram">
-      <div className="mt-2 h-64 bg-slate-900/10 rounded" />
+      <div className="mt-2 h-64 bg-theme-surface/30 rounded" />
     </Card>
   )
 }

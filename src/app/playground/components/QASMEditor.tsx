@@ -27,7 +27,7 @@ function highlightSyntax(text: string): (string | JSX.Element)[] {
       } else if (token.startsWith('q[') || token.startsWith('c[')) {
         parts.push(<span key={`${lineIdx}-${tokenIdx}`} className="text-yellow-400">{token}</span>)
       } else {
-        parts.push(<span key={`${lineIdx}-${tokenIdx}`} className="text-slate-200">{token}</span>)
+        parts.push(<span key={`${lineIdx}-${tokenIdx}`} className="text-theme-text">{token}</span>)
       }
     })
     
@@ -45,7 +45,7 @@ export default function QASMEditor({ value, onChange }: { value: string; onChang
     <div className="relative">
       <div className="mb-2 flex items-center justify-between">
         <div className="text-sm font-medium">QASM Editor</div>
-        <label className="flex items-center gap-2 text-xs text-slate-300">
+        <label className="flex items-center gap-2 text-xs text-theme-text">
           <input
             type="checkbox"
             checked={showHighlight}
@@ -55,13 +55,13 @@ export default function QASMEditor({ value, onChange }: { value: string; onChang
           Syntax Highlight
         </label>
       </div>
-      <div className="relative w-full rounded border border-slate-800 bg-slate-900/20 overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-8 bg-slate-900/30 flex items-center px-3 text-xs text-slate-400 border-b border-slate-800">
+      <div className="relative w-full rounded border border-theme-border bg-theme-surface/30 overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-8 bg-theme-surface/50 flex items-center px-3 text-xs text-theme-text-muted border-b border-theme-border">
           <div className="flex gap-3">
             <span>OPENQASM 2.0</span>
-            <span className="text-slate-500">|</span>
+            <span className="text-theme-text-muted">|</span>
             <span>{value.split('\n').length} lines</span>
-            <span className="text-slate-500">|</span>
+            <span className="text-theme-text-muted">|</span>
             <span>{value.length} chars</span>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function QASMEditor({ value, onChange }: { value: string; onChang
             {highlighted}
           </div>
           <textarea
-            className="w-full h-64 bg-transparent text-transparent caret-sky-400 p-3 text-xs font-mono leading-relaxed resize-none focus:outline-none"
+            className="w-full h-64 bg-transparent text-transparent caret-primary p-3 text-xs font-mono leading-relaxed resize-none focus:outline-none"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             spellCheck={false}
@@ -78,7 +78,7 @@ export default function QASMEditor({ value, onChange }: { value: string; onChang
           />
         </div>
       </div>
-      <div className="mt-2 text-xs text-slate-400">
+      <div className="mt-2 text-xs text-theme-text-muted">
         Press Ctrl+Enter or click Run to execute. Note: Full QASM parsing not yet implemented.
       </div>
     </div>

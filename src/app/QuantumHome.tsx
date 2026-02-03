@@ -54,77 +54,77 @@ export default function QuantumHome() {
   const maxProbKey = getMaxProbKey()
 
   return (
-    <div className="grid grid-cols-12 gap-4">
-      <div className="col-span-8 space-y-4">
-        <section className="rounded-xl p-0 bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 overflow-hidden animate-slide-up">
-          <header className="h-12 px-4 border-b border-slate-700 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-sky-500/20 flex items-center justify-center">
-              <div className="w-3 h-3 rounded-full bg-sky-400 animate-pulse" />
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-8 space-y-4">
+        <section className="rounded-xl p-0 bg-gradient-to-br from-theme-surface to-bg-card border border-theme-border overflow-hidden animate-slide-up">
+          <header className="h-12 px-4 border-b border-theme-border flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+              <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
             </div>
             <div>
-              <h3 className="text-base font-semibold">Welcome to Quantum Computer JS</h3>
-              <p className="text-xs text-slate-400">Interactive quantum computing simulator</p>
+              <h3 className="text-base font-semibold text-theme-text">Welcome to Quantum Computer JS</h3>
+              <p className="text-xs text-theme-text-muted">Interactive quantum computing simulator</p>
             </div>
           </header>
-          <div className="p-4 grid grid-cols-3 gap-3">
-            <Link to="/circuits" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-sky-500 hover:bg-sky-500/10 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99]">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250"><FontAwesomeIcon icon={faFlask} /></div>
+          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <Link to="/circuits" className="group p-4 rounded-lg bg-theme-surface/50 border border-theme-border hover:border-primary hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99] text-theme-text">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250 text-primary"><FontAwesomeIcon icon={faFlask} /></div>
               <div className="font-medium text-sm mb-1">Quantum Studio</div>
-              <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Build & simulate</div>
+              <div className="text-xs text-theme-text-muted group-hover:text-theme-text transition-colors">Build & simulate</div>
             </Link>
-            <Link to="/algorithms" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-green-500 hover:bg-green-500/10 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99]">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250"><FontAwesomeIcon icon={faChartLine} /></div>
+            <Link to="/algorithms" className="group p-4 rounded-lg bg-theme-surface/50 border border-theme-border hover:border-green-500 hover:bg-green-500/10 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99] text-theme-text">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250 text-green-500"><FontAwesomeIcon icon={faChartLine} /></div>
               <div className="font-medium text-sm mb-1">Algorithms</div>
-              <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Run algorithms</div>
+              <div className="text-xs text-theme-text-muted group-hover:text-theme-text transition-colors">Run algorithms</div>
             </Link>
-            <Link to="/data-lab" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-purple-500 hover:bg-purple-500/10 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99]">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250"><FontAwesomeIcon icon={faChartBar} /></div>
+            <Link to="/data-lab" className="group p-4 rounded-lg bg-theme-surface/50 border border-theme-border hover:border-purple-500 hover:bg-purple-500/10 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99] text-theme-text">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250 text-purple-500"><FontAwesomeIcon icon={faChartBar} /></div>
               <div className="font-medium text-sm mb-1">Data Lab</div>
-              <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Explore data</div>
+              <div className="text-xs text-theme-text-muted group-hover:text-theme-text transition-colors">Explore data</div>
             </Link>
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '50ms' }}>
-          <header className="h-10 px-4 border-b border-slate-800 flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Live Demo: Grover's Algorithm</span></div>
+        <section className="rounded-xl p-0 bg-bg-card border border-theme-border overflow-hidden animate-slide-up" style={{ animationDelay: '50ms' }}>
+          <header className="h-10 px-4 border-b border-theme-border flex items-center justify-between text-sm text-theme-text">
+            <div className="flex items-center gap-2"><span className="text-primary">◦</span> <span className="font-medium">Live Demo: Grover's Algorithm</span></div>
             {isRunningDemo && <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />}
           </header>
           <div className="p-4">
-            <div className="grid grid-cols-3 gap-2 mb-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-3">
               {Object.entries(demoProbabilities).slice(0, 8).map(([state, prob]) => (
                 <div 
                   key={state}
                   className={`p-3 rounded border-2 transition-all duration-300 ${
                     state === maxProbKey 
-                      ? 'border-cyan-500 bg-cyan-500/10 scale-105' 
-                      : 'border-slate-700 bg-slate-900/20'
+                      ? 'border-primary bg-primary/10 scale-105' 
+                      : 'border-theme-border bg-theme-surface/50'
                   }`}
                 >
-                  <div className="text-xs text-slate-400 mb-1">|{state}⟩</div>
-                  <div className="text-lg font-mono text-sky-300">{prob > 0.01 ? (prob * 100).toFixed(0) : '0'}%</div>
-                  <div className="h-1 bg-slate-700 rounded-full mt-1 overflow-hidden">
+                  <div className="text-xs text-theme-text-muted mb-1">|{state}⟩</div>
+                  <div className="text-lg font-mono text-primary">{prob > 0.01 ? (prob * 100).toFixed(0) : '0'}%</div>
+                  <div className="h-1 bg-theme-border rounded-full mt-1 overflow-hidden">
                     <div 
-                      className="h-full bg-cyan-400 rounded-full transition-all duration-500 ease-out"
+                      className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
                       style={{ width: `${prob * 100}%` }}
                     />
                   </div>
                 </div>
               ))}
             </div>
-            <div className="text-xs text-slate-500 italic">Algorithm successfully finds the target state |{maxProbKey}⟩</div>
+            <div className="text-xs text-theme-text-muted italic">Algorithm successfully finds the target state |{maxProbKey}⟩</div>
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '100ms' }}>
-          <header className="h-10 px-4 border-b border-slate-800 flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Quantum vs Classical</span></div>
+        <section className="rounded-xl p-0 bg-bg-card border border-theme-border overflow-hidden animate-slide-up" style={{ animationDelay: '100ms' }}>
+          <header className="h-10 px-4 border-b border-theme-border flex items-center justify-between text-sm text-theme-text">
+            <div className="flex items-center gap-2"><span className="text-primary">◦</span> <span className="font-medium">Quantum vs Classical</span></div>
           </header>
           <div className="p-4">
-            <div className="grid grid-cols-2 gap-4 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
               <div className="border border-red-700/50 rounded-lg p-3 bg-red-950/20">
                 <div className="text-xs font-medium text-red-400 mb-2">CLASSICAL</div>
-                <div className="space-y-1 text-xs text-slate-300">
+                <div className="space-y-1 text-xs text-theme-text">
                   <div className="flex items-center gap-2">
                     <span>•</span>
                     <span>1 bit = 0 or 1</span>
@@ -145,7 +145,7 @@ export default function QuantumHome() {
               </div>
               <div className="border border-cyan-700/50 rounded-lg p-3 bg-cyan-950/20">
                 <div className="text-xs font-medium text-cyan-400 mb-2">QUANTUM</div>
-                <div className="space-y-1 text-xs text-slate-300">
+                <div className="space-y-1 text-xs text-theme-text">
                   <div className="flex items-center gap-2">
                     <span>•</span>
                     <span>1 qubit = both 0 & 1</span>
@@ -165,79 +165,79 @@ export default function QuantumHome() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-slate-800 pt-3">
-              <div className="text-xs text-slate-400 mb-2">Exponential Advantage:</div>
-              <div className="grid grid-cols-3 gap-2 text-xs">
-                <div className="p-2 bg-slate-900/30 rounded text-center hover:bg-slate-900/50 transition-colors">
-                  <div className="text-slate-500">10 qubits</div>
-                  <div className="text-sky-300 font-mono text-base">1,024</div>
-                  <div className="text-slate-500 text-[10px]">states</div>
+            <div className="border-t border-theme-border pt-3">
+              <div className="text-xs text-theme-text-muted mb-2">Exponential Advantage:</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
+                <div className="p-2 bg-theme-surface/50 rounded text-center hover:bg-theme-surface transition-colors">
+                  <div className="text-theme-text-muted">10 qubits</div>
+                  <div className="text-primary font-mono text-base">1,024</div>
+                  <div className="text-theme-text-muted text-[10px]">states</div>
                 </div>
-                <div className="p-2 bg-slate-900/30 rounded text-center hover:bg-slate-900/50 transition-colors">
-                  <div className="text-slate-500">20 qubits</div>
-                  <div className="text-sky-300 font-mono text-base">1.05M</div>
-                  <div className="text-slate-500 text-[10px]">states</div>
+                <div className="p-2 bg-theme-surface/50 rounded text-center hover:bg-theme-surface transition-colors">
+                  <div className="text-theme-text-muted">20 qubits</div>
+                  <div className="text-primary font-mono text-base">1.05M</div>
+                  <div className="text-theme-text-muted text-[10px]">states</div>
                 </div>
-                <div className="p-2 bg-slate-900/30 rounded text-center hover:bg-slate-900/50 transition-colors">
-                  <div className="text-slate-500">30 qubits</div>
-                  <div className="text-sky-300 font-mono text-base">1.07B</div>
-                  <div className="text-slate-500 text-[10px]">states</div>
+                <div className="p-2 bg-theme-surface/50 rounded text-center hover:bg-theme-surface transition-colors">
+                  <div className="text-theme-text-muted">30 qubits</div>
+                  <div className="text-primary font-mono text-base">1.07B</div>
+                  <div className="text-theme-text-muted text-[10px]">states</div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '150ms' }}>
-          <header className="h-10 px-4 border-b border-slate-800 flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Popular Algorithms</span></div>
-            <Link to="/algorithms" className="text-xs text-sky-400 hover:text-sky-300">View all →</Link>
+        <section className="rounded-xl p-0 bg-bg-card border border-theme-border overflow-hidden animate-slide-up" style={{ animationDelay: '150ms' }}>
+          <header className="h-10 px-4 border-b border-theme-border flex items-center justify-between text-sm text-theme-text">
+            <div className="flex items-center gap-2"><span className="text-primary">◦</span> <span className="font-medium">Popular Algorithms</span></div>
+            <Link to="/algorithms" className="text-xs text-primary hover:text-accent">View all →</Link>
           </header>
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-theme-border">
             {algorithms.map((item, idx) => (
               <button
                 key={item.id}
-                className="w-full px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-900/20 cursor-pointer group transition-all duration-200 hover:pl-5"
+                className="w-full px-4 py-3 text-sm flex items-center justify-between hover:bg-theme-surface/50 cursor-pointer group transition-all duration-200 hover:pl-5 text-theme-text"
                 onClick={() => loadAlgorithm(item.id)}
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-1 h-8 rounded-full ${item.color} group-hover:scale-y-125 transition-transform`} />
                   <div className="text-left">
-                    <div className="text-slate-200 font-medium group-hover:text-sky-300 transition-colors">{item.name}</div>
-                    <div className="text-xs text-slate-500">{item.description}</div>
+                    <div className="text-theme-text font-medium group-hover:text-primary transition-colors">{item.name}</div>
+                    <div className="text-xs text-theme-text-muted">{item.description}</div>
                   </div>
                 </div>
-                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">›</span>
+                <span className="text-theme-text-muted group-hover:translate-x-1 transition-transform">›</span>
               </button>
             ))}
           </div>
         </section>
 
-        <section className="rounded-xl p-3 bg-bg-card border border-slate-800/60 animate-slide-up" style={{ animationDelay: '200ms' }}>
-          <div className="flex items-center gap-3 text-slate-300 flex-wrap">
-            <Link to="/circuits" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faDesktop} className="inline mr-1" /> Studio</Link>
-            <Link to="/algorithms" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faLayerGroup} className="inline mr-1" /> Algorithms</Link>
-            <Link to="/data-lab" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faChartBar} className="inline mr-1" /> Data Lab</Link>
-            <Link to="/state-viewer" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faUndo} className="inline mr-1" /> States</Link>
-            <Link to="/gates" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faHashtag} className="inline mr-1" /> Gates</Link>
-            <Link to="/oracles" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faCircle} className="inline mr-1" /> Oracles</Link>
-            <Link to="/gallery" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faImages} className="inline mr-1" /> Gallery</Link>
-            <Link to="/playground" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faCode} className="inline mr-1" /> Playground</Link>
-            <Link to="/execution" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faTachometerAlt} className="inline mr-1" /> Execution</Link>
-            <Link to="/docs" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faBook} className="inline mr-1" /> Docs</Link>
-            <Link to="/api" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faTerminal} className="inline mr-1" /> API</Link>
-            <Link to="/settings" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faSlidersH} className="inline mr-1" /> Settings</Link>
+        <section className="rounded-xl p-3 bg-bg-card border border-theme-border animate-slide-up" style={{ animationDelay: '200ms' }}>
+          <div className="flex items-center gap-2 sm:gap-3 text-theme-text flex-wrap text-sm">
+            <Link to="/circuits" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faDesktop} className="inline mr-1" /> Studio</Link>
+            <Link to="/algorithms" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faLayerGroup} className="inline mr-1" /> Algorithms</Link>
+            <Link to="/data-lab" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faChartBar} className="inline mr-1" /> Data Lab</Link>
+            <Link to="/state-viewer" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faUndo} className="inline mr-1" /> States</Link>
+            <Link to="/gates" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faHashtag} className="inline mr-1" /> Gates</Link>
+            <Link to="/oracles" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faCircle} className="inline mr-1" /> Oracles</Link>
+            <Link to="/gallery" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faImages} className="inline mr-1" /> Gallery</Link>
+            <Link to="/playground" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faCode} className="inline mr-1" /> Playground</Link>
+            <Link to="/execution" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faTachometerAlt} className="inline mr-1" /> Execution</Link>
+            <Link to="/docs" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faBook} className="inline mr-1" /> Docs</Link>
+            <Link to="/api" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faTerminal} className="inline mr-1" /> API</Link>
+            <Link to="/settings" className="px-3 py-2 rounded hover:bg-theme-surface hover:text-primary transition-colors"><FontAwesomeIcon icon={faSlidersH} className="inline mr-1" /> Settings</Link>
           </div>
         </section>
       </div>
 
-      <div className="col-span-4 space-y-4">
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '80ms' }}>
-          <header className="h-10 px-4 border-b border-slate-800 flex items-center text-sm">
-            <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Bloch Sphere</span></div>
+      <div className="lg:col-span-4 space-y-4">
+        <section className="rounded-xl p-0 bg-bg-card border border-theme-border overflow-hidden animate-slide-up" style={{ animationDelay: '80ms' }}>
+          <header className="h-10 px-4 border-b border-theme-border flex items-center text-sm text-theme-text">
+            <div className="flex items-center gap-2"><span className="text-primary">◦</span> <span className="font-medium">Bloch Sphere</span></div>
           </header>
           <div className="p-4">
-            <div className="h-48 rounded-md bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center relative overflow-hidden">
+            <div className="h-48 rounded-md bg-gradient-to-br from-theme-surface to-bg-card flex items-center justify-center relative overflow-hidden">
               <svg width="160" height="160" viewBox="0 0 200 200" className="absolute">
                 <circle cx="100" cy="100" r="80" fill="none" stroke="#475569" strokeWidth="2" opacity="0.3" />
                 <circle cx="100" cy="100" r="60" fill="none" stroke="#475569" strokeWidth="1" opacity="0.2" />
@@ -253,26 +253,26 @@ export default function QuantumHome() {
               </svg>
             </div>
             <div className="mt-2 text-center">
-              <div className="text-slate-300 text-sm font-medium">Superposition State</div>
-              <div className="text-xs text-slate-500 mt-1">|Ψ⟩ = cos(θ/2)|0⟩ + e^(iφ)·sin(θ/2)|1⟩</div>
+              <div className="text-theme-text text-sm font-medium">Superposition State</div>
+              <div className="text-xs text-theme-text-muted mt-1">|Ψ⟩ = cos(θ/2)|0⟩ + e^(iφ)·sin(θ/2)|1⟩</div>
             </div>
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '120ms' }}>
-          <header className="h-10 px-4 border-b border-slate-800 flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Statistics</span></div>
-            <span className="text-xs text-slate-500">Available in this app</span>
+        <section className="rounded-xl p-0 bg-bg-card border border-theme-border overflow-hidden animate-slide-up" style={{ animationDelay: '120ms' }}>
+          <header className="h-10 px-4 border-b border-theme-border flex items-center justify-between text-sm text-theme-text">
+            <div className="flex items-center gap-2"><span className="text-primary">◦</span> <span className="font-medium">Statistics</span></div>
+            <span className="text-xs text-theme-text-muted">Available in this app</span>
           </header>
           <div className="p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 bg-slate-900/30 rounded-lg border border-slate-700">
-                <div className="text-xs text-slate-500 mb-1">Total Gates</div>
-                <div className="text-xl font-mono text-sky-300">8</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="p-3 bg-theme-surface/50 rounded-lg border border-theme-border">
+                <div className="text-xs text-theme-text-muted mb-1">Total Gates</div>
+                <div className="text-xl font-mono text-primary">8</div>
               </div>
-              <div className="p-3 bg-slate-900/30 rounded-lg border border-slate-700">
-                <div className="text-xs text-slate-500 mb-1">Algorithms</div>
-                <div className="text-xl font-mono text-green-300">9</div>
+              <div className="p-3 bg-theme-surface/50 rounded-lg border border-theme-border">
+                <div className="text-xs text-theme-text-muted mb-1">Algorithms</div>
+                <div className="text-xl font-mono text-green-400">9</div>
               </div>
             </div>
             <div className="p-3 bg-gradient-to-br from-purple-900/20 to-blue-900/20 rounded-lg border border-purple-700/30">
@@ -282,22 +282,22 @@ export default function QuantumHome() {
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '160ms' }}>
-          <header className="h-10 px-4 border-b border-slate-800 flex items-center text-sm">
-            <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Quick Links</span></div>
+        <section className="rounded-xl p-0 bg-bg-card border border-theme-border overflow-hidden animate-slide-up" style={{ animationDelay: '160ms' }}>
+          <header className="h-10 px-4 border-b border-theme-border flex items-center text-sm text-theme-text">
+            <div className="flex items-center gap-2"><span className="text-primary">◦</span> <span className="font-medium">Quick Links</span></div>
           </header>
           <div className="p-4 space-y-2">
-            <a href="https://github.com/wendelmax/quantum-computer-js" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 rounded hover:bg-slate-800/40 transition-colors text-sm text-slate-300 hover:text-sky-300">
+            <a href="https://github.com/wendelmax/quantum-computer-js" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 rounded hover:bg-theme-surface transition-colors text-sm text-theme-text hover:text-primary">
               <FontAwesomeIcon icon={faBox} />
               <span>GitHub Repository</span>
               <span className="ml-auto text-xs">→</span>
             </a>
-            <Link to="/docs" className="flex items-center gap-2 p-2 rounded hover:bg-slate-800/40 transition-colors text-sm text-slate-300 hover:text-sky-300">
+            <Link to="/docs" className="flex items-center gap-2 p-2 rounded hover:bg-theme-surface transition-colors text-sm text-theme-text hover:text-primary">
               <FontAwesomeIcon icon={faBook} />
               <span>Documentation</span>
               <span className="ml-auto text-xs">→</span>
             </Link>
-            <Link to="/api" className="flex items-center gap-2 p-2 rounded hover:bg-slate-800/40 transition-colors text-sm text-slate-300 hover:text-sky-300">
+            <Link to="/api" className="flex items-center gap-2 p-2 rounded hover:bg-theme-surface transition-colors text-sm text-theme-text hover:text-primary">
               <FontAwesomeIcon icon={faTerminal} />
               <span>API Terminal</span>
               <span className="ml-auto text-xs">→</span>

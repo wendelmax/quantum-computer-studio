@@ -13,17 +13,17 @@ type Props = {
 export default function CircuitThumbnail({ title, description, gateCount, qubitCount, onClick }: Props) {
   return (
     <div 
-      className="rounded-lg p-3 bg-bg-card border border-slate-800 hover:border-primary cursor-pointer transition-colors"
+      className="rounded-lg p-3 bg-bg-card border border-theme-border hover:border-primary cursor-pointer transition-colors"
       onClick={onClick}
     >
-      <div className="h-24 bg-slate-900/10 rounded flex items-center justify-center">
-        <FontAwesomeIcon icon={faProjectDiagram} className="text-4xl text-slate-600" />
+      <div className="h-24 bg-theme-surface/30 rounded flex items-center justify-center">
+        <FontAwesomeIcon icon={faProjectDiagram} className="text-4xl text-theme-text-muted" />
       </div>
       <div className="mt-2">
-        <div className="text-xs text-slate-200 font-medium truncate">{title}</div>
-        {description && <div className="text-[10px] text-slate-400 truncate">{description}</div>}
+        <div className="text-xs text-theme-text font-medium truncate">{title}</div>
+        {description && <div className="text-[10px] text-theme-text-muted truncate">{description}</div>}
         {(gateCount !== undefined || qubitCount !== undefined) && (
-          <div className="text-[10px] text-slate-500 mt-1">
+          <div className="text-[10px] text-theme-text-muted mt-1">
             {qubitCount ? `${qubitCount}q` : ''} {gateCount ? `${gateCount}g` : ''}
           </div>
         )}

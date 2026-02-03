@@ -105,7 +105,7 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
   const sorted = [...exportOptions].sort((a, b) => (a.id === defaultFormat ? -1 : b.id === defaultFormat ? 1 : 0))
 
   return (
-    <div className="rounded-lg p-3 bg-[#021825] border border-slate-800 transition-all duration-300 hover:border-slate-700/80">
+    <div className="rounded-lg p-3 bg-bg-card border border-theme-border transition-all duration-300 hover:border-primary/50">
       {validationError && (
         <div className="mb-3 px-3 py-2 rounded bg-red-900/30 border border-red-700/50 text-xs text-red-300 animate-fade-in">
           {validationError}
@@ -113,7 +113,7 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
       )}
       <div className="flex gap-2 flex-wrap">
         <Button
-          className="flex-1 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/25 active:scale-[0.98]"
+          className="flex-1 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
           onClick={() => onRun?.()}
           title="Run (Ctrl+Enter)"
         >
@@ -136,10 +136,10 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
             Export
           </Button>
           {showExport && (
-            <div className="absolute right-0 top-full mt-1 z-10 bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg min-w-32">
-              <button onClick={() => copyCircuitJSON()} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">Copy circuit JSON</button>
+            <div className="absolute right-0 top-full mt-1 z-10 bg-theme-surface border border-theme-border rounded-lg p-2 shadow-lg min-w-32">
+              <button onClick={() => copyCircuitJSON()} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">Copy circuit JSON</button>
               {sorted.map((opt) => (
-                <button key={opt.id} onClick={opt.run} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">
+                <button key={opt.id} onClick={opt.run} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">
                   {opt.label}{opt.id === defaultFormat ? ' (default)' : ''}
                 </button>
               ))}

@@ -89,15 +89,15 @@ export default function OraclesPage() {
   }
 
   return (
-    <div className="p-6 grid grid-cols-12 gap-4">
-      <div className="col-span-8 flex flex-col gap-4">
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-8 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Quantum Oracles</h2>
+          <h2 className="text-2xl font-semibold text-theme-text">Quantum Oracles</h2>
           <Button onClick={() => window.location.href = '/circuits'}>Open Quantum Studio</Button>
         </div>
 
         <Card>
-          <p className="text-sm text-slate-300 mb-4">
+          <p className="text-sm text-theme-text mb-4">
             Oracles are black-box functions used in quantum algorithms like Deutsch–Jozsa, Grover, and Bernstein-Vazirani. 
             An oracle can be <strong>constant</strong> (returns same value for all inputs), <strong>balanced</strong> (returns 0 for half and 1 for other half), 
             or <strong>custom</strong> (phase-oracles for Grover search).
@@ -106,22 +106,22 @@ export default function OraclesPage() {
 
         <Card>
           <div className="mb-4 relative">
-            <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+            <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-muted text-sm" />
             <input
               type="text"
               placeholder="Search oracles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 pl-10 bg-slate-900 border border-slate-700 rounded text-sm"
+              className="w-full px-3 py-2 pl-10 rounded text-sm"
             />
           </div>
           <div className="flex gap-2">
             <div className="flex-1 relative">
-              <FontAwesomeIcon icon={faFilter} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+              <FontAwesomeIcon icon={faFilter} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-muted text-sm" />
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 pl-10 bg-slate-900 border border-slate-700 rounded text-sm appearance-none"
+                className="w-full px-3 py-2 pl-10 rounded text-sm appearance-none"
               >
                 {categories.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -129,11 +129,11 @@ export default function OraclesPage() {
               </select>
             </div>
             <div className="flex-1 relative">
-              <FontAwesomeIcon icon={faFilter} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+              <FontAwesomeIcon icon={faFilter} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-muted text-sm" />
               <select
                 value={selectedAlgorithm}
                 onChange={(e) => setSelectedAlgorithm(e.target.value)}
-                className="w-full px-3 py-2 pl-10 bg-slate-900 border border-slate-700 rounded text-sm appearance-none"
+                className="w-full px-3 py-2 pl-10 rounded text-sm appearance-none"
               >
                 {algorithms.map(alg => (
                   <option key={alg} value={alg}>{alg}</option>
@@ -144,7 +144,7 @@ export default function OraclesPage() {
         </Card>
 
         <Card title={`Oracle Library (${filteredOracles.length})`}>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {filteredOracles.map(oracle => (
               <OracleCard
                 key={oracle.id}
@@ -157,22 +157,22 @@ export default function OraclesPage() {
         </Card>
       </div>
 
-      <div className="col-span-4 flex flex-col gap-4">
+      <div className="lg:col-span-4 flex flex-col gap-4">
         {oracleInfo && (
           <>
             <Card title="Oracle Details">
               <div className="space-y-3">
                 <div className="text-lg font-semibold">{oracleInfo.name}</div>
-                <div className="text-sm text-slate-300">{oracleInfo.description}</div>
+                <div className="text-sm text-theme-text">{oracleInfo.description}</div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400">Algorithm:</span>
-                  <span className="text-xs px-2 py-1 bg-slate-900 border border-slate-700 rounded">
+                  <span className="text-xs text-theme-text-muted">Algorithm:</span>
+                  <span className="text-xs px-2 py-1 bg-theme-surface border border-theme-border rounded text-theme-text">
                     {oracleInfo.algorithm}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400">Application:</span>
-                  <span className="text-xs text-slate-300">{oracleInfo.application}</span>
+                  <span className="text-xs text-theme-text-muted">Application:</span>
+                  <span className="text-xs text-theme-text">{oracleInfo.application}</span>
                 </div>
                 <Button className="w-full" onClick={() => loadToStudio(oracleInfo.id)}>
                   Open in Studio
@@ -196,7 +196,7 @@ export default function OraclesPage() {
 
         <Card title="Test Results">
           {processing ? (
-            <div className="text-sm text-slate-300">Running simulation...</div>
+            <div className="text-sm text-theme-text">Running simulation...</div>
           ) : result ? (
             <div className="space-y-2">
               <div className="relative flex justify-end" ref={resultExportRef}>
@@ -205,9 +205,9 @@ export default function OraclesPage() {
                   Export
                 </Button>
                 {showResultExport && (
-                  <div className="absolute right-0 top-full mt-1 z-10 bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg min-w-32">
-                    <button onClick={() => { downloadFile(JSON.stringify(result, null, 2), 'oracle-result.json', 'application/json'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">JSON</button>
-                    <button onClick={() => { downloadFile(probabilitiesToCSV(result), 'oracle-result.csv', 'text/csv'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">CSV</button>
+                  <div className="absolute right-0 top-full mt-1 z-10 bg-theme-surface border border-theme-border rounded-lg p-2 shadow-lg min-w-32">
+                    <button onClick={() => { downloadFile(JSON.stringify(result, null, 2), 'oracle-result.json', 'application/json'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">JSON</button>
+                    <button onClick={() => { downloadFile(probabilitiesToCSV(result), 'oracle-result.csv', 'text/csv'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">CSV</button>
                   </div>
                 )}
               </div>
@@ -215,8 +215,8 @@ export default function OraclesPage() {
                 .filter(([_, prob]) => prob > 0.01)
                 .map(([state, prob]) => (
                   <div key={state} className="flex justify-between items-center text-sm">
-                    <span className="font-mono text-slate-200">|{state}⟩</span>
-                    <span className="text-slate-400">{(prob * 100).toFixed(1)}%</span>
+                    <span className="font-mono text-theme-text">|{state}⟩</span>
+                    <span className="text-theme-text-muted">{(prob * 100).toFixed(1)}%</span>
                   </div>
                 ))}
               {result['00'] === 1 && (
@@ -231,12 +231,12 @@ export default function OraclesPage() {
               )}
             </div>
           ) : (
-            <div className="text-sm text-slate-400">Select an oracle to test</div>
+            <div className="text-sm text-theme-text-muted">Select an oracle to test</div>
           )}
         </Card>
 
         <Card title="About Oracles">
-          <div className="text-xs text-slate-300 space-y-2">
+          <div className="text-xs text-theme-text space-y-2">
             <p>
               The Deutsch–Jozsa algorithm determines if an oracle is constant or balanced 
               in just one query, while classical computers need 2^n queries.

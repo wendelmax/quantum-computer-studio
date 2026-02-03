@@ -28,19 +28,19 @@ const OracleCircuit = ({ circuit }: OracleCircuitProps) => {
     if (type === 'H') return 'bg-green-900 border-green-700'
     if (type === 'CNOT') return 'bg-purple-900 border-purple-700'
     if (type.startsWith('R')) return 'bg-orange-900 border-orange-700'
-    return 'bg-slate-800 border-slate-700'
+    return 'bg-theme-surface border-theme-border'
   }
 
   return (
-    <div className="p-4 rounded bg-bg-card border border-slate-800">
+    <div className="p-4 rounded bg-bg-card border border-theme-border">
       <h4 className="text-sm font-medium mb-3">Circuit Diagram</h4>
       <div className="space-y-3">
         {Array.from({ length: circuit.numQubits }, (_, i) => i).map(qubit => (
           <div key={qubit} className="flex items-center gap-2 text-xs">
             <div className="w-16 flex-shrink-0">
-              <span className="text-slate-400 font-mono">q[{qubit}]</span>
+              <span className="text-theme-text-muted font-mono">q[{qubit}]</span>
             </div>
-            <div className="flex-1 h-10 flex items-center border-b border-slate-700 relative">
+            <div className="flex-1 h-10 flex items-center border-b border-theme-border relative">
               {gatesByQubit[qubit]?.map((gate, idx) => (
                 <React.Fragment key={idx}>
                   <div className="relative">
@@ -59,19 +59,19 @@ const OracleCircuit = ({ circuit }: OracleCircuitProps) => {
                     )}
                   </div>
                   {idx < (gatesByQubit[qubit]?.length || 0) - 1 && (
-                    <div className="h-px w-6 bg-slate-700" />
+                    <div className="h-px w-6 bg-theme-border" />
                   )}
                 </React.Fragment>
               ))}
               {!gatesByQubit[qubit] && (
-                <div className="text-slate-600 text-[10px] px-2">No gates</div>
+                <div className="text-theme-text-muted text-[10px] px-2">No gates</div>
               )}
             </div>
           </div>
         ))}
       </div>
-      <div className="mt-4 pt-3 border-t border-slate-800">
-        <div className="flex items-center justify-between text-xs text-slate-400">
+      <div className="mt-4 pt-3 border-t border-theme-border">
+        <div className="flex items-center justify-between text-xs text-theme-text-muted">
           <span>{circuit.gates.length} gates</span>
           <span>{circuit.numQubits} qubits</span>
         </div>

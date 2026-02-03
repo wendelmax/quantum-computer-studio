@@ -46,6 +46,11 @@
   --surface: 0 40 0;
 }
 
+.grid-pattern {
+  background-image: linear-gradient(90deg, rgb(var(--primary) / 0.1) 1px, transparent 1px), linear-gradient(rgb(var(--primary) / 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
 :root[data-theme="ocean"]{
   --bg: 5 30 60;
   --bg-card: 10 40 80;

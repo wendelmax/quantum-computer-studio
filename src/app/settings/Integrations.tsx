@@ -38,7 +38,7 @@ export default function Integrations() {
           <select
             value={defaultFormat}
             onChange={(e) => setDefaultFormat(e.target.value)}
-            className="w-full px-3 py-2 bg-theme-input-bg border border-theme-border rounded text-sm text-theme-text font-medium"
+            className="w-full px-3 py-2 rounded text-sm font-medium"
           >
             {EXPORT_FORMATS.map((f) => (
               <option key={f.id} value={f.id}>{f.label}</option>

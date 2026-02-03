@@ -26,29 +26,29 @@ function getDifficultyColor(difficulty?: string): string {
     case 'Beginner': return 'text-green-400'
     case 'Intermediate': return 'text-yellow-400'
     case 'Advanced': return 'text-red-400'
-    default: return 'text-slate-400'
+    default: return 'text-theme-text-muted'
   }
 }
 
 export default function AlgorithmCard({ algorithm, onRun, onOpenInStudio }: AlgorithmCardProps) {
   return (
     <div
-      className="p-4 rounded bg-bg-card border border-slate-800 hover:border-primary cursor-pointer transition-colors"
+      className="p-4 rounded bg-bg-card border border-theme-border hover:border-primary cursor-pointer transition-colors"
       onClick={onRun}
       role="button"
       tabIndex={0}
       onKeyDown={(e)=> { if (e.key === 'Enter' || e.key === ' ') onRun?.() }}
     >
       <div className="flex items-start justify-between mb-2">
-        <h3 className="font-medium text-sm">{algorithm.name}</h3>
+        <h3 className="font-medium text-sm text-theme-text">{algorithm.name}</h3>
         {algorithm.year && (
-          <span className="text-xs text-slate-500">{algorithm.year}</span>
+          <span className="text-xs text-theme-text-muted">{algorithm.year}</span>
         )}
       </div>
       
       {algorithm.category && (
         <div className="mb-2">
-          <span className="text-xs px-2 py-0.5 bg-slate-900 border border-slate-700 rounded text-slate-400">
+          <span className="text-xs px-2 py-0.5 bg-theme-surface border border-theme-border rounded text-theme-text-muted">
             {algorithm.category}
           </span>
         </div>
@@ -56,20 +56,20 @@ export default function AlgorithmCard({ algorithm, onRun, onOpenInStudio }: Algo
 
       <div className="space-y-1.5 mb-3 text-xs">
         {algorithm.appliedTo && (
-          <div className="text-slate-400">
-            <span className="text-slate-500">Applied to:</span> {algorithm.appliedTo}
+          <div className="text-theme-text-muted">
+            <span className="text-theme-text-muted">Applied to:</span> {algorithm.appliedTo}
           </div>
         )}
         {algorithm.complexity && (
           <div className="flex items-center gap-2">
-            <span className="text-slate-500">Quantum:</span>
-            <span className="text-sky-400 font-mono">{algorithm.complexity}</span>
+            <span className="text-theme-text-muted">Quantum:</span>
+            <span className="text-primary font-mono">{algorithm.complexity}</span>
           </div>
         )}
         {algorithm.classicalComplexity && (
           <div className="flex items-center gap-2">
-            <span className="text-slate-500">Classical:</span>
-            <span className="text-slate-400 font-mono text-[10px]">{algorithm.classicalComplexity}</span>
+            <span className="text-theme-text-muted">Classical:</span>
+            <span className="text-theme-text font-mono text-[10px]">{algorithm.classicalComplexity}</span>
           </div>
         )}
         {algorithm.difficulty && (

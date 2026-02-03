@@ -9,8 +9,8 @@ type Props = {
 export default function QuantumStatePreview({ data, numQubits, mappingMode }: Props) {
   if (data.length === 0) {
     return (
-      <div className="p-4 bg-bg-card border border-slate-800 rounded">
-        <div className="text-xs text-slate-400">No data to map</div>
+      <div className="p-4 bg-bg-card border border-theme-border rounded">
+        <div className="text-xs text-theme-text-muted">No data to map</div>
       </div>
     )
   }
@@ -26,26 +26,26 @@ export default function QuantumStatePreview({ data, numQubits, mappingMode }: Pr
   })
 
   return (
-    <div className="p-4 bg-bg-card border border-slate-800 rounded">
-      <h4 className="text-sm font-medium mb-3">
+    <div className="p-4 bg-bg-card border border-theme-border rounded">
+      <h4 className="text-sm font-medium mb-3 text-theme-text">
         Quantum State Mapping ({mappingMode === 'amplitude' ? 'Amplitude' : 'Angle'} Encoding)
       </h4>
       
       <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin">
         {states.map((state, i) => (
-          <div key={i} className="border-b border-slate-800 pb-2 last:border-0">
+          <div key={i} className="border-b border-theme-border pb-2 last:border-0">
             <div className="flex items-center justify-between text-xs mb-1">
-              <span className="font-mono text-slate-200">|{state.index}⟩</span>
+              <span className="font-mono text-theme-text">|{state.index}⟩</span>
               {mappingMode === 'amplitude' ? (
-                <span className="text-sky-400">{state.probability.toFixed(4)}</span>
+                <span className="text-primary">{state.probability.toFixed(4)}</span>
               ) : (
                 <span className="text-purple-400">{state.angle.toFixed(3)} rad</span>
               )}
             </div>
             {mappingMode === 'amplitude' && (
-              <div className="h-2 bg-slate-900 rounded overflow-hidden">
+              <div className="h-2 bg-theme-surface rounded overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-sky-500 to-cyan-500" 
+                  className="h-full bg-gradient-to-r from-primary to-accent" 
                   style={{ width: `${state.probability * 100}%` }}
                 />
               </div>
@@ -54,8 +54,8 @@ export default function QuantumStatePreview({ data, numQubits, mappingMode }: Pr
         ))}
       </div>
 
-      <div className="mt-3 pt-3 border-t border-slate-800">
-        <div className="text-xs text-slate-400">
+      <div className="mt-3 pt-3 border-t border-theme-border">
+        <div className="text-xs text-theme-text-muted">
           {mappingMode === 'amplitude' 
             ? 'Values → Quantum amplitudes → Probabilities' 
             : 'Values → Rotation angles → Quantum gates'}

@@ -81,10 +81,10 @@ export default function DataLabPage() {
   }
 
   return (
-    <div className="p-6 grid grid-cols-12 gap-4">
-      <div className="col-span-8 flex flex-col gap-4">
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-8 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Data Lab</h2>
+          <h2 className="text-2xl font-semibold text-theme-text">Data Lab</h2>
           <div className="flex gap-2">
             <DataExporter rawData={rows} normalizedData={normRows} />
             <Button onClick={() => window.location.href = '/circuits'}>Open Quantum Studio</Button>
@@ -126,8 +126,8 @@ export default function DataLabPage() {
                     }}
                     className={`px-3 py-1.5 rounded text-sm transition-all ${
                       selectedColumns.includes(i)
-                        ? 'bg-sky-600 text-white'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        ? 'bg-primary text-white'
+                        : 'bg-theme-surface text-theme-text hover:bg-theme-border/50'
                     }`}
                   >
                     Col {i + 1}
@@ -146,18 +146,18 @@ export default function DataLabPage() {
                 title="Basic Statistics"
                 description="Statistical overview of selected columns"
               >
-                <div className="grid grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                   <div>
-                    <div className="text-slate-400">Min</div>
-                    <div className="text-2xl font-semibold text-slate-100">{stats.min.toFixed(3)}</div>
+                    <div className="text-theme-text-muted">Min</div>
+                    <div className="text-2xl font-semibold text-theme-text">{stats.min.toFixed(3)}</div>
                   </div>
                   <div>
-                    <div className="text-slate-400">Mean</div>
-                    <div className="text-2xl font-semibold text-slate-100">{stats.mean.toFixed(3)}</div>
+                    <div className="text-theme-text-muted">Mean</div>
+                    <div className="text-2xl font-semibold text-theme-text">{stats.mean.toFixed(3)}</div>
                   </div>
                   <div>
-                    <div className="text-slate-400">Max</div>
-                    <div className="text-2xl font-semibold text-slate-100">{stats.max.toFixed(3)}</div>
+                    <div className="text-theme-text-muted">Max</div>
+                    <div className="text-2xl font-semibold text-theme-text">{stats.max.toFixed(3)}</div>
                   </div>
                 </div>
               </Card>
@@ -169,7 +169,7 @@ export default function DataLabPage() {
               <Card>
                 <button
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="text-sm text-sky-400 hover:text-sky-300 transition-colors"
+                  className="text-sm text-primary hover:text-accent transition-colors"
                 >
                   {showAdvanced ? '▼' : '▶'} {showAdvanced ? 'Hide' : 'Show'} Advanced Statistics
                 </button>
@@ -179,7 +179,7 @@ export default function DataLabPage() {
         )}
       </div>
 
-      <div className="col-span-4 flex flex-col gap-4">
+      <div className="lg:col-span-4 flex flex-col gap-4">
         <QuantumMappingPanel 
           numQubits={numQubits}
           mappingMode={mappingMode}
@@ -196,16 +196,16 @@ export default function DataLabPage() {
             />
 
             <Card title="Quantum Integration">
-              <div className="text-xs text-slate-300 mb-3">
+              <div className="text-xs text-theme-text mb-3">
                 Map your normalized data to quantum states and run computations.
               </div>
               <div className="space-y-2 mb-3">
-                <div className="text-xs text-slate-400">
+                <div className="text-xs text-theme-text-muted">
                   {mappingMode === 'amplitude' 
                     ? `Amplitude encoding will create superposition states with ${normRows.length} amplitudes`
                     : `Angle encoding will create rotation gates with ${normRows.length} angles`}
                 </div>
-                <div className="text-xs text-slate-400">
+                <div className="text-xs text-theme-text-muted">
                   Qubits: {numQubits} (can represent {2**numQubits} states)
                 </div>
               </div>
@@ -218,7 +218,7 @@ export default function DataLabPage() {
 
         {!normRows.length && (
           <Card title="Instructions">
-            <div className="text-xs text-slate-300 space-y-2">
+            <div className="text-xs text-theme-text space-y-2">
               <p>1. Upload a CSV/TSV file or load a sample dataset</p>
               <p>2. Data will be automatically normalized</p>
               <p>3. Configure quantum mapping mode</p>
@@ -229,7 +229,7 @@ export default function DataLabPage() {
         )}
 
         <Card title="About Data Lab">
-          <div className="text-xs text-slate-300 space-y-2">
+          <div className="text-xs text-theme-text space-y-2">
             <p>
               The Data Lab allows you to convert classical data into quantum states, 
               enabling quantum machine learning and data processing.

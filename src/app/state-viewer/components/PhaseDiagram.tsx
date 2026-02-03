@@ -8,7 +8,7 @@ type Props = {
 export default function PhaseDiagram({ stateVector, numQubits }: Props) {
   if (!stateVector || stateVector.length === 0) {
     return (
-      <div className="p-4 bg-bg-card border border-slate-800 rounded text-center text-slate-500">
+      <div className="p-4 bg-bg-card border border-theme-border rounded text-center text-theme-text-muted">
         No state vector to display
       </div>
     )
@@ -31,11 +31,11 @@ export default function PhaseDiagram({ stateVector, numQubits }: Props) {
   const maxProb = Math.max(...amplitudes.map(a => a.prob))
 
   return (
-    <div className="p-4 bg-bg-card border border-slate-800 rounded">
+    <div className="p-4 bg-bg-card border border-theme-border rounded">
       <h4 className="text-sm font-medium mb-3">Phase Diagram (Argand)</h4>
       
       <div className="flex items-center justify-center">
-        <svg width={size} height={size} className="border border-slate-800 rounded">
+        <svg width={size} height={size} className="border border-theme-border rounded">
           {/* Axes */}
           <line x1={0} y1={center} x2={size} y2={center} stroke="#334155" strokeWidth="1" />
           <line x1={center} y1={0} x2={center} y2={size} stroke="#334155" strokeWidth="1" />
@@ -83,8 +83,8 @@ export default function PhaseDiagram({ stateVector, numQubits }: Props) {
         </svg>
       </div>
 
-      <div className="mt-3 pt-3 border-t border-slate-800">
-        <div className="text-xs text-slate-400">
+      <div className="mt-3 pt-3 border-t border-theme-border">
+        <div className="text-xs text-theme-text-muted">
           Showing {amplitudes.length} of {stateVector.length / 2} amplitudes
         </div>
       </div>

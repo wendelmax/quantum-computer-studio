@@ -64,34 +64,34 @@ export default function DataExporter({ rawData, normalizedData }: Props) {
     <div className="relative" ref={exportRef}>
       <Button onClick={() => setShowMenu(!showMenu)}>Export</Button>
       {showMenu && (
-        <div className="absolute right-0 top-full mt-1 z-10 bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg min-w-40">
-          <div className="text-xs text-slate-400 mb-2 px-2">Raw Data</div>
+        <div className="absolute right-0 top-full mt-1 z-10 bg-theme-surface border border-theme-border rounded-lg p-2 shadow-lg min-w-40">
+          <div className="text-xs text-theme-text-muted mb-2 px-2">Raw Data</div>
           <button 
             onClick={() => { exportCSV(rawData, 'data-raw.csv'); setShowMenu(false) }}
-            className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded"
+            className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text"
           >
             Export CSV
           </button>
           <button 
             onClick={() => { exportJSON(rawData, 'data-raw.json'); setShowMenu(false) }}
-            className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded"
+            className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text"
           >
             Export JSON
           </button>
           
           {normalizedData.length > 0 && (
             <>
-              <div className="border-t border-slate-800 my-2" />
-              <div className="text-xs text-slate-400 mb-2 px-2">Normalized</div>
+              <div className="border-t border-theme-border my-2" />
+              <div className="text-xs text-theme-text-muted mb-2 px-2">Normalized</div>
               <button 
                 onClick={() => { exportCSV(normalizedData, 'data-normalized.csv'); setShowMenu(false) }}
-                className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded"
+                className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text"
               >
                 Export CSV
               </button>
               <button 
                 onClick={() => { exportJSON(normalizedData, 'data-normalized.json'); setShowMenu(false) }}
-                className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded"
+                className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text"
               >
                 Export JSON
               </button>
@@ -100,11 +100,11 @@ export default function DataExporter({ rawData, normalizedData }: Props) {
           
           {normalizedData.length > 0 && (
             <>
-              <div className="border-t border-slate-800 my-2" />
-              <div className="text-xs text-slate-400 mb-2 px-2">Quantum</div>
+              <div className="border-t border-theme-border my-2" />
+              <div className="text-xs text-theme-text-muted mb-2 px-2">Quantum</div>
               <button 
                 onClick={() => { exportQuantum(); setShowMenu(false) }}
-                className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded"
+                className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text"
               >
                 Export Circuit
               </button>

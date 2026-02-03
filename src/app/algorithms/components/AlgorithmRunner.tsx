@@ -24,14 +24,14 @@ export default function AlgorithmRunner({ algorithm }: Props) {
     } catch {}
   }
   return (
-    <div className="p-4 rounded bg-bg-card border border-slate-800">
-      <div className="text-sm text-slate-300 mb-2">Runner: <span className="text-slate-100">{algorithm}</span></div>
+    <div className="p-4 rounded bg-bg-card border border-theme-border">
+      <div className="text-sm text-theme-text mb-2">Runner: <span className="text-theme-text">{algorithm}</span></div>
       <Button onClick={runPreview}>
         <FontAwesomeIcon icon={faPlay} className="mr-1.5" />
         Run
       </Button>
       {summary && (
-        <div className="mt-2 flex items-center gap-2 text-xs text-slate-400">
+        <div className="mt-2 flex items-center gap-2 text-xs text-theme-text-muted">
           <FontAwesomeIcon icon={faGauge} />
           <span>{summary} • {ms.toFixed(2)}ms</span>
         </div>

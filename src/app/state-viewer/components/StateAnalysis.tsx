@@ -12,8 +12,8 @@ interface StateAnalysisProps {
 const StateAnalysis = ({ stateVector, probabilities, numQubits }: StateAnalysisProps) => {
   if (!stateVector || stateVector.length === 0) {
     return (
-      <div className="p-4 bg-bg-card border border-slate-800 rounded">
-        <div className="text-xs text-slate-400">No state to analyze</div>
+      <div className="p-4 bg-bg-card border border-theme-border rounded">
+        <div className="text-xs text-theme-text-muted">No state to analyze</div>
       </div>
     )
   }
@@ -56,76 +56,76 @@ const StateAnalysis = ({ stateVector, probabilities, numQubits }: StateAnalysisP
   const isProductState = activeStates === 1 && pureStates.length === 1
 
   return (
-    <div className="p-4 bg-bg-card border border-slate-800 rounded">
-      <h4 className="text-sm font-medium mb-3">State Analysis</h4>
+    <div className="p-4 bg-bg-card border border-theme-border rounded">
+      <h4 className="text-sm font-medium mb-3 text-theme-text">State Analysis</h4>
       
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div>
-            <span className="text-slate-400">Normalized:</span>
+            <span className="text-theme-text-muted">Normalized:</span>
             <span className={`ml-2 ${isNormalized ? 'text-green-400' : 'text-red-400'} flex items-center gap-1`}>
               <FontAwesomeIcon icon={isNormalized ? faCheck : faTimes} className="text-xs" />
               {isNormalized ? 'Yes' : 'No'}
             </span>
           </div>
           <div>
-            <span className="text-slate-400">Sum:</span>
-            <span className="ml-2 font-mono text-slate-200">{sumSquared.toFixed(4)}</span>
+            <span className="text-theme-text-muted">Sum:</span>
+            <span className="ml-2 font-mono text-theme-text">{sumSquared.toFixed(4)}</span>
           </div>
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">Superposition:</span>
-            <span className={superposition ? 'text-cyan-400' : 'text-slate-500'}>
+            <span className="text-theme-text-muted">Superposition:</span>
+            <span className={superposition ? 'text-primary' : 'text-theme-text-muted'}>
               {superposition ? 'Yes' : 'No'}
             </span>
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">Active states:</span>
+            <span className="text-theme-text-muted">Active states:</span>
             <span className="text-green-400">{activeStates} / {amplitudes.length}</span>
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">Zero states:</span>
-            <span className="text-slate-500">{zeroStates}</span>
+            <span className="text-theme-text-muted">Zero states:</span>
+            <span className="text-theme-text-muted">{zeroStates}</span>
           </div>
         </div>
 
-        <div className="pt-2 border-t border-slate-800 space-y-2 text-xs">
+        <div className="pt-2 border-t border-theme-border space-y-2 text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Max prob:</span>
-            <span className="text-sky-400 font-mono">{maxProb.toFixed(4)}</span>
+            <span className="text-theme-text-muted">Max prob:</span>
+            <span className="text-primary font-mono">{maxProb.toFixed(4)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Min prob:</span>
-            <span className="text-slate-300 font-mono">{minProb.toFixed(4)}</span>
+            <span className="text-theme-text-muted">Min prob:</span>
+            <span className="text-theme-text font-mono">{minProb.toFixed(4)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Avg prob:</span>
-            <span className="text-slate-300 font-mono">{avgProb.toFixed(4)}</span>
+            <span className="text-theme-text-muted">Avg prob:</span>
+            <span className="text-theme-text font-mono">{avgProb.toFixed(4)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Spread:</span>
-            <span className="text-slate-300 font-mono">{probSpread.toFixed(4)}</span>
+            <span className="text-theme-text-muted">Spread:</span>
+            <span className="text-theme-text font-mono">{probSpread.toFixed(4)}</span>
           </div>
         </div>
 
-        <div className="pt-2 border-t border-slate-800 space-y-2 text-xs">
+        <div className="pt-2 border-t border-theme-border space-y-2 text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Entropy:</span>
+            <span className="text-theme-text-muted">Entropy:</span>
             <span className="text-purple-400 font-mono">{entropy.toFixed(4)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Max entropy:</span>
+            <span className="text-theme-text-muted">Max entropy:</span>
             <span className="text-purple-400/60 font-mono">{maxEntropy.toFixed(1)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Relative:</span>
+            <span className="text-theme-text-muted">Relative:</span>
             <span className="text-purple-400/60 font-mono">{(relativeEntropy * 100).toFixed(1)}%</span>
           </div>
         </div>
 
-        <div className="pt-2 border-t border-slate-800">
+        <div className="pt-2 border-t border-theme-border">
           <div className="space-y-1 text-xs">
             {isMaximallyEntangled && (
               <div className="text-cyan-400 font-medium">

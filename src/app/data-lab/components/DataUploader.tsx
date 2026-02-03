@@ -16,17 +16,17 @@ export default function DataUploader({ onLoad }: { onLoad: (rows: string[][]) =>
   }
   
   return (
-    <div className="rounded-lg p-4 bg-bg-card border border-slate-800">
-      <div className="text-sm font-medium mb-3 flex items-center gap-2">
-        <FontAwesomeIcon icon={faUpload} className="text-sky-400" />
+    <div className="rounded-lg p-4 bg-bg-card border border-theme-border">
+      <div className="text-sm font-medium mb-3 flex items-center gap-2 text-theme-text">
+        <FontAwesomeIcon icon={faUpload} className="text-primary" />
         Upload CSV
       </div>
       
       <div 
         className={`border-2 border-dashed rounded-lg p-6 text-center transition-all cursor-pointer ${
           dragOver 
-            ? 'border-sky-500 bg-sky-500/10' 
-            : 'border-slate-700 hover:border-slate-600 hover:bg-slate-900/30'
+            ? 'border-primary bg-primary/10' 
+            : 'border-theme-border hover:border-primary/50 hover:bg-theme-surface/50'
         }`}
         onDragOver={(e) => {
           e.preventDefault()
@@ -43,11 +43,11 @@ export default function DataUploader({ onLoad }: { onLoad: (rows: string[][]) =>
         }}
         onClick={() => fileInputRef.current?.click()}
       >
-        <FontAwesomeIcon icon={faFileCsv} className="text-4xl text-slate-500 mb-2" />
-        <div className="text-sm text-slate-300 mb-1">
+        <FontAwesomeIcon icon={faFileCsv} className="text-4xl text-theme-text-muted mb-2" />
+        <div className="text-sm text-theme-text mb-1">
           {dragOver ? 'Drop file here' : 'Click to upload or drag & drop'}
         </div>
-        <div className="text-xs text-slate-500">
+        <div className="text-xs text-theme-text-muted">
           CSV, TSV files supported
         </div>
         <input 

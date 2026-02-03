@@ -11,7 +11,7 @@ const DataChart = ({ data, selectedColumns = [0] }: DataChartProps) => {
   
   if (data.length === 0) {
     return (
-      <div className="p-8 bg-slate-900/20 border border-slate-800 rounded text-center text-slate-500">
+      <div className="p-8 bg-theme-surface/30 border border-theme-border rounded text-center text-theme-text-muted">
         No data to display
       </div>
     )
@@ -26,20 +26,20 @@ const DataChart = ({ data, selectedColumns = [0] }: DataChartProps) => {
   const colors = ['bg-sky-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500']
 
   return (
-    <div className="p-4 bg-bg-card border border-slate-800 rounded">
-      <h4 className="text-sm font-medium mb-3">Data Visualization</h4>
+    <div className="p-4 bg-bg-card border border-theme-border rounded">
+      <h4 className="text-sm font-medium mb-3 text-theme-text">Data Visualization</h4>
       {selectedColumns.length > 0 ? (
         <>
           <div className="mb-2 flex flex-wrap gap-2">
             {selectedColumns.map((col, idx) => (
               <div key={idx} className="flex items-center gap-1">
                 <div className={`w-3 h-3 rounded ${colors[idx % colors.length]}`} />
-                <span className="text-xs text-slate-400">Col {col + 1}</span>
+                <span className="text-xs text-theme-text-muted">Col {col + 1}</span>
               </div>
             ))}
           </div>
           
-          <div className="bg-slate-900/20 rounded overflow-hidden relative" style={{ height: `${containerHeight}px` }}>
+          <div className="bg-theme-surface/30 rounded overflow-hidden relative" style={{ height: `${containerHeight}px` }}>
             <div className="absolute inset-0 flex items-end gap-px p-2">
               {data.slice(0, 100).map((row, i) => (
                 <div 
@@ -70,10 +70,10 @@ const DataChart = ({ data, selectedColumns = [0] }: DataChartProps) => {
                   })}
                   
                   {hoveredIndex === i && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-xs whitespace-nowrap z-10">
-                      <div className="font-medium text-slate-200">Row {i}</div>
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-theme-surface border border-theme-border rounded text-xs whitespace-nowrap z-10 text-theme-text">
+                      <div className="font-medium">Row {i}</div>
                       {selectedColumns.map((col, ci) => (
-                        <div key={ci} className="text-slate-400">
+                        <div key={ci} className="text-theme-text-muted">
                           Col {col + 1}: {(row[col] || 0).toFixed(3)}
                         </div>
                       ))}
@@ -82,21 +82,21 @@ const DataChart = ({ data, selectedColumns = [0] }: DataChartProps) => {
                 </div>
               ))}
             </div>
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-slate-700" />
+            <div className="absolute bottom-0 left-0 right-0 h-px bg-theme-border" />
             <div className="absolute top-0 right-0 p-2">
-              <div className="text-xs text-slate-500">{maxValue.toFixed(2)}</div>
+              <div className="text-xs text-theme-text-muted">{maxValue.toFixed(2)}</div>
             </div>
             <div className="absolute bottom-0 left-0 p-2">
-              <div className="text-xs text-slate-500">0</div>
+              <div className="text-xs text-theme-text-muted">0</div>
             </div>
           </div>
           
-          <div className="mt-2 text-xs text-slate-400">
+          <div className="mt-2 text-xs text-theme-text-muted">
             Showing {Math.min(100, data.length)} of {data.length} rows
           </div>
         </>
       ) : (
-        <div className="p-8 bg-slate-900/20 rounded text-center text-amber-400">
+        <div className="p-8 bg-theme-surface/30 rounded text-center text-amber-400">
           Select at least one column to visualize
         </div>
       )}

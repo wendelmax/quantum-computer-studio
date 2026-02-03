@@ -75,9 +75,9 @@ export default function PlaygroundPage() {
   }
 
   return (
-    <div className="p-6 grid grid-cols-12 gap-4">
-      <div className="col-span-8 flex flex-col gap-4">
-        <h2 className="text-2xl font-semibold">QASM Playground</h2>
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-8 flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold text-theme-text">QASM Playground</h2>
         
         <QASMEditor value={code} onChange={setCode} />
         
@@ -92,23 +92,23 @@ export default function PlaygroundPage() {
 
         {output && (
           <Card title="Output">
-            <pre className="text-xs text-slate-300 whitespace-pre-wrap">{output}</pre>
+            <pre className="text-xs text-theme-text whitespace-pre-wrap">{output}</pre>
           </Card>
         )}
 
         {results && (
           <Card title="Simulation Results">
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {Object.entries(results)
                 .filter(([_, prob]) => prob > 0.01)
                 .sort((a, b) => b[1] - a[1])
                 .map(([state, prob]) => (
                   <div key={state} className="flex flex-col items-center">
-                    <div className="w-8 h-16 bg-slate-900/20 border border-slate-800 rounded flex items-end">
-                      <div className="w-full bg-sky-500/60" style={{height: `${prob*100}%`}} />
+                    <div className="w-8 h-16 bg-theme-surface/30 border border-theme-border rounded flex items-end">
+                      <div className="w-full bg-primary/60" style={{height: `${prob*100}%`}} />
                     </div>
-                    <div className="mt-1 text-[10px] text-slate-400 font-mono">{state}</div>
-                    <div className="text-[10px] text-slate-500">{(prob*100).toFixed(1)}%</div>
+                    <div className="mt-1 text-[10px] text-theme-text-muted font-mono">{state}</div>
+                    <div className="text-[10px] text-theme-text-muted">{(prob*100).toFixed(1)}%</div>
                   </div>
                 ))}
             </div>
@@ -116,7 +116,7 @@ export default function PlaygroundPage() {
         )}
       </div>
 
-      <div className="col-span-4 flex flex-col gap-4">
+      <div className="lg:col-span-4 flex flex-col gap-4">
         <Card title="Example Circuits">
           <div className="space-y-2">
             <Button variant="secondary" className="w-full text-xs" onClick={() => setCode(EXAMPLE_CODES.bell)}>
@@ -132,7 +132,7 @@ export default function PlaygroundPage() {
         </Card>
 
         <Card title="QASM Reference">
-          <div className="text-xs text-slate-300 space-y-2">
+          <div className="text-xs text-theme-text space-y-2">
             <div>
               <strong>Single qubit:</strong> h q[0], x q[1]
             </div>
@@ -149,12 +149,12 @@ export default function PlaygroundPage() {
         </Card>
 
         <Card title="About QASM">
-          <div className="text-xs text-slate-300 space-y-2">
+          <div className="text-xs text-theme-text space-y-2">
             <p>
               QASM (Quantum Assembly) is a low-level language for describing quantum circuits.
               This playground supports basic syntax parsing and execution.
             </p>
-            <p className="text-slate-400">
+            <p className="text-theme-text-muted">
               Full QASM 2.0 specification coming soon.
             </p>
           </div>

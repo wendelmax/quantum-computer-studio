@@ -84,10 +84,10 @@ export default function GalleryPage() {
   const selectedCircuitData = selectedCircuit ? savedCircuits.find(c => c.id === selectedCircuit) : null
 
   return (
-    <div className="p-6 grid grid-cols-12 gap-4">
-      <div className="col-span-9 flex flex-col gap-4">
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-9 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Circuit Gallery</h2>
+          <h2 className="text-2xl font-semibold text-theme-text">Circuit Gallery</h2>
           <Button onClick={openSaveModal}>
             <FontAwesomeIcon icon={faSave} className="mr-1.5" />
             Save Current Circuit
@@ -96,27 +96,27 @@ export default function GalleryPage() {
 
         {showSaveModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowSaveModal(false)}>
-            <div className="rounded-lg bg-bg-card border border-slate-700 p-4 w-full max-w-sm shadow-xl" onClick={e => e.stopPropagation()}>
+            <div className="rounded-lg bg-bg-card border border-theme-border p-4 w-full max-w-sm shadow-xl" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">Save circuit</h3>
-                <button className="p-1 rounded hover:bg-slate-800" onClick={() => setShowSaveModal(false)} aria-label="Close">
+                <h3 className="font-semibold text-theme-text">Save circuit</h3>
+                <button className="p-1 rounded hover:bg-theme-surface text-theme-text" onClick={() => setShowSaveModal(false)} aria-label="Close">
                   <FontAwesomeIcon icon={faTimes} />
                 </button>
               </div>
-              <label className="block text-sm text-slate-300 mb-1">Name</label>
+              <label className="block text-sm text-theme-text mb-1">Name</label>
               <input
                 type="text"
                 value={saveName}
                 onChange={e => setSaveName(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-sm mb-3"
+                className="w-full px-3 py-2 rounded text-sm mb-3"
                 placeholder="Circuit name"
               />
-              <label className="block text-sm text-slate-300 mb-1">Description</label>
+              <label className="block text-sm text-theme-text mb-1">Description</label>
               <input
                 type="text"
                 value={saveDescription}
                 onChange={e => setSaveDescription(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-sm mb-4"
+                className="w-full px-3 py-2 rounded text-sm mb-4"
                 placeholder="Optional description"
               />
               <div className="flex gap-2">
@@ -128,22 +128,22 @@ export default function GalleryPage() {
         )}
 
         <Card>
-          <p className="text-sm text-slate-300 mb-4">
+          <p className="text-sm text-theme-text mb-4">
             Save your favorite circuits and load them anytime. Circuits are saved locally in your browser.
           </p>
         </Card>
 
         {savedCircuits.length === 0 ? (
           <Card title="No Saved Circuits">
-            <div className="text-sm text-slate-300">
+            <div className="text-sm text-theme-text">
               Save your first circuit from Quantum Studio to see it here.
             </div>
           </Card>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {savedCircuits.map(circuit => (
               <Card key={circuit.id} title={circuit.name} description={circuit.description}>
-                <div className="text-xs text-slate-400 mb-3">
+                <div className="text-xs text-theme-text-muted mb-3">
                   {new Date(circuit.date).toLocaleDateString()}
                 </div>
                 <div className="flex gap-2">
@@ -166,13 +166,13 @@ export default function GalleryPage() {
         )}
       </div>
 
-      <div className="col-span-3 flex flex-col gap-4">
+      <div className="lg:col-span-3 flex flex-col gap-4">
         <Card title="Circuit Details">
           {selectedCircuitData ? (
             <div className="space-y-3">
               <div className="font-semibold">{selectedCircuitData.name}</div>
-              <div className="text-sm text-slate-300">{selectedCircuitData.description}</div>
-              <div className="text-xs text-slate-400">
+              <div className="text-sm text-theme-text">{selectedCircuitData.description}</div>
+              <div className="text-xs text-theme-text-muted">
                 Created: {new Date(selectedCircuitData.date).toLocaleString()}
               </div>
               <Button className="w-full" onClick={() => loadCircuit(selectedCircuitData.id)}>
@@ -181,12 +181,12 @@ export default function GalleryPage() {
               </Button>
             </div>
           ) : (
-            <div className="text-sm text-slate-400">Select a circuit to view details</div>
+            <div className="text-sm text-theme-text-muted">Select a circuit to view details</div>
           )}
         </Card>
 
         <Card title="Import/Export">
-          <div className="space-y-2 text-xs text-slate-300">
+          <div className="space-y-2 text-xs text-theme-text">
             <p>Export all circuits as JSON:</p>
             <Button variant="secondary" className="w-full text-xs" onClick={() => {
               const blob = new Blob([JSON.stringify(savedCircuits, null, 2)], { type: 'application/json' })

@@ -5,9 +5,9 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 const styles: Record<NonNullable<Props['variant']>, string> = {
-  primary: 'bg-sky-600 text-black hover:bg-sky-500 hover:shadow-lg hover:shadow-sky-500/20',
-  secondary: 'border border-slate-700 hover:border-sky-600 hover:bg-slate-800/50',
-  ghost: 'hover:bg-slate-800/40',
+  primary: 'bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20',
+  secondary: 'border border-theme-border hover:border-primary hover:bg-theme-surface/50 text-theme-text',
+  ghost: 'hover:bg-theme-surface/50 text-theme-text',
 }
 
 export default function Button({ variant = 'primary', className = '', disabled, ...resto }: Props) {

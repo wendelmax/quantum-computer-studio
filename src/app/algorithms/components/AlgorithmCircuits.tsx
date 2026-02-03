@@ -28,19 +28,19 @@ const AlgorithmCircuits = ({ algorithmId, selectedGate }: AlgorithmCircuitsProps
   }
 
   return (
-    <div className="p-4 rounded bg-bg-card border border-slate-800">
-      <h4 className="text-sm font-medium mb-3">Circuit Visualization</h4>
+    <div className="p-4 rounded bg-bg-card border border-theme-border">
+      <h4 className="text-sm font-medium mb-3 text-theme-text">Circuit Visualization</h4>
       <div className="space-y-2">
         {Array.from({ length: circuit.numQubits }, (_, i) => i).map(qubit => (
           <div key={qubit} className="flex items-center gap-1 text-xs">
             <div className="w-16 flex-shrink-0">
-              <span className="text-slate-400 font-mono">q[{qubit}]</span>
+              <span className="text-theme-text-muted font-mono">q[{qubit}]</span>
             </div>
-            <div className="flex-1 h-8 flex items-center border-b border-slate-700">
+            <div className="flex-1 h-8 flex items-center border-b border-theme-border">
               {gatesByQubit[qubit]?.map((gate, idx) => (
                 <React.Fragment key={idx}>
                   <div className="relative">
-                    <div className="px-2 py-1 bg-slate-800 border border-slate-700 rounded text-center min-w-[40px]">
+                    <div className="px-2 py-1 bg-theme-surface border border-theme-border rounded text-center min-w-[40px] text-theme-text">
                       {gate.type === 'CNOT' ? (
                         <span className="text-xs">•</span>
                       ) : (
@@ -48,18 +48,18 @@ const AlgorithmCircuits = ({ algorithmId, selectedGate }: AlgorithmCircuitsProps
                       )}
                     </div>
                     {gate.type === 'CNOT' && gate.control !== undefined && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-px h-8 bg-slate-700" />
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-px h-8 bg-theme-border" />
                     )}
                   </div>
-                  <div className="h-px w-4 bg-slate-700" />
+                  <div className="h-px w-4 bg-theme-border" />
                 </React.Fragment>
               ))}
             </div>
           </div>
         ))}
       </div>
-      <div className="mt-3 pt-3 border-t border-slate-800">
-        <div className="flex items-center justify-between text-xs text-slate-400">
+      <div className="mt-3 pt-3 border-t border-theme-border">
+        <div className="flex items-center justify-between text-xs text-theme-text-muted">
           <span>{circuit.gates.length} gates</span>
           <span>{circuit.numQubits} qubits</span>
         </div>

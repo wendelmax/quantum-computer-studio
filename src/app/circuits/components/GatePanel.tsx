@@ -28,12 +28,12 @@ export default function GatePanel({ numQubits, onAdd, onSelect, initialStates, o
   const requiresTarget2 = selected === 'SWAP'
 
   return (
-    <div className="rounded-lg p-4 bg-[#021825] border border-slate-800 transition-all duration-300 hover:border-slate-700/80">
+    <div className="rounded-lg p-4 bg-bg-card border border-theme-border transition-all duration-300 hover:border-primary/50">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-sm font-medium">Gates</h3>
-        <label className="text-xs text-slate-300 flex items-center gap-2">
+        <h3 className="text-sm font-medium text-theme-text">Gates</h3>
+        <label className="text-xs text-theme-text flex items-center gap-2">
           Qubits
-          <select value={prefs.numQubits} onChange={(e)=> prefs.setNumQubits(parseInt(e.target.value))} className="bg-bg border border-slate-700 rounded px-2 py-1">
+          <select value={prefs.numQubits} onChange={(e)=> prefs.setNumQubits(parseInt(e.target.value))} className="rounded px-2 py-1">
             {Array.from({length:16},(_,i)=> i+1).map(n => <option key={n} value={n}>{n}</option>)}
           </select>
         </label>
@@ -43,15 +43,15 @@ export default function GatePanel({ numQubits, onAdd, onSelect, initialStates, o
           <Button
             key={g}
             variant={selected===g? 'primary':'secondary'}
-            className={`text-xs transition-all duration-300 hover:scale-105 active:scale-95 ${selected===g ? 'animate-glow-pulse shadow-lg shadow-sky-500/20' : 'hover:border-sky-500/50'}`}
+            className={`text-xs transition-all duration-300 hover:scale-105 active:scale-95 ${selected===g ? 'animate-glow-pulse shadow-lg shadow-primary/20' : 'hover:border-primary/50'}`}
             onClick={()=> { setSelected(g); onSelect?.(g) }}
           >{g}</Button>
         ))}
       </div>
       <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
         <label className="flex flex-col gap-1">
-          <span className="text-slate-300">Target qubit</span>
-          <select value={target} onChange={(e)=> setTarget(parseInt(e.target.value))} className="bg-bg border border-slate-700 rounded px-2 py-1">
+          <span className="text-theme-text">Target qubit</span>
+          <select value={target} onChange={(e)=> setTarget(parseInt(e.target.value))} className="bg-theme-input-bg border border-theme-border rounded px-2 py-1 text-theme-text">
             {Array.from({length:numQubits},(_,i)=> i).map(i => (
               <option key={i} value={i}>{i}</option>
             ))}
@@ -59,8 +59,8 @@ export default function GatePanel({ numQubits, onAdd, onSelect, initialStates, o
         </label>
         {requiresControl ? (
           <label className="flex flex-col gap-1">
-            <span className="text-slate-300">Control qubit</span>
-            <select value={control} onChange={(e)=> setControl(parseInt(e.target.value))} className="bg-bg border border-slate-700 rounded px-2 py-1">
+            <span className="text-theme-text">Control qubit</span>
+            <select value={control} onChange={(e)=> setControl(parseInt(e.target.value))} className="bg-theme-input-bg border border-theme-border rounded px-2 py-1 text-theme-text">
               {Array.from({length:numQubits},(_,i)=> i).filter(i => i !== target).map(i => (
                 <option key={i} value={i}>{i}</option>
               ))}
@@ -70,8 +70,8 @@ export default function GatePanel({ numQubits, onAdd, onSelect, initialStates, o
         {requiresControl2 ? (
           <>
             <label className="flex flex-col gap-1">
-              <span className="text-slate-300">Control 2</span>
-              <select value={control2} onChange={(e)=> setControl2(parseInt(e.target.value))} className="bg-bg border border-slate-700 rounded px-2 py-1">
+              <span className="text-theme-text">Control 2</span>
+              <select value={control2} onChange={(e)=> setControl2(parseInt(e.target.value))} className="bg-theme-input-bg border border-theme-border rounded px-2 py-1 text-theme-text">
                 {Array.from({length:numQubits},(_,i)=> i).filter(i => i !== target && i !== control).map(i => (
                   <option key={i} value={i}>{i}</option>
                 ))}
@@ -81,8 +81,8 @@ export default function GatePanel({ numQubits, onAdd, onSelect, initialStates, o
         ) : null}
         {requiresTarget2 ? (
           <label className="flex flex-col gap-1">
-            <span className="text-slate-300">Target 2 (qubit)</span>
-            <select value={target2} onChange={(e)=> setTarget2(parseInt(e.target.value))} className="bg-bg border border-slate-700 rounded px-2 py-1">
+            <span className="text-theme-text">Target 2 (qubit)</span>
+            <select value={target2} onChange={(e)=> setTarget2(parseInt(e.target.value))} className="bg-theme-input-bg border border-theme-border rounded px-2 py-1 text-theme-text">
               {Array.from({length:numQubits},(_,i)=> i).filter(i => i !== target).map(i => (
                 <option key={i} value={i}>{i}</option>
               ))}
@@ -91,7 +91,7 @@ export default function GatePanel({ numQubits, onAdd, onSelect, initialStates, o
         ) : null}
         {requiresAngle ? (
           <label className="flex flex-col gap-1 col-span-2 animate-fade-in">
-            <span className="text-slate-300">Angle (rad)</span>
+            <span className="text-theme-text">Angle (rad)</span>
             <input 
               type="range" 
               min="-3.14" 
@@ -99,9 +99,9 @@ export default function GatePanel({ numQubits, onAdd, onSelect, initialStates, o
               step="0.01" 
               value={angle} 
               onChange={(e)=> setAngle(parseFloat(e.target.value))} 
-              className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500 transition-opacity hover:opacity-100"
+              className="w-full h-2 bg-theme-border rounded-lg appearance-none cursor-pointer accent-primary transition-opacity hover:opacity-100"
             />
-            <span className="text-xs text-slate-400">{angle.toFixed(2)}</span>
+            <span className="text-xs text-theme-text-muted">{angle.toFixed(2)}</span>
           </label>
         ) : null}
       </div>
@@ -115,16 +115,16 @@ export default function GatePanel({ numQubits, onAdd, onSelect, initialStates, o
         </Button>
       </div>
       {onSetInitialState && (
-        <div className="mt-4 pt-4 border-t border-slate-800">
-          <h4 className="text-xs text-slate-300 mb-2">Initial States</h4>
-          <div className="grid grid-cols-4 gap-2">
+        <div className="mt-4 pt-4 border-t border-theme-border">
+          <h4 className="text-xs text-theme-text mb-2">Initial States</h4>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {Array.from({length:numQubits},(_,i)=> i).map(q => (
               <label key={q} className="flex flex-col gap-1 text-xs">
-                <span className="text-slate-400">q{q}</span>
+                <span className="text-theme-text-muted">q{q}</span>
                 <select
                   value={initialStates?.[q] || '0'}
                   onChange={(e)=> onSetInitialState(q, e.target.value as '0' | '1')}
-                  className="bg-bg border border-slate-700 rounded px-2 py-1"
+                  className="rounded px-2 py-1"
                 >
                   <option value="0">|0⟩</option>
                   <option value="1">|1⟩</option>

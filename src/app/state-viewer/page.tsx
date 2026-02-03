@@ -103,12 +103,12 @@ export default function StateViewerPage() {
   }
 
   return (
-    <div className="p-6 grid grid-cols-12 gap-4">
-      <div className="col-span-8 flex flex-col gap-4">
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="lg:col-span-8 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-semibold">State Viewer</h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <h2 className="text-2xl font-semibold text-theme-text">State Viewer</h2>
+            <p className="text-xs text-theme-text-muted mt-1">
               Visualize amplitudes, phases, and probabilities for any circuit or algorithm. Use &quot;View Current Circuit&quot; to load from Studio.
             </p>
           </div>
@@ -128,7 +128,7 @@ export default function StateViewerPage() {
             </Button>
             <button
               onClick={() => setViewMode(viewMode === 'compact' ? 'detailed' : 'compact')}
-              className="px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded hover:border-sky-600 transition-colors flex items-center gap-1.5"
+              className="px-3 py-2 text-xs bg-theme-input-bg border border-theme-border rounded hover:border-primary transition-colors flex items-center gap-1.5 text-theme-text"
             >
               <FontAwesomeIcon icon={faExchangeAlt} className="text-xs" />
               {viewMode === 'compact' ? 'Detailed' : 'Compact'}
@@ -137,21 +137,21 @@ export default function StateViewerPage() {
               <div className="relative" ref={exportRef}>
                 <button
                   onClick={() => setShowExport(!showExport)}
-                  className="px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded hover:border-sky-600 transition-colors flex items-center gap-1.5"
+                  className="px-3 py-2 text-xs bg-theme-input-bg border border-theme-border rounded hover:border-primary transition-colors flex items-center gap-1.5 text-theme-text"
                 >
                   <FontAwesomeIcon icon={faDownload} className="text-xs" />
                   Export
                 </button>
                 {showExport && (
-                  <div className="absolute right-0 top-full mt-1 z-10 bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg min-w-40">
+                  <div className="absolute right-0 top-full mt-1 z-10 bg-theme-surface border border-theme-border rounded-lg p-2 shadow-lg min-w-40">
                     {probabilities && Object.keys(probabilities).length > 0 && (
                       <>
-                        <button onClick={() => { downloadFile(JSON.stringify(probabilities, null, 2), 'state-probabilities.json', 'application/json'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">Probabilities (JSON)</button>
-                        <button onClick={() => { downloadFile(probabilitiesToCSV(probabilities), 'state-probabilities.csv', 'text/csv'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">Probabilities (CSV)</button>
+                        <button onClick={() => { downloadFile(JSON.stringify(probabilities, null, 2), 'state-probabilities.json', 'application/json'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">Probabilities (JSON)</button>
+                        <button onClick={() => { downloadFile(probabilitiesToCSV(probabilities), 'state-probabilities.csv', 'text/csv'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">Probabilities (CSV)</button>
                       </>
                     )}
                     {stateVector && stateVector.length > 0 && (
-                      <button onClick={() => { downloadFile(JSON.stringify(stateVector), 'state-vector.json', 'application/json'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">State vector (JSON)</button>
+                      <button onClick={() => { downloadFile(JSON.stringify(stateVector), 'state-vector.json', 'application/json'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">State vector (JSON)</button>
                     )}
                   </div>
                 )}
@@ -186,26 +186,26 @@ export default function StateViewerPage() {
         )}
 
         <Card title="Circuit Statistics">
-          <div className="grid grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div>
-              <div className="text-slate-400">Qubits</div>
-              <div className="text-2xl font-semibold text-slate-100">{numQubits}</div>
+              <div className="text-theme-text-muted">Qubits</div>
+              <div className="text-2xl font-semibold text-theme-text">{numQubits}</div>
             </div>
             <div>
-              <div className="text-slate-400">States</div>
-              <div className="text-2xl font-semibold text-slate-100">
+              <div className="text-theme-text-muted">States</div>
+              <div className="text-2xl font-semibold text-theme-text">
                 {probabilities ? Object.keys(probabilities).length : 0}
               </div>
             </div>
             <div>
-              <div className="text-slate-400">Max Probability</div>
-              <div className="text-2xl font-semibold text-slate-100">
+              <div className="text-theme-text-muted">Max Probability</div>
+              <div className="text-2xl font-semibold text-theme-text">
                 {probabilities ? (Math.max(...Object.values(probabilities)) * 100).toFixed(1) : 0}%
               </div>
             </div>
             <div>
-              <div className="text-slate-400">Dimension</div>
-              <div className="text-2xl font-semibold text-slate-100">
+              <div className="text-theme-text-muted">Dimension</div>
+              <div className="text-2xl font-semibold text-theme-text">
                 {2 ** numQubits}
               </div>
             </div>
@@ -213,7 +213,7 @@ export default function StateViewerPage() {
         </Card>
       </div>
 
-      <div className="col-span-4 flex flex-col gap-4">
+      <div className="lg:col-span-4 flex flex-col gap-4">
         <Card title="Quick Algorithms" description="Click to visualize states">
           <div className="space-y-2 max-h-96 overflow-y-auto scrollbar-thin">
             {algorithms.map(a => (
@@ -222,8 +222,8 @@ export default function StateViewerPage() {
                 onClick={() => runAlgorithm(a.id)}
                 className={`w-full text-left p-3 rounded transition-colors text-xs ${
                   selectedAlgorithm === a.id
-                    ? 'bg-sky-600 text-white'
-                    : 'bg-slate-900/20 border border-slate-800 hover:border-sky-600 text-slate-200'
+                    ? 'bg-primary text-white'
+                    : 'bg-theme-surface/50 border border-theme-border hover:border-primary text-theme-text'
                 }`}
               >
                 {a.name}
@@ -238,22 +238,22 @@ export default function StateViewerPage() {
 
         {stateVector && stateVector.length > 0 && (
           <Card title="State Vector Info">
-            <div className="text-xs text-slate-300 space-y-2">
+            <div className="text-xs text-theme-text space-y-2">
               <div>
-                <span className="text-slate-400">Components:</span> {stateVector.length / 2}
+                <span className="text-theme-text-muted">Components:</span> {stateVector.length / 2}
               </div>
               <div>
-                <span className="text-slate-400">Format:</span> Real/Imaginary pairs
+                <span className="text-theme-text-muted">Format:</span> Real/Imaginary pairs
               </div>
               <div>
-                <span className="text-slate-400">Dimension:</span> {2 ** numQubits}D Hilbert space
+                <span className="text-theme-text-muted">Dimension:</span> {2 ** numQubits}D Hilbert space
               </div>
             </div>
           </Card>
         )}
 
         <Card title="About State Viewer">
-          <div className="text-xs text-slate-300 space-y-2">
+          <div className="text-xs text-theme-text space-y-2">
             <p>
               Visualize quantum states, amplitudes, probabilities, and phases.
             </p>

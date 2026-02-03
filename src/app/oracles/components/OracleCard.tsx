@@ -16,7 +16,7 @@ function getCategoryColor(category: string): string {
     case 'Balanced': return 'border-blue-700 bg-blue-900/10'
     case 'Phase': return 'border-purple-700 bg-purple-900/10'
     case 'Custom': return 'border-orange-700 bg-orange-900/10'
-    default: return 'border-slate-700 bg-slate-900/10'
+    default: return 'border-theme-border bg-theme-surface/30'
   }
 }
 
@@ -27,17 +27,17 @@ export default function OracleCard({ oracle, onTest, onLoad }: Props) {
       onClick={() => onTest(oracle.id)}
     >
       <div className="flex items-start justify-between mb-2">
-        <h3 className="font-medium text-sm">{oracle.name}</h3>
-        <span className="text-xs px-2 py-0.5 bg-slate-900 border border-slate-700 rounded">
+        <h3 className="font-medium text-sm text-theme-text">{oracle.name}</h3>
+        <span className="text-xs px-2 py-0.5 bg-theme-surface border border-theme-border rounded text-theme-text">
           {oracle.algorithm}
         </span>
       </div>
       
-      <p className="text-xs text-slate-300 mb-3 line-clamp-2">
+      <p className="text-xs text-theme-text mb-3 line-clamp-2">
         {oracle.description}
       </p>
 
-      <div className="flex items-center gap-3 mb-3 text-xs text-slate-400">
+      <div className="flex items-center gap-3 mb-3 text-xs text-theme-text-muted">
         <span>{oracle.numQubits} qubits</span>
         <span>•</span>
         <span>{oracle.circuit.gates.length} gates</span>

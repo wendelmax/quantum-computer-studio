@@ -52,12 +52,12 @@ module.exports = {
           '100%': { opacity: '1', transform: 'scale(1)' }
         },
         'glow-pulse': {
-          '0%, 100%': { boxShadow: '0 0 8px rgb(14 165 233 / 0.3)' },
-          '50%': { boxShadow: '0 0 16px rgb(14 165 233 / 0.5)' }
+          '0%, 100%': { boxShadow: '0 0 8px rgb(var(--primary) / 0.3)' },
+          '50%': { boxShadow: '0 0 16px rgb(var(--primary) / 0.5)' }
         },
         'cell-breathe': {
-          '0%, 100%': { backgroundColor: 'rgb(14 165 233 / 0.08)' },
-          '50%': { backgroundColor: 'rgb(14 165 233 / 0.15)' }
+          '0%, 100%': { backgroundColor: 'rgb(var(--primary) / 0.08)' },
+          '50%': { backgroundColor: 'rgb(var(--primary) / 0.15)' }
         }
       },
       animation: {
