@@ -3,6 +3,11 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
+  "main": "./src/api.ts",
+  "types": "./src/api.ts",
+  "exports": {
+    ".": "./src/api.ts"
+  },
   "description": "Interactive quantum computing simulator with circuit builder, 9 algorithms, oracles, data lab, and API terminal",
   "keywords": [
     "quantum",
@@ -18,7 +23,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:lib && vite build",
+    "build:lib": "vite build --config vite.lib.config.ts && node scripts/zip-lib.js",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -36,6 +42,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "archiver": "^7.0.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",

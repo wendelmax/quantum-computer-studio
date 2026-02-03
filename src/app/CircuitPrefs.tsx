@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from 'react'
+import { getItem, setItem } from '../lib/safeStorage'
 
 type CircuitPrefs = {
   numQubits: number
@@ -13,10 +14,11 @@ const Ctx = createContext<CircuitPrefs | undefined>(undefined)
 
 export function CircuitPrefsProvider({ children }: { children: React.ReactNode }) {
   const [numQubits, setNumQubits] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem('quantum:prefs:numQubits')
-      if (saved) return Math.min(16, Math.max(1, parseInt(saved)))
-    } catch {}
+    const saved = getItem('quantum:prefs:numQubits')
+    if (saved) {
+      const n = parseInt(saved, 10)
+      if (!isNaN(n)) return Math.min(16, Math.max(1, n))
+    }
     return 5
   })
   const [depth, setDepth] = useState<number>(12)
@@ -26,7 +28,7 @@ export function CircuitPrefsProvider({ children }: { children: React.ReactNode }
     numQubits,
     setNumQubits: (n: number) => {
       const clamped = Math.min(16, Math.max(1, n))
-      try { localStorage.setItem('quantum:prefs:numQubits', String(clamped)) } catch {}
+      setItem('quantum:prefs:numQubits', String(clamped))
       setNumQubits(clamped)
     },
     depth,

@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDownload } from '@fortawesome/free-solid-svg-icons'
+import { getItem, setItem, parseJSON, removeItem } from '../../../lib/safeStorage'
+import { downloadFile } from '../../../lib/exportUtils'
+import { QUANTUM_ALGORITHM_EXECUTION } from '../../../lib/events'
 
 type ExecutionRecord = {
   algorithmId: string
@@ -12,14 +17,13 @@ export default function ExecutionHistory() {
   const [history, setHistory] = useState<ExecutionRecord[]>([])
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('quantum:executionHistory')
-      if (stored) {
-        setHistory(JSON.parse(stored))
-      }
-    } catch {}
+    const stored = getItem('quantum:executionHistory')
+    if (stored) {
+      const parsed = parseJSON<ExecutionRecord[]>(stored, [])
+      if (Array.isArray(parsed)) setHistory(parsed)
+    }
 
-    const handleExecution = (e: CustomEvent) => {
+    const handleExecution = (e: CustomEvent<{ algorithm: string; executionTime: number; states: number }>) => {
       const { algorithm, executionTime, states } = e.detail
       const newRecord: ExecutionRecord = {
         algorithmId: algorithm,
@@ -30,22 +34,18 @@ export default function ExecutionHistory() {
       }
       setHistory(prev => {
         const updated = [newRecord, ...prev].slice(0, 10)
-        try {
-          localStorage.setItem('quantum:executionHistory', JSON.stringify(updated))
-        } catch {}
+        setItem('quantum:executionHistory', JSON.stringify(updated))
         return updated
       })
     }
 
-    window.addEventListener('quantum:algorithm-execution' as any, handleExecution as EventListener)
-    return () => window.removeEventListener('quantum:algorithm-execution' as any, handleExecution as EventListener)
+    window.addEventListener(QUANTUM_ALGORITHM_EXECUTION, handleExecution as EventListener)
+    return () => window.removeEventListener(QUANTUM_ALGORITHM_EXECUTION, handleExecution as EventListener)
   }, [])
 
   const clearHistory = () => {
     setHistory([])
-    try {
-      localStorage.removeItem('quantum:executionHistory')
-    } catch {}
+    removeItem('quantum:executionHistory')
   }
 
   if (history.length === 0) {
@@ -59,16 +59,27 @@ export default function ExecutionHistory() {
     )
   }
 
+  const exportHistory = () => {
+    const payload = history.map(r => ({ ...r, date: new Date(r.timestamp).toISOString() }))
+    downloadFile(JSON.stringify(payload, null, 2), 'execution-history.json', 'application/json')
+  }
+
   return (
     <div className="p-4 rounded bg-bg-card border border-slate-800">
       <div className="flex items-center justify-between mb-3">
         <h4 className="text-sm font-medium">Execution History</h4>
-        <button
-          onClick={clearHistory}
-          className="text-xs text-slate-400 hover:text-slate-300"
-        >
-          Clear
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={exportHistory} className="text-xs text-slate-400 hover:text-slate-300 flex items-center gap-1">
+            <FontAwesomeIcon icon={faDownload} className="text-[10px]" />
+            Export
+          </button>
+          <button
+            onClick={clearHistory}
+            className="text-xs text-slate-400 hover:text-slate-300"
+          >
+            Clear
+          </button>
+        </div>
       </div>
       <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin">
         {history.map((record, idx) => (

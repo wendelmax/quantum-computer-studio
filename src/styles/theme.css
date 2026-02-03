@@ -1,22 +1,37 @@
 :root{
-  --bg: 14 25 50; /* #0e1932 - slightly lighter */
-  --bg-card: 4 20 38; /* #041426 */
-  --primary: 14 165 233; /* sky-500 */
-  --accent: 96 165 250; /* blue-400 */
-}
-
-:root[data-theme="dark"]{
-  --bg: 14 25 50; /* #0e1932 - slightly lighter */
+  --bg: 14 25 50;
   --bg-card: 4 20 38;
   --primary: 14 165 233;
   --accent: 96 165 250;
+  --text: 226 232 240;
+  --text-muted: 148 163 184;
+  --border: 51 65 85;
+  --input-bg: 15 23 42;
+  --surface: 30 41 59;
+}
+
+:root[data-theme="dark"]{
+  --bg: 14 25 50;
+  --bg-card: 4 20 38;
+  --primary: 14 165 233;
+  --accent: 96 165 250;
+  --text: 226 232 240;
+  --text-muted: 148 163 184;
+  --border: 51 65 85;
+  --input-bg: 15 23 42;
+  --surface: 30 41 59;
 }
 
 :root[data-theme="light"]{
-  --bg: 248 250 252;
-  --bg-card: 255 255 255;
-  --primary: 59 130 246;
-  --accent: 96 165 250;
+  --bg: 226 232 240;
+  --bg-card: 248 250 252;
+  --primary: 37 99 235;
+  --accent: 59 130 246;
+  --text: 17 24 39;
+  --text-muted: 55 65 81;
+  --border: 203 213 225;
+  --input-bg: 255 255 255;
+  --surface: 241 245 249;
 }
 
 :root[data-theme="matrix"]{
@@ -24,6 +39,11 @@
   --bg-card: 0 20 0;
   --primary: 0 255 0;
   --accent: 128 255 128;
+  --text: 0 255 0;
+  --text-muted: 100 200 100;
+  --border: 0 80 0;
+  --input-bg: 0 30 0;
+  --surface: 0 40 0;
 }
 
 :root[data-theme="ocean"]{
@@ -31,4 +51,9 @@
   --bg-card: 10 40 80;
   --primary: 59 130 246;
   --accent: 34 211 238;
+  --text: 226 232 240;
+  --text-muted: 148 163 184;
+  --border: 30 64 175;
+  --input-bg: 15 23 42;
+  --surface: 30 41 59;
 }

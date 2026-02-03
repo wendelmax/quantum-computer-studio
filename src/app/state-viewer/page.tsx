@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner, faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSpinner, faExchangeAlt, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { runSimulation } from '../circuits/services/simulator'
 import { getPreset } from '../algorithms/services/presets'
 import StateViewer from '../circuits/components/StateViewer'
@@ -10,6 +10,7 @@ import StateAnalysis from './components/StateAnalysis'
 import AmplitudeTable from './components/AmplitudeTable'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
+import { downloadFile, probabilitiesToCSV } from '../../lib/exportUtils'
 import list from '../algorithms/data/algorithms-list.json'
 
 type Algorithm = {
@@ -24,8 +25,19 @@ export default function StateViewerPage() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string | null>(null)
   const [processing, setProcessing] = useState(false)
   const [viewMode, setViewMode] = useState<'compact' | 'detailed'>('detailed')
+  const [showExport, setShowExport] = useState(false)
+  const exportRef = useRef<HTMLDivElement>(null)
 
   const algorithms = (list as Algorithm[]).slice(0, 9)
+
+  useEffect(() => {
+    if (!showExport) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) setShowExport(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showExport])
 
   const loadFromStorage = () => {
     try {
@@ -97,7 +109,7 @@ export default function StateViewerPage() {
           <div>
             <h2 className="text-2xl font-semibold">State Viewer</h2>
             <p className="text-xs text-slate-400 mt-1">
-              Visualize quantum states, amplitudes, and probabilities
+              Visualize amplitudes, phases, and probabilities for any circuit or algorithm. Use &quot;View Current Circuit&quot; to load from Studio.
             </p>
           </div>
           <div className="flex gap-2">
@@ -121,6 +133,30 @@ export default function StateViewerPage() {
               <FontAwesomeIcon icon={faExchangeAlt} className="text-xs" />
               {viewMode === 'compact' ? 'Detailed' : 'Compact'}
             </button>
+            {(probabilities || stateVector) && (
+              <div className="relative" ref={exportRef}>
+                <button
+                  onClick={() => setShowExport(!showExport)}
+                  className="px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded hover:border-sky-600 transition-colors flex items-center gap-1.5"
+                >
+                  <FontAwesomeIcon icon={faDownload} className="text-xs" />
+                  Export
+                </button>
+                {showExport && (
+                  <div className="absolute right-0 top-full mt-1 z-10 bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg min-w-40">
+                    {probabilities && Object.keys(probabilities).length > 0 && (
+                      <>
+                        <button onClick={() => { downloadFile(JSON.stringify(probabilities, null, 2), 'state-probabilities.json', 'application/json'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">Probabilities (JSON)</button>
+                        <button onClick={() => { downloadFile(probabilitiesToCSV(probabilities), 'state-probabilities.csv', 'text/csv'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">Probabilities (CSV)</button>
+                      </>
+                    )}
+                    {stateVector && stateVector.length > 0 && (
+                      <button onClick={() => { downloadFile(JSON.stringify(stateVector), 'state-vector.json', 'application/json'); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">State vector (JSON)</button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

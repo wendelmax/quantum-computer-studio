@@ -8,7 +8,9 @@ coverage/
 
 # Production
 dist/
+dist-lib/
 build/
+public/quantum-computer-js-lib.zip
 
 # Misc
 .DS_Store

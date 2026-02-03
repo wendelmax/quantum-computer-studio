@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faFilter } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faFilter, faDownload } from '@fortawesome/free-solid-svg-icons'
 import { getPreset } from './services/presets'
 import AlgorithmCard from './components/AlgorithmCard'
 import AlgorithmRunner from './components/AlgorithmRunner'
@@ -9,28 +10,33 @@ import ComplexityComparison from './components/ComplexityComparison'
 import AlgorithmCircuits from './components/AlgorithmCircuits'
 import ExecutionHistory from './components/ExecutionHistory'
 import { runSimulation } from '../circuits/services/simulator'
+import type { Algorithm } from '../../types/Algorithm'
+import { setItem } from '../../lib/safeStorage'
+import { QUANTUM_SET_CIRCUIT, QUANTUM_ALGORITHM_EXECUTION } from '../../lib/events'
 import list from './data/algorithms-list.json'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
-
-type Algorithm = {
-  id: string
-  name: string
-  category?: string
-  complexity?: string
-  classicalComplexity?: string
-  appliedTo?: string
-  difficulty?: string
-  year?: number
-}
+import { downloadFile, probabilitiesToCSV } from '../../lib/exportUtils'
 
 export default function AlgorithmsPage() {
+  const navigate = useNavigate()
   const [current, setCurrent] = useState<string | null>(null)
   const [chart, setChart] = useState<Record<string, number> | undefined>(undefined)
   const [description, setDescription] = useState<string>('')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All')
+  const [showResultExport, setShowResultExport] = useState(false)
+  const resultExportRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!showResultExport) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (resultExportRef.current && !resultExportRef.current.contains(e.target as Node)) setShowResultExport(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showResultExport])
   
   const algorithmDescriptions: Record<string, string> = {
     grover: "Grover's algorithm is a quantum search algorithm that finds a target item in an unstructured database in O(√N) queries. Classical algorithms require O(N) queries.",
@@ -44,7 +50,7 @@ export default function AlgorithmsPage() {
     vqe: "Variational Quantum Eigensolver is a quantum-classical hybrid algorithm for finding the ground state energy of molecular systems using quantum circuits."
   }
 
-  const categories = useMemo(() => ['All', ...Array.from(new Set(list.map((a: Algorithm) => a.category)))] as string[], [])
+  const categories = useMemo(() => ['All', ...Array.from(new Set(list.map((a: Algorithm) => a.category).filter(Boolean)))] as string[], [])
   const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced']
 
   const filteredAlgorithms = useMemo(() => {
@@ -60,33 +66,32 @@ export default function AlgorithmsPage() {
     const preset = getPreset(id)
     setCurrent(id)
     setDescription(algorithmDescriptions[id] || '')
-    try {
-      localStorage.setItem('quantum:loadCircuit', JSON.stringify(preset))
-      localStorage.setItem('quantum:circuit', JSON.stringify(preset))
-      localStorage.setItem('quantum:prefs:numQubits', String(preset.numQubits))
-    } catch {}
-    try { localStorage.setItem('quantum:autoRun', '1') } catch {}
-    try {
-      window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit: preset, autoRun: true } }))
-    } catch {}
-    
+    setItem('quantum:loadCircuit', JSON.stringify(preset))
+    setItem('quantum:circuit', JSON.stringify(preset))
+    setItem('quantum:prefs:numQubits', String(preset.numQubits))
+    setItem('quantum:autoRun', '1')
+    window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit: preset, autoRun: true } }))
+
     const startTime = performance.now()
-    runSimulation(preset as any).then(res => {
+    runSimulation(preset).then(res => {
       setChart(res.probabilities)
       const endTime = performance.now()
       const executionTime = endTime - startTime
       const states = Object.keys(res.probabilities).length
-      
-      try {
-        window.dispatchEvent(new CustomEvent('quantum:algorithm-execution', { 
-          detail: { 
-            algorithm: id, 
-            executionTime, 
-            states 
-          } 
-        }))
-      } catch {}
-    }).catch(()=> setChart(undefined))
+      window.dispatchEvent(new CustomEvent(QUANTUM_ALGORITHM_EXECUTION, {
+        detail: { algorithm: id, executionTime, states }
+      }))
+    }).catch(() => setChart(undefined))
+  }
+
+  function openInStudio(id: string) {
+    const preset = getPreset(id)
+    setItem('quantum:loadCircuit', JSON.stringify(preset))
+    setItem('quantum:circuit', JSON.stringify(preset))
+    setItem('quantum:prefs:numQubits', String(preset.numQubits))
+    setItem('quantum:autoRun', '1')
+    window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit: preset, autoRun: true } }))
+    navigate('/circuits')
   }
 
   return (
@@ -94,7 +99,7 @@ export default function AlgorithmsPage() {
       <div className="col-span-8 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Quantum Algorithms</h2>
-          <Button onClick={() => window.location.href = '/circuits'}>Open Quantum Studio</Button>
+          <Button onClick={() => navigate('/circuits')}>Open Quantum Studio</Button>
         </div>
 
         <Card>
@@ -139,7 +144,7 @@ export default function AlgorithmsPage() {
         <Card title={`Algorithm Library (${filteredAlgorithms.length})`} description="Select an algorithm to run and visualize">
           <div className="grid grid-cols-2 gap-4">
             {filteredAlgorithms.map((a) => (
-              <AlgorithmCard key={a.id} algorithm={a} onRun={() => loadIntoStudio(a.id)} />
+              <AlgorithmCard key={a.id} algorithm={a} onRun={() => loadIntoStudio(a.id)} onOpenInStudio={openInStudio} />
             ))}
           </div>
         </Card>
@@ -148,10 +153,10 @@ export default function AlgorithmsPage() {
           <Card title="Algorithm Description">
             <p className="text-sm text-slate-300">{description}</p>
             <div className="mt-3 flex gap-2">
-              <Button onClick={() => window.location.href = '/circuits'}>
+              <Button onClick={() => navigate('/circuits')}>
                 Open in Studio
               </Button>
-              <Button variant="secondary" onClick={() => window.location.href = '/docs'}>
+              <Button variant="secondary" onClick={() => navigate('/docs')}>
                 View Documentation
               </Button>
             </div>
@@ -171,8 +176,24 @@ export default function AlgorithmsPage() {
             <AlgorithmCircuits algorithmId={current} />
           </>
         ) : null}
-        <ResultChart data={chart} />
-        
+        <div className="relative" ref={resultExportRef}>
+          <ResultChart data={chart} />
+          {chart && Object.keys(chart).length > 0 && (
+            <div className="absolute top-2 right-2">
+              <Button variant="secondary" className="text-xs" onClick={() => setShowResultExport(!showResultExport)}>
+                <FontAwesomeIcon icon={faDownload} className="mr-1" />
+                Export
+              </Button>
+              {showResultExport && (
+                <div className="absolute right-0 top-full mt-1 z-10 bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg min-w-32">
+                  <button onClick={() => { downloadFile(JSON.stringify(chart, null, 2), 'algorithm-result.json', 'application/json'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">JSON</button>
+                  <button onClick={() => { downloadFile(probabilitiesToCSV(chart), 'algorithm-result.csv', 'text/csv'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">CSV</button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         <ExecutionHistory />
         
         <Card title="About Quantum Algorithms">

@@ -1,4 +1,4 @@
-import type { Circuit, Gate } from '../hooks/useCircuitEngine'
+import type { Circuit, CircuitGate } from '../../../types/Circuit'
 
 function getGateSymbol(type: string): string {
   const map: Record<string, string> = {
@@ -86,7 +86,7 @@ export function exportToQuil(circuit: Circuit): string {
 }
 
 function parseQASM(code: string): Circuit {
-  const gates: Gate[] = []
+  const gates: CircuitGate[] = []
   const lines = code.split('\n')
   let numQubits = 2
 
@@ -121,7 +121,7 @@ function parseQASM(code: string): Circuit {
 }
 
 function parseCirq(code: string): Circuit {
-  const gates: Gate[] = []
+  const gates: CircuitGate[] = []
   const numQubitsMatch = code.match(/range\((\d+)\)/i)
   const numQubits = numQubitsMatch ? parseInt(numQubitsMatch[1]) : 2
 
@@ -145,7 +145,7 @@ function parseCirq(code: string): Circuit {
 }
 
 function parseQuil(code: string): Circuit {
-  const gates: Gate[] = []
+  const gates: CircuitGate[] = []
   const decMatch = code.match(/DECLARE\s+ro\s+BIT\[(\d+)\]/g)
   const numQubits = decMatch ? decMatch.length : 2
 

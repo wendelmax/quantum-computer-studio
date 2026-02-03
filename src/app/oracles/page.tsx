@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faFilter } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faFilter, faDownload } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../components/Button'
+import { downloadFile, probabilitiesToCSV } from '../../lib/exportUtils'
 import Card from '../../components/Card'
 import { runSimulation } from '../circuits/services/simulator'
 import { oracles } from './data/oracles'
@@ -18,6 +19,17 @@ export default function OraclesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>('All')
+  const [showResultExport, setShowResultExport] = useState(false)
+  const resultExportRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!showResultExport) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (resultExportRef.current && !resultExportRef.current.contains(e.target as Node)) setShowResultExport(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showResultExport])
 
   const oracleInfo = selectedOracle ? oracles.find(o => o.id === selectedOracle) : null
 
@@ -187,6 +199,18 @@ export default function OraclesPage() {
             <div className="text-sm text-slate-300">Running simulation...</div>
           ) : result ? (
             <div className="space-y-2">
+              <div className="relative flex justify-end" ref={resultExportRef}>
+                <Button variant="secondary" className="text-xs" onClick={() => setShowResultExport(!showResultExport)}>
+                  <FontAwesomeIcon icon={faDownload} className="mr-1" />
+                  Export
+                </Button>
+                {showResultExport && (
+                  <div className="absolute right-0 top-full mt-1 z-10 bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg min-w-32">
+                    <button onClick={() => { downloadFile(JSON.stringify(result, null, 2), 'oracle-result.json', 'application/json'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">JSON</button>
+                    <button onClick={() => { downloadFile(probabilitiesToCSV(result), 'oracle-result.csv', 'text/csv'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">CSV</button>
+                  </div>
+                )}
+              </div>
               {Object.entries(result)
                 .filter(([_, prob]) => prob > 0.01)
                 .map(([state, prob]) => (

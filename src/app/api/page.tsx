@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Editor, { Monaco } from '@monaco-editor/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDownload, faBook } from '@fortawesome/free-solid-svg-icons'
 import { runSimulation } from '../circuits/services/simulator'
 import type { Circuit, Gate, ExecutionResult } from '../circuits/hooks/useCircuitEngine'
 import Card from '../../components/Card'
@@ -432,6 +435,26 @@ export default function APIPage() {
       </div>
 
       <div className="col-span-4 flex flex-col gap-4">
+        <Card title="Library" description="Use in other systems">
+          <div className="space-y-2 mt-2">
+            <a
+              href="/quantum-computer-js-lib.zip"
+              download="quantum-computer-js-lib.zip"
+              className="flex items-center gap-2 p-3 rounded bg-slate-900/30 border border-slate-800 hover:border-sky-600 hover:bg-sky-900/10 transition-all text-sm text-slate-200"
+            >
+              <FontAwesomeIcon icon={faDownload} className="text-sky-400" />
+              Download library (zip)
+            </a>
+            <Link
+              to="/lib-docs"
+              className="flex items-center gap-2 p-3 rounded bg-slate-900/30 border border-slate-800 hover:border-sky-600 hover:bg-sky-900/10 transition-all text-sm text-slate-200"
+            >
+              <FontAwesomeIcon icon={faBook} className="text-sky-400" />
+              Library API reference
+            </Link>
+          </div>
+        </Card>
+
         <Card title="Code Examples">
           <div className="space-y-2 max-h-96 overflow-y-auto scrollbar-thin">
             {EXAMPLES.map((example, idx) => (

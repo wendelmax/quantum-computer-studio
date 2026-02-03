@@ -15,6 +15,7 @@ import StateViewerPage from './app/state-viewer/page'
 import GatesLibraryPage from './app/gates/page'
 import OraclesPage from './app/oracles/page'
 import APIPage from './app/api/page'
+import LibDocsPage from './app/lib-docs/page'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="execution" element={<ExecutionPage />} />
           <Route path="docs" element={<DocsPage />} />
           <Route path="api" element={<APIPage />} />
+          <Route path="lib-docs" element={<LibDocsPage />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="playground" element={<PlaygroundPage />} />
           <Route path="settings" element={<SettingsPage />} />

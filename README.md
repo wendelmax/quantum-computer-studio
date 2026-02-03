@@ -153,7 +153,16 @@ quamtumPc/
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
+- `npm run build:lib` - Build public API as ESM bundle (`dist-lib/`)
 - `npm run preview` - Preview local build
+
+## Public API and documentation
+
+The project exposes a public API for use in other systems or for documentation.
+
+- **Entry point**: `src/api.ts` — re-exports types (`Circuit`, `Result`, `Algorithm`), quantum lib (complex numbers, gates, Bloch sphere), circuit utilities (`validateCircuit`, `circuitDepth`), and the simulator (`runSimulation`, `SimulatorOptions`).
+- **Documentation**: [docs/API.md](docs/API.md) — full list of exported types and functions with usage examples.
+- **Consumption**: When the package is linked or installed, import from `quantum-computer-js` (or `quantum-computer-js/src/api`). Run `npm run build:lib` to produce a standalone ESM bundle in `dist-lib/`.
 
 ## Deploy
 

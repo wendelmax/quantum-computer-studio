@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFlask, faChartLine, faChartBar, faHashtag, faCircle, faBook, faTerminal, faBox, faDesktop, faLayerGroup, faUndo } from '@fortawesome/free-solid-svg-icons'
+import { faFlask, faChartLine, faChartBar, faHashtag, faCircle, faBook, faTerminal, faBox, faDesktop, faLayerGroup, faUndo, faImages, faCode, faTachometerAlt, faSlidersH } from '@fortawesome/free-solid-svg-icons'
 import { getPreset } from './algorithms/services/presets'
 import { runSimulation } from './circuits/services/simulator'
+import { setItem } from '../lib/safeStorage'
+import { QUANTUM_SET_CIRCUIT } from '../lib/events'
 
 export default function QuantumHome() {
+  const navigate = useNavigate()
   const [demoProbabilities, setDemoProbabilities] = useState<Record<string, number>>({})
   const [isRunningDemo, setIsRunningDemo] = useState(false)
   
@@ -27,13 +30,12 @@ export default function QuantumHome() {
 
   const loadAlgorithm = (id: string) => {
     const preset = getPreset(id)
-    try {
-      localStorage.setItem('quantum:loadCircuit', JSON.stringify(preset))
-      localStorage.setItem('quantum:circuit', JSON.stringify(preset))
-      localStorage.setItem('quantum:prefs:numQubits', String(preset.numQubits))
-    } catch {}
-    window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit: preset, autoRun: true } }))
-    window.location.href = '/circuits'
+    setItem('quantum:loadCircuit', JSON.stringify(preset))
+    setItem('quantum:circuit', JSON.stringify(preset))
+    setItem('quantum:prefs:numQubits', String(preset.numQubits))
+    setItem('quantum:autoRun', '1')
+    window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit: preset, autoRun: true } }))
+    navigate('/circuits')
   }
 
   const algorithms = [
@@ -54,7 +56,7 @@ export default function QuantumHome() {
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-8 space-y-4">
-        <section className="rounded-xl p-0 bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 overflow-hidden">
+        <section className="rounded-xl p-0 bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 overflow-hidden animate-slide-up">
           <header className="h-12 px-4 border-b border-slate-700 flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-sky-500/20 flex items-center justify-center">
               <div className="w-3 h-3 rounded-full bg-sky-400 animate-pulse" />
@@ -65,25 +67,25 @@ export default function QuantumHome() {
             </div>
           </header>
           <div className="p-4 grid grid-cols-3 gap-3">
-            <Link to="/circuits" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-sky-500 hover:bg-sky-500/10 transition-all cursor-pointer">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform"><FontAwesomeIcon icon={faFlask} /></div>
+            <Link to="/circuits" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-sky-500 hover:bg-sky-500/10 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99]">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250"><FontAwesomeIcon icon={faFlask} /></div>
               <div className="font-medium text-sm mb-1">Quantum Studio</div>
-              <div className="text-xs text-slate-400">Build & simulate</div>
+              <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Build & simulate</div>
             </Link>
-            <Link to="/algorithms" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-green-500 hover:bg-green-500/10 transition-all cursor-pointer">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform"><FontAwesomeIcon icon={faChartLine} /></div>
+            <Link to="/algorithms" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-green-500 hover:bg-green-500/10 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99]">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250"><FontAwesomeIcon icon={faChartLine} /></div>
               <div className="font-medium text-sm mb-1">Algorithms</div>
-              <div className="text-xs text-slate-400">Run algorithms</div>
+              <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Run algorithms</div>
             </Link>
-            <Link to="/data-lab" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-purple-500 hover:bg-purple-500/10 transition-all cursor-pointer">
-              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform"><FontAwesomeIcon icon={faChartBar} /></div>
+            <Link to="/data-lab" className="group p-4 rounded-lg bg-slate-900/40 border border-slate-700 hover:border-purple-500 hover:bg-purple-500/10 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-250 cursor-pointer hover:scale-[1.02] active:scale-[0.99]">
+              <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-250"><FontAwesomeIcon icon={faChartBar} /></div>
               <div className="font-medium text-sm mb-1">Data Lab</div>
-              <div className="text-xs text-slate-400">Explore data</div>
+              <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Explore data</div>
             </Link>
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden">
+        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '50ms' }}>
           <header className="h-10 px-4 border-b border-slate-800 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Live Demo: Grover's Algorithm</span></div>
             {isRunningDemo && <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />}
@@ -93,7 +95,7 @@ export default function QuantumHome() {
               {Object.entries(demoProbabilities).slice(0, 8).map(([state, prob]) => (
                 <div 
                   key={state}
-                  className={`p-3 rounded border-2 transition-all ${
+                  className={`p-3 rounded border-2 transition-all duration-300 ${
                     state === maxProbKey 
                       ? 'border-cyan-500 bg-cyan-500/10 scale-105' 
                       : 'border-slate-700 bg-slate-900/20'
@@ -103,7 +105,7 @@ export default function QuantumHome() {
                   <div className="text-lg font-mono text-sky-300">{prob > 0.01 ? (prob * 100).toFixed(0) : '0'}%</div>
                   <div className="h-1 bg-slate-700 rounded-full mt-1 overflow-hidden">
                     <div 
-                      className="h-full bg-cyan-400 transition-all duration-500"
+                      className="h-full bg-cyan-400 rounded-full transition-all duration-500 ease-out"
                       style={{ width: `${prob * 100}%` }}
                     />
                   </div>
@@ -114,7 +116,7 @@ export default function QuantumHome() {
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden">
+        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '100ms' }}>
           <header className="h-10 px-4 border-b border-slate-800 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Quantum vs Classical</span></div>
           </header>
@@ -186,7 +188,7 @@ export default function QuantumHome() {
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden">
+        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '150ms' }}>
           <header className="h-10 px-4 border-b border-slate-800 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Popular Algorithms</span></div>
             <Link to="/algorithms" className="text-xs text-sky-400 hover:text-sky-300">View all →</Link>
@@ -195,7 +197,7 @@ export default function QuantumHome() {
             {algorithms.map((item, idx) => (
               <button
                 key={item.id}
-                className="w-full px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-900/20 cursor-pointer group transition-colors"
+                className="w-full px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-900/20 cursor-pointer group transition-all duration-200 hover:pl-5"
                 onClick={() => loadAlgorithm(item.id)}
               >
                 <div className="flex items-center gap-3">
@@ -211,21 +213,26 @@ export default function QuantumHome() {
           </div>
         </section>
 
-        <section className="rounded-xl p-3 bg-bg-card border border-slate-800/60">
+        <section className="rounded-xl p-3 bg-bg-card border border-slate-800/60 animate-slide-up" style={{ animationDelay: '200ms' }}>
           <div className="flex items-center gap-3 text-slate-300 flex-wrap">
             <Link to="/circuits" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faDesktop} className="inline mr-1" /> Studio</Link>
             <Link to="/algorithms" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faLayerGroup} className="inline mr-1" /> Algorithms</Link>
+            <Link to="/data-lab" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faChartBar} className="inline mr-1" /> Data Lab</Link>
             <Link to="/state-viewer" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faUndo} className="inline mr-1" /> States</Link>
             <Link to="/gates" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faHashtag} className="inline mr-1" /> Gates</Link>
             <Link to="/oracles" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faCircle} className="inline mr-1" /> Oracles</Link>
+            <Link to="/gallery" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faImages} className="inline mr-1" /> Gallery</Link>
+            <Link to="/playground" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faCode} className="inline mr-1" /> Playground</Link>
+            <Link to="/execution" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faTachometerAlt} className="inline mr-1" /> Execution</Link>
             <Link to="/docs" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faBook} className="inline mr-1" /> Docs</Link>
             <Link to="/api" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faTerminal} className="inline mr-1" /> API</Link>
+            <Link to="/settings" className="px-3 py-2 rounded hover:bg-slate-800/40 hover:text-sky-300 transition-colors"><FontAwesomeIcon icon={faSlidersH} className="inline mr-1" /> Settings</Link>
           </div>
         </section>
       </div>
 
       <div className="col-span-4 space-y-4">
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden">
+        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '80ms' }}>
           <header className="h-10 px-4 border-b border-slate-800 flex items-center text-sm">
             <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Bloch Sphere</span></div>
           </header>
@@ -252,9 +259,10 @@ export default function QuantumHome() {
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden">
-          <header className="h-10 px-4 border-b border-slate-800 flex items-center text-sm">
+        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '120ms' }}>
+          <header className="h-10 px-4 border-b border-slate-800 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Statistics</span></div>
+            <span className="text-xs text-slate-500">Available in this app</span>
           </header>
           <div className="p-4 space-y-3">
             <div className="grid grid-cols-2 gap-3">
@@ -274,7 +282,7 @@ export default function QuantumHome() {
           </div>
         </section>
 
-        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden">
+        <section className="rounded-xl p-0 bg-bg-card border border-slate-800/60 overflow-hidden animate-slide-up" style={{ animationDelay: '160ms' }}>
           <header className="h-10 px-4 border-b border-slate-800 flex items-center text-sm">
             <div className="flex items-center gap-2"><span className="text-sky-300">◦</span> <span className="font-medium">Quick Links</span></div>
           </header>

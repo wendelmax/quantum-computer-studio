@@ -25,8 +25,8 @@ export default function ThemeSwitcher() {
   }, [currentTheme])
 
   return (
-    <div className="rounded-lg p-4 bg-bg-card border border-slate-800">
-      <div className="text-sm font-medium mb-3">Theme Settings</div>
+    <div className="rounded-lg p-4 bg-bg-card border border-theme-border">
+      <div className="text-sm font-medium mb-3 text-theme-text">Theme Settings</div>
       <div className="space-y-2">
         {themes.map(theme => (
           <button
@@ -35,18 +35,18 @@ export default function ThemeSwitcher() {
             className={`w-full text-left p-3 rounded transition-all flex items-center gap-3 ${
               currentTheme === theme.id
                 ? 'bg-primary/20 border border-primary text-primary'
-                : 'bg-slate-900/20 border border-slate-800 hover:border-primary/50 text-slate-200'
+                : 'bg-theme-surface border border-theme-border hover:border-primary/50 text-theme-text'
             }`}
           >
-            <FontAwesomeIcon icon={theme.icon} className="text-lg" />
+            <FontAwesomeIcon icon={theme.icon} className="text-lg shrink-0 text-theme-text opacity-90" />
             <div>
               <div className="font-medium">{theme.name}</div>
-              <div className="text-xs opacity-70">{theme.description}</div>
+              <div className="text-xs text-theme-text-muted">{theme.description}</div>
             </div>
           </button>
         ))}
       </div>
-      <div className="mt-4 text-xs text-slate-400">
+      <div className="mt-4 text-xs text-theme-text-muted">
         Current theme: <span className="text-primary">{currentTheme}</span>
       </div>
     </div>

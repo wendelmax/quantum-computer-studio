@@ -1,4 +1,4 @@
-import type { Circuit } from '../../circuits/hooks/useCircuitEngine'
+import type { Circuit } from '../../../types/Circuit'
 
 export function getPreset(id: string): Circuit {
   switch (id) {

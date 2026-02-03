@@ -1,6 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay, faBook } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faBook, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../../components/Button'
 
 type Algorithm = {
@@ -17,6 +18,7 @@ type Algorithm = {
 interface AlgorithmCardProps {
   algorithm: Algorithm
   onRun?: () => void
+  onOpenInStudio?: (id: string) => void
 }
 
 function getDifficultyColor(difficulty?: string): string {
@@ -28,7 +30,7 @@ function getDifficultyColor(difficulty?: string): string {
   }
 }
 
-export default function AlgorithmCard({ algorithm, onRun }: AlgorithmCardProps) {
+export default function AlgorithmCard({ algorithm, onRun, onOpenInStudio }: AlgorithmCardProps) {
   return (
     <div
       className="p-4 rounded bg-bg-card border border-slate-800 hover:border-primary cursor-pointer transition-colors"
@@ -77,15 +79,23 @@ export default function AlgorithmCard({ algorithm, onRun }: AlgorithmCardProps) 
         )}
       </div>
 
-      <div className="mt-3 flex gap-2">
-        <Button className="flex-1" onClick={(e) => { e.stopPropagation(); onRun?.() }}>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Button className="flex-1 min-w-0" onClick={(e) => { e.stopPropagation(); onRun?.() }}>
           <FontAwesomeIcon icon={faPlay} className="mr-1.5" />
           Run
         </Button>
-        <Button variant="secondary" className="flex-1" onClick={() => window.location.href = '/docs'}>
-          <FontAwesomeIcon icon={faBook} className="mr-1.5" />
-          Docs
-        </Button>
+        {onOpenInStudio && (
+          <Button variant="secondary" className="flex-1 min-w-0" onClick={(e) => { e.stopPropagation(); onOpenInStudio(algorithm.id) }}>
+            <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-1.5" />
+            Open in Studio
+          </Button>
+        )}
+        <Link to="/docs" className="flex-1 min-w-0" onClick={(e) => e.stopPropagation()}>
+          <Button variant="secondary" className="w-full">
+            <FontAwesomeIcon icon={faBook} className="mr-1.5" />
+            Docs
+          </Button>
+        </Link>
       </div>
     </div>
   )

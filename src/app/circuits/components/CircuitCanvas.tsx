@@ -1,5 +1,5 @@
 import React from 'react'
-import type { Circuit } from '../hooks/useCircuitEngine'
+import type { Circuit } from '../../../types/Circuit'
 
 type Props = {
   children?: React.ReactNode
@@ -36,7 +36,9 @@ export default function CircuitCanvas({ children, selectedGate, onPlace, circuit
   const hasScroll = minHeight > maxDisplayHeight
   
   return (
-    <div className="rounded-lg bg-[#021428] border border-slate-800 p-4">
+    <div className="rounded-lg bg-bg-card border border-slate-800 p-4 transition-all duration-300 hover:border-slate-700/80 relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[linear-gradient(90deg,rgba(14,165,233,0.1)_1px,transparent_1px),linear-gradient(rgba(14,165,233,0.1)_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="relative">
       <div className="text-slate-300 text-sm mb-2">Circuit canvas ({numQubits} qubit{numQubits !== 1 ? 's' : ''})</div>
       <div className={`rounded ${hasScroll ? 'overflow-auto scrollbar-thin' : 'overflow-visible'}`} style={{ maxHeight: hasScroll ? `${maxDisplayHeight}px` : 'none', minHeight: `${Math.min(minHeight, maxDisplayHeight)}px` }}>
         <div className="p-3">
@@ -57,10 +59,10 @@ export default function CircuitCanvas({ children, selectedGate, onPlace, circuit
                 {Array.from({length:maxCols},(_,col)=> (
                   <div
                     key={`${row}-${col}`}
-                    className={`relative h-10 bg-slate-900/10 rounded flex items-center justify-center transition-colors ${
+                    className={`relative h-10 rounded flex items-center justify-center transition-all duration-300 ease-out hover:scale-[1.02] ${
                       selectedGate 
-                        ? 'cursor-pointer hover:bg-sky-900/20 border-2 border-sky-600/50 border-dashed' 
-                        : 'cursor-pointer hover:bg-slate-900/20'
+                        ? `cursor-pointer hover:bg-sky-900/30 border-2 border-sky-500/60 border-dashed ${!(perRow[row] || [])[col] ? 'bg-sky-900/5 animate-cell-breathe' : 'bg-slate-900/10'}` 
+                        : 'cursor-pointer hover:bg-slate-900/30 border-2 border-transparent bg-slate-900/10'
                     }`}
                     onClick={()=> selectedGate && onPlace?.(selectedGate, row)}
                     onDragOver={(e)=> e.preventDefault()}
@@ -86,7 +88,7 @@ export default function CircuitCanvas({ children, selectedGate, onPlace, circuit
                       const angleDeg = gateAt.angle != null ? Math.round(gateAt.angle * 180 / Math.PI) : null
                       return (
                         <button
-                          className="relative z-10 px-2 py-1 rounded bg-slate-800 border border-slate-700 text-sky-300 text-xs flex flex-col items-center min-w-[36px] transition-all hover:scale-110 hover:bg-slate-700 hover:border-sky-500"
+                          className="relative z-10 px-2 py-1 rounded bg-slate-800 border border-slate-700 text-sky-300 text-xs flex flex-col items-center min-w-[36px] animate-gate-pop transition-all duration-300 hover:scale-110 hover:bg-slate-700 hover:border-sky-500 hover:shadow-lg hover:shadow-sky-500/20 active:scale-95"
                           draggable
                           onDragStart={(e)=> { dragging.current = { row, col }; e.dataTransfer.setData('text/plain', `${row}:${col}`) }}
                           onClick={(e)=> { e.stopPropagation(); onRemove?.(row, col) }}
@@ -102,7 +104,7 @@ export default function CircuitCanvas({ children, selectedGate, onPlace, circuit
                     {(() => {
                       const controlHere = cnotConns.find(c => c.col === col && c.control === row)
                       if (!controlHere) return null
-                      return <div className="relative z-10 w-2 h-2 rounded-full bg-sky-400" />
+                      return <div className="relative z-10 w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
                     })()}
                   </div>
                 ))}
@@ -111,6 +113,7 @@ export default function CircuitCanvas({ children, selectedGate, onPlace, circuit
           </div>
         </div>
         {children}
+      </div>
       </div>
     </div>
   )

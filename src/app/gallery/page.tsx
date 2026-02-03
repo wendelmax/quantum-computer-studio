@@ -1,71 +1,84 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSave, faDownload, faTrash, faEye, faUpload, faExternalLink } from '@fortawesome/free-solid-svg-icons'
+import { faSave, faDownload, faTrash, faEye, faUpload, faExternalLink, faTimes } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
+import { getItem, setItem, parseJSON } from '../../lib/safeStorage'
+import { QUANTUM_SET_CIRCUIT } from '../../lib/events'
 
 type CircuitGallery = {
   id: string
   name: string
   description: string
-  circuit: any
+  circuit: unknown
   date: string
 }
 
 export default function GalleryPage() {
+  const navigate = useNavigate()
   const [savedCircuits, setSavedCircuits] = useState<CircuitGallery[]>([])
   const [selectedCircuit, setSelectedCircuit] = useState<string | null>(null)
+  const [showSaveModal, setShowSaveModal] = useState(false)
+  const [saveName, setSaveName] = useState('')
+  const [saveDescription, setSaveDescription] = useState('')
 
   useEffect(() => {
     loadSavedCircuits()
   }, [])
 
   const loadSavedCircuits = () => {
+    const raw = getItem('quantum:gallery')
+    if (raw) {
+      const parsed = parseJSON<CircuitGallery[]>(raw, [])
+      if (Array.isArray(parsed)) setSavedCircuits(parsed)
+    }
+  }
+
+  const openSaveModal = () => {
+    const raw = getItem('quantum:circuit')
+    if (!raw) return
     try {
-      const raw = localStorage.getItem('quantum:gallery')
-      if (raw) {
-        setSavedCircuits(JSON.parse(raw))
-      }
+      const circuit = JSON.parse(raw)
+      setSaveName(`Circuit ${savedCircuits.length + 1}`)
+      setSaveDescription(`${circuit.gates?.length ?? 0} gates on ${circuit.numQubits ?? 0} qubits`)
+      setShowSaveModal(true)
     } catch {}
   }
 
   const saveCurrentCircuit = () => {
+    const raw = getItem('quantum:circuit')
+    if (!raw) return
     try {
-      const raw = localStorage.getItem('quantum:circuit')
-      if (!raw) return
-      
       const circuit = JSON.parse(raw)
       const newCircuit: CircuitGallery = {
         id: Date.now().toString(),
-        name: `Circuit ${savedCircuits.length + 1}`,
-        description: `${circuit.gates.length} gates on ${circuit.numQubits} qubits`,
+        name: saveName.trim() || `Circuit ${savedCircuits.length + 1}`,
+        description: saveDescription.trim() || `${circuit.gates?.length ?? 0} gates on ${circuit.numQubits ?? 0} qubits`,
         circuit,
         date: new Date().toISOString()
       }
-      
       const updated = [newCircuit, ...savedCircuits].slice(0, 20)
       setSavedCircuits(updated)
-      localStorage.setItem('quantum:gallery', JSON.stringify(updated))
+      setItem('quantum:gallery', JSON.stringify(updated))
+      setShowSaveModal(false)
     } catch {}
   }
 
   const loadCircuit = (id: string) => {
-    const circuit = savedCircuits.find(c => c.id === id)
-    if (!circuit) return
-    
-    try {
-      localStorage.setItem('quantum:loadCircuit', JSON.stringify(circuit.circuit))
-      localStorage.setItem('quantum:circuit', JSON.stringify(circuit.circuit))
-      localStorage.setItem('quantum:prefs:numQubits', String(circuit.circuit.numQubits))
-      window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit: circuit.circuit, autoRun: false } }))
-      window.location.href = '/circuits'
-    } catch {}
+    const item = savedCircuits.find(c => c.id === id)
+    if (!item) return
+    setItem('quantum:loadCircuit', JSON.stringify(item.circuit))
+    setItem('quantum:circuit', JSON.stringify(item.circuit))
+    setItem('quantum:prefs:numQubits', String((item.circuit as { numQubits?: number }).numQubits ?? 2))
+    window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit: item.circuit, autoRun: false } }))
+    navigate('/circuits')
   }
 
   const deleteCircuit = (id: string) => {
     const updated = savedCircuits.filter(c => c.id !== id)
     setSavedCircuits(updated)
-    localStorage.setItem('quantum:gallery', JSON.stringify(updated))
+    setItem('quantum:gallery', JSON.stringify(updated))
   }
 
   const selectedCircuitData = selectedCircuit ? savedCircuits.find(c => c.id === selectedCircuit) : null
@@ -75,11 +88,44 @@ export default function GalleryPage() {
       <div className="col-span-9 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Circuit Gallery</h2>
-          <Button onClick={saveCurrentCircuit}>
+          <Button onClick={openSaveModal}>
             <FontAwesomeIcon icon={faSave} className="mr-1.5" />
             Save Current Circuit
           </Button>
         </div>
+
+        {showSaveModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowSaveModal(false)}>
+            <div className="rounded-lg bg-bg-card border border-slate-700 p-4 w-full max-w-sm shadow-xl" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold">Save circuit</h3>
+                <button className="p-1 rounded hover:bg-slate-800" onClick={() => setShowSaveModal(false)} aria-label="Close">
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              </div>
+              <label className="block text-sm text-slate-300 mb-1">Name</label>
+              <input
+                type="text"
+                value={saveName}
+                onChange={e => setSaveName(e.target.value)}
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-sm mb-3"
+                placeholder="Circuit name"
+              />
+              <label className="block text-sm text-slate-300 mb-1">Description</label>
+              <input
+                type="text"
+                value={saveDescription}
+                onChange={e => setSaveDescription(e.target.value)}
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded text-sm mb-4"
+                placeholder="Optional description"
+              />
+              <div className="flex gap-2">
+                <Button className="flex-1" onClick={saveCurrentCircuit}>Save</Button>
+                <Button variant="secondary" onClick={() => setShowSaveModal(false)}>Cancel</Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Card>
           <p className="text-sm text-slate-300 mb-4">
@@ -163,8 +209,10 @@ export default function GalleryPage() {
                 const text = await file.text()
                 try {
                   const imported = JSON.parse(text)
-                  setSavedCircuits(imported)
-                  localStorage.setItem('quantum:gallery', JSON.stringify(imported))
+                  if (Array.isArray(imported)) {
+                    setSavedCircuits(imported)
+                    setItem('quantum:gallery', JSON.stringify(imported))
+                  }
                 } catch {}
               }}
             />
@@ -173,13 +221,13 @@ export default function GalleryPage() {
 
         <Card title="Quick Actions">
           <div className="space-y-2">
-            <Button variant="secondary" className="w-full" onClick={() => window.location.href = '/circuits'}>
+            <Button variant="secondary" className="w-full" onClick={() => navigate('/circuits')}>
               Open Quantum Studio
             </Button>
             <Button variant="secondary" className="w-full" onClick={() => {
               if (confirm('Clear all saved circuits?')) {
                 setSavedCircuits([])
-                localStorage.removeItem('quantum:gallery')
+                setItem('quantum:gallery', '[]')
               }
             }}>
               Clear All

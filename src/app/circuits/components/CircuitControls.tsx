@@ -1,19 +1,28 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay, faRotateLeft, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faRotateLeft, faDownload, faUpload, faUndo, faRedo } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../../components/Button'
 import { toEnglishCircuit, fromAnyCircuit } from '../services/serde'
 import { exportToQASM, exportToCirq, exportToQuil, importCircuit, detectFormat } from '../services/exportImport'
+import { copyToClipboard } from '../../../lib/exportUtils'
+import { getItem } from '../../../lib/safeStorage'
 import type { Circuit } from '../hooks/useCircuitEngine'
 
+const DEFAULT_EXPORT_KEY = 'quantum:prefs:defaultExportFormat'
+
 interface CircuitControlsProps {
-  onRun?: () => void
+  onRun?: (options?: { shots?: number; noise?: number }) => void
   onReset?: () => void
+  onUndo?: () => void
+  onRedo?: () => void
+  canUndo?: boolean
+  canRedo?: boolean
+  validationError?: string | null
   circuitJSON?: string
   onImport?: (json: string) => void
 }
 
-const CircuitControls = ({ onRun, onReset, circuitJSON, onImport }: CircuitControlsProps) => {
+const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, validationError, circuitJSON, onImport }: CircuitControlsProps) => {
   const fileRef = useRef<HTMLInputElement>(null)
   const [showExport, setShowExport] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
@@ -80,14 +89,44 @@ const CircuitControls = ({ onRun, onReset, circuitJSON, onImport }: CircuitContr
     } catch {}
   }
 
+  const copyCircuitJSON = async () => {
+    if (!circuitJSON) return
+    const ok = await copyToClipboard(circuitJSON)
+    if (ok) setShowExport(false)
+  }
+
+  const defaultFormat = getItem(DEFAULT_EXPORT_KEY) || 'json'
+  const exportOptions: { id: string; label: string; run: () => void }[] = [
+    { id: 'json', label: 'Download JSON', run: () => { exportJSON(); setShowExport(false) } },
+    { id: 'qasm', label: 'QASM', run: () => { exportQASM(); setShowExport(false) } },
+    { id: 'cirq', label: 'Cirq', run: () => { exportCirq(); setShowExport(false) } },
+    { id: 'quil', label: 'Quil', run: () => { exportQuil(); setShowExport(false) } },
+  ]
+  const sorted = [...exportOptions].sort((a, b) => (a.id === defaultFormat ? -1 : b.id === defaultFormat ? 1 : 0))
+
   return (
-    <div className="rounded-lg p-3 bg-[#021825] border border-slate-800">
+    <div className="rounded-lg p-3 bg-[#021825] border border-slate-800 transition-all duration-300 hover:border-slate-700/80">
+      {validationError && (
+        <div className="mb-3 px-3 py-2 rounded bg-red-900/30 border border-red-700/50 text-xs text-red-300 animate-fade-in">
+          {validationError}
+        </div>
+      )}
       <div className="flex gap-2 flex-wrap">
-        <Button className="flex-1" onClick={onRun}>
+        <Button
+          className="flex-1 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/25 active:scale-[0.98]"
+          onClick={() => onRun?.()}
+          title="Run (Ctrl+Enter)"
+        >
           <FontAwesomeIcon icon={faPlay} className="mr-1.5" />
           Run
         </Button>
-        <Button variant="secondary" className="flex-1" onClick={onReset}>
+        <Button variant="secondary" className="transition-transform duration-200 hover:scale-105 disabled:hover:scale-100" onClick={onUndo} disabled={!canUndo} title="Undo (Ctrl+Z)">
+          <FontAwesomeIcon icon={faUndo} className="mr-1.5" />
+        </Button>
+        <Button variant="secondary" className="transition-transform duration-200 hover:scale-105 disabled:hover:scale-100" onClick={onRedo} disabled={!canRedo} title="Redo (Ctrl+Shift+Z)">
+          <FontAwesomeIcon icon={faRedo} className="mr-1.5" />
+        </Button>
+        <Button variant="secondary" className="flex-1 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={onReset}>
           <FontAwesomeIcon icon={faRotateLeft} className="mr-1.5" />
           Reset
         </Button>
@@ -98,10 +137,12 @@ const CircuitControls = ({ onRun, onReset, circuitJSON, onImport }: CircuitContr
           </Button>
           {showExport && (
             <div className="absolute right-0 top-full mt-1 z-10 bg-slate-900 border border-slate-700 rounded-lg p-2 shadow-lg min-w-32">
-              <button onClick={() => { exportJSON(); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">JSON</button>
-              <button onClick={() => { exportQASM(); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">QASM</button>
-              <button onClick={() => { exportCirq(); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">Cirq</button>
-              <button onClick={() => { exportQuil(); setShowExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">Quil</button>
+              <button onClick={() => copyCircuitJSON()} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">Copy circuit JSON</button>
+              {sorted.map((opt) => (
+                <button key={opt.id} onClick={opt.run} className="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 rounded">
+                  {opt.label}{opt.id === defaultFormat ? ' (default)' : ''}
+                </button>
+              ))}
             </div>
           )}
         </div>
