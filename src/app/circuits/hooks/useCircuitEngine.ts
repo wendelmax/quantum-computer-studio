@@ -35,10 +35,10 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
   }, [])
 
   const addGate = useCallback((type: string, target: number = 0, angle?: number, control?: number, control2?: number, target2?: number) => {
-    setCircuit((prev) => {
+    setCircuit((prev: Circuit) => {
       const next: Circuit = {
         ...prev,
-        gates: [...prev.gates, { type, target, angle, control, control2, target2 }],
+        gates: [...prev.gates, { type, target, angle, control, control2, target2 } as CircuitGate],
       }
       pushHistory(next)
       return next
@@ -46,7 +46,7 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
   }, [pushHistory])
 
   const removeGateAt = useCallback((target: number, lineIndex: number) => {
-    setCircuit((prev) => {
+    setCircuit((prev: Circuit) => {
       const gates = prev.gates.slice()
       let count = -1
       for (let i = 0; i < gates.length; i++) {
@@ -73,7 +73,7 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
   }, [])
 
   const moveGate = useCallback((fromTarget: number, fromIdx: number, toTarget: number, toIdx: number) => {
-    setCircuit((prev) => {
+    setCircuit((prev: Circuit) => {
       const byLine: Record<number, CircuitGate[]> = {}
       for (const g of prev.gates) {
         if (!byLine[g.target]) byLine[g.target] = []
@@ -130,7 +130,7 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
   }, [])
 
   const setInitialState = useCallback((qubit: number, state: '0' | '1') => {
-    setCircuit((prev) => ({
+    setCircuit((prev: Circuit) => ({
       ...prev,
       initialStates: { ...(prev.initialStates || {}), [qubit]: state },
     }))
@@ -156,10 +156,10 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
   }, [circuit, setStoreCircuit])
 
   useEffect(() => {
-    setCircuit((prev) => {
+    setCircuit((prev: Circuit) => {
       if (prev.numQubits === initialQubitCount) return prev
       const newNum = initialQubitCount
-      const filteredGates = prev.gates.filter(g => g.target < newNum && (g.control == null || g.control < newNum) && (g.control2 == null || g.control2 < newNum) && (g.target2 == null || g.target2 < newNum))
+      const filteredGates = prev.gates.filter((g: CircuitGate) => g.target < newNum && (g.control == null || g.control < newNum) && (g.control2 == null || g.control2 < newNum) && (g.target2 == null || g.target2 < newNum))
       const next = { numQubits: newNum, gates: filteredGates }
       historyRef.current = [JSON.parse(JSON.stringify(next))]
       historyIndexRef.current = 0

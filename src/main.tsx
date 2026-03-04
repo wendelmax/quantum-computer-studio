@@ -12,6 +12,7 @@ import SettingsPage from './app/settings/page'
 import QuantumShell from './app/QuantumShell'
 import QuantumHome from './app/QuantumHome'
 import StateViewerPage from './app/state-viewer/page'
+import VisualLabPage from './app/visual-lab/page'
 import GatesLibraryPage from './app/gates/page'
 import OraclesPage from './app/oracles/page'
 import APIPage from './app/api/page'
@@ -31,6 +32,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="data-lab" element={<DataLabPage />} />
           <Route path="state-viewer" element={<StateViewerPage />} />
           <Route path="gates" element={<GatesLibraryPage />} />
+          <Route path="visual-lab" element={<VisualLabPage />} />
           <Route path="oracles" element={<OraclesPage />} />
           <Route path="qnlp" element={<QNLPPage />} />
           <Route path="execution" element={<ExecutionPage />} />

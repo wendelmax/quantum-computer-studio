@@ -7,7 +7,7 @@ export function toEnglishCircuit(c: Circuit): EnglishCircuit {
   return {
     version: '1.0.0',
     qubits: c.numQubits,
-    gates: c.gates.map(g => ({ type: g.type, target: g.target, control: g.control, control2: g.control2, target2: g.target2, angle: g.angle }))
+    gates: c.gates.map((g: any) => ({ type: g.type, target: g.target, control: g.control, control2: g.control2, target2: g.target2, angle: g.angle }))
   }
 }
 

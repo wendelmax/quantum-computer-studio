@@ -51,9 +51,9 @@ const QASMEditor: React.FC<Props> = ({ circuit, onChange, onValidationError }) =
         <Card
             title="OpenQASM 2.0 Editor"
             description="Write QASM code to update the visual circuit in real-time."
-            className="h-full flex flex-col overflow-hidden"
+            className="flex flex-col"
         >
-            <div className="flex-1 min-h-[300px] border border-theme-border rounded overflow-hidden relative">
+            <div className="h-[400px] border border-theme-border rounded overflow-hidden relative">
                 <Editor
                     height="100%"
                     defaultLanguage="cpp" // QASM doesn't have a built-in language, cpp is close-ish or just plain text

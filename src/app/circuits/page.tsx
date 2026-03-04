@@ -16,7 +16,7 @@ import Button from '../../components/Button'
 import { useTranslation } from 'react-i18next'
 import { useQuantumStore } from '../../store/quantumStore'
 import { parseJSON } from '../../lib/safeStorage'
-import { circuitDepth } from 'quantum-computer-js'
+import { circuitDepth, QuantumMetrics } from 'quantum-computer-js'
 import { downloadFile } from '../../lib/exportUtils'
 import type { Circuit } from 'quantum-computer-js'
 
@@ -174,8 +174,8 @@ export default function CircuitsPage() {
                 </Button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
-                {Object.entries(engine.result.probabilities)
-                  .sort((a, b) => b[1] - a[1])
+                {engine.result && Object.entries(engine.result.probabilities)
+                  .sort((a, b) => (b[1] as number) - (a[1] as number))
                   .slice(0, 8)
                   .map(([state, prob], i) => (
                     <div
@@ -187,14 +187,37 @@ export default function CircuitsPage() {
                       <div className="mt-1 w-12 h-16 bg-theme-surface rounded overflow-hidden flex items-end">
                         <div
                           className="w-full bg-gradient-to-t from-primary to-accent animate-bar-grow"
-                          style={{ height: `${prob * 100}%`, animationDelay: `${i * 50}ms` }}
+                          style={{ height: `${(prob as number) * 100}%`, animationDelay: `${i * 50}ms` }}
                         />
                       </div>
-                      <div className="mt-1 text-xs text-primary font-semibold transition-colors duration-200">{(prob * 100).toFixed(1)}%</div>
+                      <div className="mt-1 text-xs text-primary font-semibold transition-colors duration-200">{((prob as number) * 100).toFixed(1)}%</div>
                     </div>
                   ))}
               </div>
             </Card>
+          )}
+          {!engine.isProcessing && engine.result?.stateVector && (
+            <div className="flex gap-4 animate-fade-in mt-2">
+              <div className="px-3 py-2 rounded-lg bg-primary/10 border border-primary/20 flex flex-col">
+                <span className="text-[10px] uppercase text-primary font-bold tracking-widest">Von Neumann Entropy</span>
+                <span className="text-xl font-mono text-theme-text">
+                  {(() => {
+                    const sv = engine.result.stateVector
+                    const complexSV = []
+                    for (let i = 0; i < sv.length; i += 2) complexSV.push({ r: sv[i], i: sv[i + 1] })
+                    // Trace out all but one qubit to see single-qubit mixedness
+                    const dm = QuantumMetrics.partialTrace(complexSV, numQubits, Array.from({ length: numQubits - 1 }, (_, i) => i + 1))
+                    return QuantumMetrics.calculateEntropy(dm).toFixed(4)
+                  })()}
+                </span>
+              </div>
+              <div className="px-3 py-2 rounded-lg bg-accent/10 border border-accent/20 flex flex-col">
+                <span className="text-[10px] uppercase text-accent font-bold tracking-widest">State Purity</span>
+                <span className="text-xl font-mono text-theme-text">
+                  100%
+                </span>
+              </div>
+            </div>
           )}
           <StateViewer
             probabilities={engine.result?.probabilities}

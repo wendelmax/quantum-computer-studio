@@ -16,6 +16,7 @@
         "qnlp": "QNLP",
         "gallery": "Galeria",
         "playground": "Laboratório",
+        "visual_lab": "Lab Visual",
         "execution": "Execução",
         "documentation": "Docs",
         "api_terminal": "API",
@@ -176,7 +177,24 @@
         "format_desc": "Pares Real/Imaginário",
         "about_title": "Sobre o Visualizador",
         "about_desc": "Visualize estados quânticos, amplitudes, probabilidades e fases.",
-        "phase_diagram": "Diagrama de fase:",
-        "argand_plot": "Gráfico de Argand"
+        "phase_diagram": "Phase diagram:",
+        "argand_plot": "Argand plot"
+    },
+    "visual_lab": {
+        "desc": "Visualização interativa do comportamento dos estados quânticos.",
+        "measure": "Medir",
+        "explanation_title": "Entendendo o Estado",
+        "super_title": "Superposição",
+        "basis_title": "Estado de Base",
+        "super_desc": "O qubit existe em ambos |0⟩ e |1⟩ simultaneamente. Não está \"entre\" eles, mas sim em uma \"nuvem de probabilidade\" até ser medido.",
+        "zero_desc": "O qubit está estritamente no estado |0⟩. Se medido, resultará em \"0\" com 100% de probabilidade.",
+        "one_desc": "O qubit está estritamente no estado |1⟩. Se medido, resultará em \"1\" com 100% de probabilidade.",
+        "collapsing": "Colapso da Função de Onda...",
+        "collapse_desc": "A observação força o sistema a assumir um único estado clássico.",
+        "tips_title": "Tente estes passos:",
+        "tip1": "Aplique X para alternar entre 0 e 1.",
+        "tip2": "Aplique H para entrar em superposição (a nuvem).",
+        "tip3": "Espere a nuvem pulsar e clique em Medir.",
+        "tip4": "Observe o \"Snap\" conforme ele colapsa para um ponto único."
     }
 }

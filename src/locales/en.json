@@ -16,6 +16,7 @@
         "qnlp": "QNLP",
         "gallery": "Gallery",
         "playground": "Lab",
+        "visual_lab": "Visual Lab",
         "execution": "Execution",
         "documentation": "Docs",
         "api_terminal": "API",
@@ -178,5 +179,22 @@
         "about_desc": "Visualize quantum states, amplitudes, probabilities, and phases.",
         "phase_diagram": "Phase diagram:",
         "argand_plot": "Argand plot"
+    },
+    "visual_lab": {
+        "desc": "Interactive visualization of quantum state behavior.",
+        "measure": "Measure",
+        "explanation_title": "Understanding the State",
+        "super_title": "Superposition",
+        "basis_title": "Basis State",
+        "super_desc": "The qubit exists in both |0⟩ and |1⟩ simultaneously. It is not \"between\" them, but rather a \"cloud of probability\" until measured.",
+        "zero_desc": "The qubit is strictly in state |0⟩. If measured, it will yield \"0\" with 100% probability.",
+        "one_desc": "The qubit is strictly in state |1⟩. If measured, it will yield \"1\" with 100% probability.",
+        "collapsing": "Wavefunction Collapse...",
+        "collapse_desc": "The observation forces the system into a single classical state.",
+        "tips_title": "Try these steps:",
+        "tip1": "Apply X to flip from 0 to 1.",
+        "tip2": "Apply H to enter superposition (the cloud).",
+        "tip3": "Wait for the cloud to pulse, then click Measure.",
+        "tip4": "Observe the \"Snap\" as it collapses to a single point."
     }
 }

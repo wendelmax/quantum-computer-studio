@@ -12,17 +12,17 @@ type Props = {
 
 export default function CircuitCanvas({ children, selectedGate, onPlace, circuit, onRemove, onMove }: Props) {
   const numQubits = circuit.numQubits
-  const perRow: Record<number, typeof circuit.gates> = {}
+  const perRow: Record<number, any[]> = {}
   for (const p of circuit.gates) {
     if (!perRow[p.target]) perRow[p.target] = []
     perRow[p.target].push(p)
   }
   const gatesByRow: Record<number, number> = {}
-  Object.keys(perRow).forEach(k => { gatesByRow[Number(k)] = perRow[Number(k)].length })
+  Object.keys(perRow).forEach(k => { gatesByRow[Number(k)] = (perRow[Number(k)] || []).length })
   const maxCols = Math.max(8, ...Object.values(gatesByRow), 0)
   const cnotConns = circuit.gates
-    .filter(g => g.type === 'CNOT' && typeof g.control === 'number')
-    .map(g => {
+    .filter((g: any) => g.type === 'CNOT' && typeof g.control === 'number')
+    .map((g: any) => {
       const arr = perRow[g.target] || []
       const colIndex = arr.indexOf(g)
       return { control: g.control as number, target: g.target, col: Math.max(0, colIndex) }
@@ -60,8 +60,8 @@ export default function CircuitCanvas({ children, selectedGate, onPlace, circuit
                     <div
                       key={`${row}-${col}`}
                       className={`relative h-10 rounded flex items-center justify-center transition-all duration-300 ease-out hover:scale-[1.02] ${selectedGate
-                          ? `cursor-pointer hover:bg-primary/10 border-2 border-primary/60 border-dashed ${!(perRow[row] || [])[col] ? 'bg-primary/5 animate-cell-breathe' : 'bg-theme-surface/30'}`
-                          : 'cursor-pointer hover:bg-theme-surface/50 border-2 border-transparent bg-theme-surface/30'
+                        ? `cursor-pointer hover:bg-primary/10 border-2 border-primary/60 border-dashed ${!(perRow[row] || [])[col] ? 'bg-primary/5 animate-cell-breathe' : 'bg-theme-surface/30'}`
+                        : 'cursor-pointer hover:bg-theme-surface/50 border-2 border-transparent bg-theme-surface/30'
                         }`}
                       onClick={() => selectedGate && onPlace?.(selectedGate, row)}
                       onDragOver={(e) => e.preventDefault()}
@@ -73,7 +73,7 @@ export default function CircuitCanvas({ children, selectedGate, onPlace, circuit
                       title={selectedGate ? `Click to add ${selectedGate} gate` : undefined}
                     >
                       <div className="absolute left-0 right-0 h-px bg-theme-border" />
-                      {cnotConns.some(c => c.col === col && row >= Math.min(c.control, c.target) && row <= Math.max(c.control, c.target)) ? (
+                      {cnotConns.some((c: any) => c.col === col && row >= Math.min(c.control, c.target) && row <= Math.max(c.control, c.target)) ? (
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                           <div className="w-px h-full bg-theme-border" />
                         </div>
@@ -101,7 +101,7 @@ export default function CircuitCanvas({ children, selectedGate, onPlace, circuit
                         )
                       })()}
                       {(() => {
-                        const controlHere = cnotConns.find(c => c.col === col && c.control === row)
+                        const controlHere = cnotConns.find((c: any) => c.col === col && c.control === row)
                         if (!controlHere) return null
                         return <div className="relative z-10 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgb(var(--primary)/0.6)]" />
                       })()}

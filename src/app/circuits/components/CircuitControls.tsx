@@ -12,7 +12,7 @@ import type { Circuit } from 'quantum-computer-js'
 const DEFAULT_EXPORT_KEY = 'quantum:prefs:defaultExportFormat'
 
 interface CircuitControlsProps {
-  onRun?: (options?: { shots?: number; noise?: number }) => void
+  onRun?: (options?: { shots?: number; noise?: number; optimize?: boolean; noiseType?: string }) => void
   onReset?: () => void
   onUndo?: () => void
   onRedo?: () => void
@@ -107,22 +107,58 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
   ]
   const sorted = [...exportOptions].sort((a, b) => (a.id === defaultFormat ? -1 : b.id === defaultFormat ? 1 : 0))
 
+  const [optimize, setOptimize] = useState(false)
+  const [noiseType, setNoiseType] = useState('bitflip')
+  const [showNoiseMenu, setShowNoiseMenu] = useState(false)
+
   return (
     <div className="rounded-lg p-3 bg-bg-card border border-theme-border transition-all duration-300 hover:border-primary/50">
       {validationError && (
         <div className="mb-3 px-3 py-2 rounded bg-red-900/30 border border-red-700/50 text-xs text-red-300 animate-fade-in">
           {validationError}
         </div>
-      )}
+      )
+      }
       <div className="flex gap-2 flex-wrap">
         <Button
           className="flex-1 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
-          onClick={() => onRun?.()}
+          onClick={() => onRun?.({ optimize, noiseType })}
           title="Run (Ctrl+Enter)"
         >
           <FontAwesomeIcon icon={faPlay} className="mr-1.5" />
           Run
         </Button>
+
+        <div className="flex bg-theme-surface border border-theme-border rounded-lg p-1 items-center">
+          <button
+            onClick={() => setOptimize(!optimize)}
+            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded transition-all ${optimize ? 'bg-primary text-white' : 'text-theme-text-muted hover:text-theme-text'}`}
+          >
+            {optimize ? 'Optimized' : 'Raw'}
+          </button>
+          <div className="w-px h-3 bg-theme-border mx-1" />
+          <div className="relative">
+            <button
+              onClick={() => setShowNoiseMenu(!showNoiseMenu)}
+              className="px-2 py-1 text-[10px] text-theme-text-muted hover:text-primary transition-colors flex items-center gap-1"
+            >
+              {noiseType}
+            </button>
+            {showNoiseMenu && (
+              <div className="absolute left-0 top-full mt-1 z-20 bg-theme-surface border border-theme-border rounded shadow-xl p-1 min-w-24">
+                {['bitflip', 'phaseflip', 'depolarizing', 'amplitude'].map(t => (
+                  <button
+                    key={t}
+                    onClick={() => { setNoiseType(t); setShowNoiseMenu(false) }}
+                    className={`w-full text-left px-2 py-1 text-[10px] rounded hover:bg-theme-border/50 ${noiseType === t ? 'text-primary font-bold' : 'text-theme-text'}`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
         <Button variant="secondary" className="transition-transform duration-200 hover:scale-105 disabled:hover:scale-100" onClick={onUndo} disabled={!canUndo} title="Undo (Ctrl+Z)">
           <FontAwesomeIcon icon={faUndo} className="mr-1.5" />
         </Button>
@@ -182,7 +218,7 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
           Import
         </Button>
       </div>
-    </div>
+    </div >
   )
 }
 

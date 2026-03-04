@@ -9,8 +9,8 @@ interface QubitTimelineProps {
 
 // TODO: Add timeline scrolling for long circuits
 const QubitTimeline = ({ circuit }: QubitTimelineProps) => {
-  const byQubit: Record<number, Gate[]> = {}
-  circuit.gates.forEach(p => {
+  const byQubit: Record<number, any[]> = {}
+  circuit.gates.forEach((p: any) => {
     if (!byQubit[p.target]) byQubit[p.target] = []
     byQubit[p.target].push(p)
     if (p.type === 'CNOT' && p.control != null) {
