@@ -8,6 +8,7 @@ import Button from '../../components/Button'
 import { qasmToCircuit } from './services/qasmParser'
 import { runSimulation } from '../circuits/services/simulator'
 import { useQuantumStore } from '../../store/quantumStore'
+import { useTranslation } from 'react-i18next'
 
 const EXAMPLE_CODES = {
   bell: `OPENQASM 2.0
@@ -39,6 +40,7 @@ h q[0];`
 }
 
 export default function PlaygroundPage() {
+  const { t } = useTranslation()
   const [code, setCode] = useState(() => {
     try { return localStorage.getItem('quantum:play:code') || EXAMPLE_CODES.bell } catch { return EXAMPLE_CODES.bell }
   })
@@ -77,7 +79,7 @@ export default function PlaygroundPage() {
   return (
     <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div className="lg:col-span-8 flex flex-col gap-4">
-        <h2 className="text-2xl font-semibold text-theme-text">QASM Playground</h2>
+        <h2 className="text-2xl font-semibold text-theme-text">{t('nav.playground')}</h2>
 
         <QASMEditor value={code} onChange={setCode} />
 

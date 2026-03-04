@@ -8,6 +8,7 @@ import AlgorithmsInline from './components/AlgorithmsInline'
 import StateViewer from './components/StateViewer'
 import CircuitControls from './components/CircuitControls'
 import QubitTimeline from './components/QubitTimeline'
+import QASMEditor from './components/QASMEditor'
 import { useCircuitEngine } from './hooks/useCircuitEngine'
 import { useCircuitPrefs } from '../CircuitPrefs'
 import Card from '../../components/Card'
@@ -27,6 +28,8 @@ export default function CircuitsPage() {
   const { numQubits, shots } = useCircuitPrefs()
   const engine = useCircuitEngine(numQubits)
   const [selectedGate, setSelectedGate] = useState<string | undefined>(undefined)
+  const [viewMode, setViewMode] = useState<'visual' | 'code'>('visual')
+  const [qasmError, setQasmError] = useState<string | null>(null)
   const depth = circuitDepth(engine.circuit)
 
   useEffect(() => {
@@ -89,6 +92,22 @@ export default function CircuitsPage() {
     <div className="p-4 lg:p-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <h2 className="text-xl sm:text-2xl font-semibold text-theme-text">{t('studio.title')}</h2>
+
+        <div className="flex bg-theme-surface border border-theme-border rounded-lg p-1">
+          <button
+            onClick={() => setViewMode('visual')}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'visual' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
+          >
+            Visual
+          </button>
+          <button
+            onClick={() => setViewMode('code')}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'code' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
+          >
+            QASM Code
+          </button>
+        </div>
+
         <div className="flex items-center gap-4 text-xs text-theme-text-muted">
           <div className="flex items-center gap-1">
             <span className="font-mono">{engine.circuit.gates.length}</span>
@@ -108,8 +127,26 @@ export default function CircuitsPage() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <div className="lg:col-span-8 flex flex-col gap-4">
-          <CircuitCanvas circuit={engine.circuit} selectedGate={selectedGate} onPlace={(g, target) => engine.addGate(g, target)} onRemove={(target, idx) => engine.removeGateAt(target, idx)} onMove={(fromTarget, fromIdx, toTarget, toIdx) => engine.moveGate(fromTarget, fromIdx, toTarget, toIdx)} />
-          <QubitTimeline circuit={engine.circuit} />
+          {viewMode === 'visual' ? (
+            <>
+              <CircuitCanvas
+                circuit={engine.circuit}
+                selectedGate={selectedGate}
+                onPlace={(g, target) => engine.addGate(g, target)}
+                onRemove={(target, idx) => engine.removeGateAt(target, idx)}
+                onMove={(fromTarget, fromIdx, toTarget, toIdx) => engine.moveGate(fromTarget, fromIdx, toTarget, toIdx)}
+              />
+              <QubitTimeline circuit={engine.circuit} />
+            </>
+          ) : (
+            <div className="flex-1 min-h-[500px]">
+              <QASMEditor
+                circuit={engine.circuit}
+                onChange={(c) => engine.replaceCircuit(c)}
+                onValidationError={setQasmError}
+              />
+            </div>
+          )}
           {engine.isProcessing && (
             <Card title={t('studio.running')} description={t('studio.simulating')} className="animate-slide-up border-primary/50">
               <div className="flex items-center gap-3 py-2">
@@ -186,7 +223,7 @@ export default function CircuitsPage() {
             onRedo={engine.redo}
             canUndo={engine.canUndo}
             canRedo={engine.canRedo}
-            validationError={engine.validationError}
+            validationError={engine.validationError || qasmError}
             circuitJSON={JSON.stringify(engine.circuit)}
             onImport={(txt) => {
               const parsed = parseJSON<Circuit | null>(txt, null)

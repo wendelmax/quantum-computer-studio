@@ -93,7 +93,7 @@ export default function QuantumShell() {
                 </Link>
                 <div className="flex flex-col">
                   <Link to="/" className="text-xl sm:text-2xl font-black tracking-tighter text-white hover:text-primary transition-colors flex items-center gap-2">
-                    Quantum<span className="text-primary">Studio</span>
+                    Quantum<span className="text-primary">Computer Studio</span>
                   </Link>
                   <div className="flex items-center gap-2 opacity-60">
                     <span className="text-[10px] font-bold tracking-widest text-primary/80">{t('shell.simulator_engine')}</span>

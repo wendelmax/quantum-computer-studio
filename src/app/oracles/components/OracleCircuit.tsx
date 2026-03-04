@@ -1,5 +1,5 @@
 import React from 'react'
-import type { Circuit } from '../../circuits/hooks/useCircuitEngine'
+import type { Circuit, CircuitGate } from 'quantum-computer-js'
 
 interface OracleCircuitProps {
   circuit: Circuit
@@ -7,7 +7,7 @@ interface OracleCircuitProps {
 
 const OracleCircuit = ({ circuit }: OracleCircuitProps) => {
   const gatesByQubit: Record<number, typeof circuit.gates> = {}
-  
+
   for (const gate of circuit.gates) {
     if (!gatesByQubit[gate.target]) {
       gatesByQubit[gate.target] = []
@@ -41,7 +41,7 @@ const OracleCircuit = ({ circuit }: OracleCircuitProps) => {
               <span className="text-theme-text-muted font-mono">q[{qubit}]</span>
             </div>
             <div className="flex-1 h-10 flex items-center border-b border-theme-border relative">
-              {gatesByQubit[qubit]?.map((gate, idx) => (
+              {gatesByQubit[qubit]?.map((gate: CircuitGate, idx: number) => (
                 <React.Fragment key={idx}>
                   <div className="relative">
                     <div className={`px-3 py-2 border rounded text-center min-w-[50px] ${getGateColor(gate.type)}`}>

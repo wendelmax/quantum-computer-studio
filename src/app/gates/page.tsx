@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
 import { useQuantumStore } from '../../store/quantumStore'
@@ -75,6 +76,7 @@ export default function GatesLibraryPage() {
   const [selectedGate, setSelectedGate] = useState<string | null>(null)
   const storeCircuit = useQuantumStore(state => state.circuit)
   const setStoreCircuit = useQuantumStore(state => state.setCircuit)
+  const navigate = useNavigate()
 
   const categories = ['All', 'Pauli', 'Rotation', 'Two-qubit']
 
@@ -127,8 +129,8 @@ export default function GatesLibraryPage() {
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded transition-colors ${selectedCategory === cat
-                    ? 'bg-primary text-white'
-                    : 'bg-theme-surface/50 border border-theme-border hover:border-primary text-theme-text'
+                  ? 'bg-primary text-white'
+                  : 'bg-theme-surface/50 border border-theme-border hover:border-primary text-theme-text'
                   }`}
               >
                 {cat}
@@ -168,8 +170,8 @@ export default function GatesLibraryPage() {
               <div className="text-xs bg-theme-surface/50 p-2 rounded font-mono text-theme-text-muted">
                 {selectedGateInfo.matrix}
               </div>
-              <Button className="w-full" onClick={() => addToStudio(selectedGateInfo.symbol)}>
-                Add to Current Circuit
+              <Button onClick={() => navigate('/circuits')} className="px-6 py-2 rounded-xl bg-primary text-white font-bold">
+                Build in Quantum Computer Studio
               </Button>
             </div>
           ) : (

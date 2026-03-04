@@ -125,11 +125,14 @@ export default function GalleryPage() {
         </Card>
 
         {savedCircuits.length === 0 ? (
-          <Card title="No Saved Circuits">
-            <div className="text-sm text-theme-text">
-              Save your first circuit from Quantum Studio to see it here.
-            </div>
-          </Card>
+          <div className="text-center py-12">
+            <p className="text-sm text-theme-text-muted mb-6">
+              Navigate to the Quantum Computer Studio to create and save your first circuit.
+            </p>
+            <Button onClick={() => navigate('/circuits')} className="px-6 py-2 rounded-xl bg-primary text-white font-bold">
+              Open Quantum Computer Studio
+            </Button>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {savedCircuits.map(circuit => (

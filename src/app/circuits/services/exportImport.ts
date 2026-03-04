@@ -8,30 +8,8 @@ function getGateSymbol(type: string): string {
   return map[type] || type.toLowerCase()
 }
 
-export function exportToQASM(circuit: Circuit): string {
-  const lines: string[] = [
-    'OPENQASM 2.0',
-    'include "qelib1.inc";',
-    '',
-    `qreg q[${circuit.numQubits}];`,
-    `creg c[${circuit.numQubits}];`,
-    ''
-  ]
-
-  for (const gate of circuit.gates) {
-    const symbol = getGateSymbol(gate.type)
-
-    if (gate.control !== undefined) {
-      lines.push(`${symbol} q[${gate.control}], q[${gate.target}];`)
-    } else if (gate.angle !== undefined) {
-      lines.push(`${symbol}(${gate.angle.toFixed(6)}) q[${gate.target}];`)
-    } else {
-      lines.push(`${symbol} q[${gate.target}];`)
-    }
-  }
-
-  return lines.join('\n')
-}
+// QASM logic has been moved to the 'quantum-computer-js' library.
+// Use circuitToQASM() and parseQASM() from the package.
 
 export function exportToCirq(circuit: Circuit): string {
   const lines: string[] = [
@@ -85,40 +63,6 @@ export function exportToQuil(circuit: Circuit): string {
   return lines.join('\n')
 }
 
-function parseQASM(code: string): Circuit {
-  const gates: CircuitGate[] = []
-  const lines = code.split('\n')
-  let numQubits = 2
-
-  for (const line of lines) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('OPENQASM')) continue
-
-    const qregMatch = trimmed.match(/qreg\s+q\[(\d+)\]/i)
-    if (qregMatch) {
-      numQubits = parseInt(qregMatch[1])
-      continue
-    }
-
-    const gateMatch = trimmed.match(/^(h|x|y|z|cx|rx|ry|rz)\s+[^\s]+\[(\d+)\](?:\s*,\s*[^\s]+\[(\d+)\])?/i)
-    if (!gateMatch) continue
-
-    const [, type, target, control] = gateMatch
-    const typeUpper = type.toUpperCase()
-
-    if (type === 'cx' || type === 'cy' || type === 'cz') {
-      gates.push({ type: typeUpper, target: parseInt(control || target), control: parseInt(target) })
-    } else if (type.startsWith('r')) {
-      const angleMatch = trimmed.match(/\((.*?)\)/)
-      const angle = angleMatch ? parseFloat(angleMatch[1]) : 0
-      gates.push({ type: typeUpper, target: parseInt(target), angle })
-    } else {
-      gates.push({ type: typeUpper, target: parseInt(target) })
-    }
-  }
-
-  return { numQubits, gates }
-}
 
 function parseCirq(code: string): Circuit {
   const gates: CircuitGate[] = []
@@ -174,7 +118,8 @@ function parseQuil(code: string): Circuit {
 
 export function importCircuit(code: string, format: 'qasm' | 'cirq' | 'quil'): Circuit {
   try {
-    if (format === 'qasm') return parseQASM(code)
+    // QASM parsing is now handled by the library
+    throw new Error('Please use parseQASM from quantum-computer-js for QASM format')
     if (format === 'cirq') return parseCirq(code)
     if (format === 'quil') return parseQuil(code)
     throw new Error('Unsupported format')

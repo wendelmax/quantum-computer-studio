@@ -72,6 +72,17 @@ export default function Integrations() {
             ))}
           </ul>
         </div>
+        <div>
+          <h3 className="text-sm font-bold text-white mb-2 italic">Quantum Computer Studio Integration</h3>
+          <p className="text-[10px] text-theme-text-muted leading-relaxed mb-4">
+            Enable bidirectional synchronization between visual circuits and external IDEs.
+          </p>
+          <div className="space-y-2">
+            <div className="p-3 rounded-xl bg-black/20 border border-white/5 flex items-center justify-between">
+              <span className="text-[10px] text-theme-text-muted uppercase font-bold tracking-tight">QASM Live Sync</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

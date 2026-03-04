@@ -1,6 +1,8 @@
-# Quantum Computer JS
+# Quantum Computer Studio
 
 An interactive quantum simulator and quantum circuit visualizer built with React, TypeScript, and Vite.
+
+Powered by the [**quantum-computer-js**](https://www.npmjs.com/package/quantum-computer-js) NPM library.
 
 ## Live Demo
 
@@ -10,7 +12,7 @@ The project is hosted on Vercel and available for immediate use.
 
 ## Features
 
-- **Quantum Studio**: Build and visualize quantum circuits interactively
+- **Quantum Computer Studio**: Build and visualize quantum circuits interactively
 - **Algorithms**: Run and compare 9 quantum algorithms with complexity analysis
 - **State Viewer**: Visualize states with histograms, phase diagrams, and complete analysis
 - **Gates Library**: Complete reference of all quantum gates
@@ -22,7 +24,16 @@ The project is hosted on Vercel and available for immediate use.
 - **QASM Playground**: QASM editor with syntax highlighting
 - **Theme Switcher**: 4 themes (Dark, Light, Matrix, Ocean)
 
-### Educational Features
+## Architecture
+
+**Quantum Computer Studio** is built with a modular architecture:
+- **Studio Interface**: This repository (React + Vite).
+- **Quantum Engine**: The core mathematical and simulation logic is encapsulated in the [`quantum-computer-js`](https://www.npmjs.com/package/quantum-computer-js) library.
+
+To use the quantum engine in your own projects:
+```bash
+npm install quantum-computer-js
+```
 
 - **Mathematical Foundations**: Complete formulas, matrices, and quantum theory
 - **Quantum Concepts Tutorial**: Learn superposition, entanglement, interference
@@ -70,7 +81,7 @@ Project configuration is in `vercel.json`.
 
 ### Building a Circuit
 
-1. Navigate to **Quantum Studio**
+1. Navigate to **Quantum Computer Studio**
 2. Select a gate from the side panel
 3. Click on the canvas to place the gate
 4. Adjust parameters for rotation gates
@@ -102,7 +113,7 @@ Circuits are automatically saved to localStorage:
 quamtumPc/
 ├── src/
 │   ├── app/                    # Main pages and components
-│   │   ├── circuits/          # Quantum Studio (builder + export/import)
+│   │   ├── circuits/          # Quantum Computer Studio (builder + export/import)
 │   │   ├── algorithms/        # Library (9 algorithms + comparison)
 │   │   ├── state-viewer/      # Viewer (histograms + phases)
 │   │   ├── gates/             # Gates library

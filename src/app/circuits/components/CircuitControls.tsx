@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay, faRotateLeft, faDownload, faUpload, faUndo, faRedo } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faRotateLeft, faDownload, faUpload, faUndo, faRedo, faCopy } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../../components/Button'
+import { circuitToQASM, parseQASM } from 'quantum-computer-js'
 import { toEnglishCircuit, fromAnyCircuit } from '../services/serde'
-import { exportToQASM, exportToCirq, exportToQuil, importCircuit, detectFormat } from '../services/exportImport'
+import { exportToCirq, exportToQuil, importCircuit, detectFormat } from '../services/exportImport'
 import { copyToClipboard } from '../../../lib/exportUtils'
 import { getItem } from '../../../lib/safeStorage'
-import type { Circuit } from '../hooks/useCircuitEngine'
+import type { Circuit } from 'quantum-computer-js'
 
 const DEFAULT_EXPORT_KEY = 'quantum:prefs:defaultExportFormat'
 
@@ -47,20 +48,22 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
       a.href = URL.createObjectURL(blob)
       a.download = 'circuit.json'
       a.click()
-    } catch {}
+    } catch { }
   }
 
   const exportQASM = () => {
     try {
       if (!circuitJSON) return
       const circuit: Circuit = JSON.parse(circuitJSON)
-      const qasm = exportToQASM(circuit)
+      const qasm = circuitToQASM(circuit)
       const blob = new Blob([qasm], { type: 'text/plain' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
       a.download = 'circuit.qasm'
       a.click()
-    } catch {}
+    } catch (err) {
+      console.error('QASM Export failed:', err)
+    }
   }
 
   const exportCirq = () => {
@@ -73,7 +76,7 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
       a.href = URL.createObjectURL(blob)
       a.download = 'circuit.py'
       a.click()
-    } catch {}
+    } catch { }
   }
 
   const exportQuil = () => {
@@ -86,7 +89,7 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
       a.href = URL.createObjectURL(blob)
       a.download = 'circuit.quil'
       a.click()
-    } catch {}
+    } catch { }
   }
 
   const copyCircuitJSON = async () => {
@@ -146,23 +149,35 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
             </div>
           )}
         </div>
-        <input ref={fileRef} type="file" accept=".json,.qasm,.py,.quil,application/json,text/plain" className="hidden" onChange={async (e)=>{
+        <input ref={fileRef} type="file" accept=".json,.qasm,.py,.quil,application/json,text/plain" className="hidden" onChange={async (e) => {
           const f = e.target.files?.[0]; if (!f) return
           const txt = await f.text();
           try {
             const format = detectFormat(txt)
-            if (format === 'qasm' || format === 'cirq' || format === 'quil') {
+            if (format === 'qasm') {
+              const circuit = parseQASM(txt)
+              onImport?.(JSON.stringify(circuit))
+            } else if (format === 'cirq' || format === 'quil') {
               const circuit = importCircuit(txt, format)
               onImport?.(JSON.stringify(circuit))
             } else {
               const circuit = fromAnyCircuit(txt)
               onImport?.(JSON.stringify(circuit))
             }
-          } catch {
+          } catch (err) {
+            console.error('Import failed:', err)
             onImport?.(txt)
           }
         }} />
-        <Button variant="secondary" onClick={()=> fileRef.current?.click()}>
+        <Button variant="secondary" onClick={async () => {
+          if (!circuitJSON) return
+          const qasm = circuitToQASM(JSON.parse(circuitJSON))
+          await copyToClipboard(qasm)
+        }} title="Copy QASM">
+          <FontAwesomeIcon icon={faCopy} className="mr-1.5" />
+          QASM
+        </Button>
+        <Button variant="secondary" onClick={() => fileRef.current?.click()}>
           <FontAwesomeIcon icon={faUpload} className="mr-1.5" />
           Import
         </Button>

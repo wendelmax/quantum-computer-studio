@@ -173,8 +173,14 @@ export default function OraclesPage() {
                   <span className="text-xs text-theme-text-muted">Application:</span>
                   <span className="text-xs text-theme-text">{oracleInfo.application}</span>
                 </div>
-                <Button className="w-full" onClick={() => loadToStudio(oracleInfo.id)}>
-                  Open in Studio
+                <Button className="w-full" onClick={() => {
+                  const oracle = oracles.find(o => o.id === oracleInfo.id)?.circuit
+                  if (oracle) {
+                    setStoreCircuit(oracle as any, true)
+                    window.location.href = '/circuits'
+                  }
+                }}>
+                  Open in Quantum Computer Studio
                 </Button>
               </div>
             </Card>

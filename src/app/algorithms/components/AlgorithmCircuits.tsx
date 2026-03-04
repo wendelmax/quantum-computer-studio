@@ -1,6 +1,6 @@
 import React from 'react'
 import { getPreset } from '../services/presets'
-import type { Circuit } from '../../circuits/hooks/useCircuitEngine'
+import type { Circuit, CircuitGate } from 'quantum-computer-js'
 
 interface AlgorithmCircuitsProps {
   algorithmId: string
@@ -9,9 +9,9 @@ interface AlgorithmCircuitsProps {
 
 const AlgorithmCircuits = ({ algorithmId, selectedGate }: AlgorithmCircuitsProps) => {
   const circuit = getPreset(algorithmId)
-  
+
   const gatesByQubit: Record<number, typeof circuit.gates> = {}
-  
+
   for (const gate of circuit.gates) {
     if (!gatesByQubit[gate.target]) {
       gatesByQubit[gate.target] = []
@@ -37,7 +37,7 @@ const AlgorithmCircuits = ({ algorithmId, selectedGate }: AlgorithmCircuitsProps
               <span className="text-theme-text-muted font-mono">q[{qubit}]</span>
             </div>
             <div className="flex-1 h-8 flex items-center border-b border-theme-border">
-              {gatesByQubit[qubit]?.map((gate, idx) => (
+              {gatesByQubit[qubit]?.map((gate: CircuitGate, idx: number) => (
                 <React.Fragment key={idx}>
                   <div className="relative">
                     <div className="px-2 py-1 bg-theme-surface border border-theme-border rounded text-center min-w-[40px] text-theme-text">

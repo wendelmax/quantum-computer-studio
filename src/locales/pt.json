@@ -15,7 +15,7 @@
         "oracles": "Oráculos",
         "qnlp": "QNLP",
         "gallery": "Galeria",
-        "playground": "Playground",
+        "playground": "Laboratório",
         "execution": "Execução",
         "documentation": "Docs",
         "api_terminal": "API",
@@ -25,7 +25,7 @@
     "home": {
         "studio_title": "Studio",
         "studio_desc": "Desenhe circuitos quânticos complexos com arrastar e soltar intuitivo.",
-        "studio_link": "Abrir Studio",
+        "studio_link": "Abrir Quantum Computer Studio",
         "algorithms_title": "Algoritmos",
         "algorithms_desc": "Shor, Grover, VQE, QAOA e mais prontos para execução e aprendizado.",
         "algorithms_link": "Ver Tabela",
@@ -78,7 +78,7 @@
         "sim_failed": "Falha na simulação"
     },
     "studio": {
-        "title": "Quantum Studio",
+        "title": "Quantum Computer Studio",
         "gates": "gates",
         "depth": "profundidade",
         "qubits": "qubits",
