@@ -16,7 +16,9 @@ import GatesLibraryPage from './app/gates/page'
 import OraclesPage from './app/oracles/page'
 import APIPage from './app/api/page'
 import LibDocsPage from './app/lib-docs/page'
+import QNLPPage from './app/qnlp/page'
 import './index.css'
+import './i18n'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -30,6 +32,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="state-viewer" element={<StateViewerPage />} />
           <Route path="gates" element={<GatesLibraryPage />} />
           <Route path="oracles" element={<OraclesPage />} />
+          <Route path="qnlp" element={<QNLPPage />} />
           <Route path="execution" element={<ExecutionPage />} />
           <Route path="docs" element={<DocsPage />} />
           <Route path="api" element={<APIPage />} />

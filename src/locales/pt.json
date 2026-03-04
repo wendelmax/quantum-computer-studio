@@ -1,0 +1,42 @@
+{
+    "common": {
+        "start_now": "Começar Agora",
+        "docs": "Documentação",
+        "new_frontier": "A Nova Fronteira do",
+        "explore_convergence": "Explore a convergência entre computação quântica e inteligência artificial através de simuladores interativos, QNLP e otimizadores variacionais.",
+        "applications": "Aplicações"
+    },
+    "nav": {
+        "studio": "Quantum Studio",
+        "algorithms": "Algoritmos",
+        "data_lab": "Laboratório de Dados",
+        "state_viewer": "Visualizador de Estados",
+        "gates": "Biblioteca de Gates",
+        "oracles": "Oráculos",
+        "qnlp": "Quantum NLP",
+        "gallery": "Galeria",
+        "playground": "Playground",
+        "execution": "Execução",
+        "documentation": "Documentação",
+        "api_terminal": "Terminal de API",
+        "library_api": "API da Biblioteca",
+        "settings": "Configurações"
+    },
+    "home": {
+        "studio_title": "Quantum Studio",
+        "studio_desc": "Desenhe circuitos quânticos complexos com arrastar e soltar intuitivo.",
+        "studio_link": "Abrir Studio",
+        "algorithms_title": "Algoritmos",
+        "algorithms_desc": "Shor, Grover, VQE, QAOA e mais prontos para execução e aprendizado.",
+        "algorithms_link": "Ver Tabela",
+        "qnlp_title": "Quantum NLP",
+        "qnlp_desc": "Combine linguagem natural com mecânica quântica para análise semântica.",
+        "qnlp_link": "Explorar QNLP"
+    },
+    "shell": {
+        "simulator_engine": "SIMULATOR ENGINE V2.0",
+        "qubits": "QUBITS",
+        "gates": "GATES",
+        "states": "STATES"
+    }
+}

@@ -9,6 +9,7 @@ import ResultChart from './components/ResultChart'
 import ComplexityComparison from './components/ComplexityComparison'
 import AlgorithmCircuits from './components/AlgorithmCircuits'
 import ExecutionHistory from './components/ExecutionHistory'
+import TrainingChart from '../../components/TrainingChart'
 import { runSimulation } from '../circuits/services/simulator'
 import type { Algorithm } from '../../types/Algorithm'
 import { setItem } from '../../lib/safeStorage'
@@ -27,6 +28,7 @@ export default function AlgorithmsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All')
   const [showResultExport, setShowResultExport] = useState(false)
+  const [trainingData, setTrainingData] = useState<{ iteration: number, cost: number }[]>([])
   const resultExportRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function AlgorithmsPage() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showResultExport])
-  
+
   const algorithmDescriptions: Record<string, string> = {
     grover: "Grover's algorithm is a quantum search algorithm that finds a target item in an unstructured database in O(√N) queries. Classical algorithms require O(N) queries.",
     'deutsch-jozsa': "The Deutsch-Jozsa algorithm determines if a function is constant or balanced with just one query, demonstrating quantum advantage over classical computing.",
@@ -73,6 +75,18 @@ export default function AlgorithmsPage() {
     window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit: preset, autoRun: true } }))
 
     const startTime = performance.now()
+
+    // Simulate training data for variational algorithms
+    if (id === 'vqe' || id === 'qaoa') {
+      const data = Array.from({ length: 20 }, (_, i) => ({
+        iteration: i + 1,
+        cost: Math.exp(-i / 5) * (id === 'vqe' ? -1.5 : 2.0) + (Math.random() - 0.5) * 0.1
+      }))
+      setTrainingData(data)
+    } else {
+      setTrainingData([])
+    }
+
     runSimulation(preset).then(res => {
       setChart(res.probabilities)
       const endTime = performance.now()
@@ -110,7 +124,7 @@ export default function AlgorithmsPage() {
               placeholder="Search algorithms..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 pl-10 rounded text-sm"
+              className="w-full px-3 py-2 pl-10 rounded text-sm"
             />
           </div>
           <div className="flex gap-2 mb-4">
@@ -168,6 +182,9 @@ export default function AlgorithmsPage() {
         {current ? (
           <>
             <AlgorithmRunner algorithm={current} />
+            {trainingData.length > 0 && (
+              <TrainingChart data={trainingData} title={`${current.toUpperCase()} Training Progress`} />
+            )}
             <ComplexityComparison
               algorithmName={current}
               quantumComplexity={list.find((a: Algorithm) => a.id === current)?.complexity}
@@ -195,11 +212,11 @@ export default function AlgorithmsPage() {
         </div>
 
         <ExecutionHistory />
-        
+
         <Card title="About Quantum Algorithms">
           <div className="text-xs text-theme-text space-y-2">
             <p>
-              Quantum algorithms leverage superposition and entanglement to solve problems 
+              Quantum algorithms leverage superposition and entanglement to solve problems
               exponentially faster than classical computers for specific tasks.
             </p>
             <p>
