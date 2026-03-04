@@ -32,7 +32,7 @@ const QUANTUM_SNIPPETS = [
 type Command = {
   input: string
   output: any
-  type: 'success' | 'error' | 'info'
+  type: 'success' | 'error' | 'info' | 'chart'
 }
 
 const EXAMPLES = [
@@ -128,7 +128,19 @@ export default function APIPage() {
   const [history, setHistory] = useState<Command[]>([
     { input: '', output: 'Quantum Computer JS API\nType your code or select an example to begin', type: 'info' }
   ])
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('quantum:api:input') || ''
+    }
+    return ''
+  })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('quantum:api:input', input)
+    }
+  }, [input])
+
   const [isProcessing, setIsProcessing] = useState(false)
   const [editorHeight, setEditorHeight] = useState(300)
   const terminalRef = useRef<HTMLDivElement>(null)
@@ -178,8 +190,15 @@ export default function APIPage() {
         outputParts.push(...consoleLogs)
       }
 
+      let isCircuitOutput = false
+      let probabilitiesData: Record<string, number> | null = null
+
       let formattedOutput: any = result
       if (typeof result === 'object' && result !== null) {
+        if ('probabilities' in result && typeof result.probabilities === 'object') {
+          isCircuitOutput = true
+          probabilitiesData = result.probabilities
+        }
         formattedOutput = JSON.stringify(result, null, 2)
       } else if (result !== undefined) {
         formattedOutput = String(result)
@@ -198,7 +217,11 @@ export default function APIPage() {
 
       setHistory(prev => {
         const newHistory = [...prev]
-        newHistory[newHistory.length - 1] = { input: cmd, output: formattedOutput, type: 'success' }
+        newHistory[newHistory.length - 1] = {
+          input: cmd,
+          output: isCircuitOutput ? probabilitiesData : formattedOutput,
+          type: isCircuitOutput ? 'chart' as any : 'success'
+        }
         return newHistory
       })
     } catch (error: any) {
@@ -274,15 +297,23 @@ export default function APIPage() {
 
   const handleEditorWillMount = (monaco: Monaco) => {
     monaco.languages.registerCompletionItemProvider('javascript', {
-      provideCompletionItems: () => {
+      provideCompletionItems: (model, position) => {
+        const word = model.getWordUntilPosition(position)
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn
+        };
         return {
           suggestions: QUANTUM_SNIPPETS.map(snippet => ({
             label: snippet.label,
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: snippet.insertText,
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: snippet.documentation
-          }))
+            documentation: snippet.documentation,
+            range,
+          })) as any[]
         }
       }
     })
@@ -400,7 +431,7 @@ export default function APIPage() {
                     <span className="text-theme-text-muted">&gt;</span> {cmd.input}
                   </div>
                 )}
-                {cmd.output && (
+                {cmd.output && cmd.type !== 'chart' && cmd.type !== ('chart' as any) && (
                   <div className={`${cmd.type === 'error'
                     ? 'text-red-400 bg-red-950/20 border border-red-800/30'
                     : cmd.type === 'info'
@@ -408,6 +439,26 @@ export default function APIPage() {
                       : 'text-theme-text bg-primary/5 border border-primary/20'
                     } whitespace-pre-wrap p-2 rounded mt-1`}>
                     {cmd.output}
+                  </div>
+                )}
+                {(cmd.type === 'chart' || cmd.type === ('chart' as any)) && cmd.output && typeof cmd.output === 'object' && (
+                  <div className="text-theme-text bg-primary/5 border border-primary/20 p-3 rounded mt-1 space-y-2">
+                    <div className="text-primary font-bold mb-2">Circuit Result Probabilities:</div>
+                    {Object.entries(cmd.output as Record<string, number>).map(([state, prob]) => {
+                      const percentage = (prob * 100).toFixed(1)
+                      return (
+                        <div key={state} className="flex items-center gap-3">
+                          <span className="w-12 text-right font-mono text-xs opacity-70">|{state}⟩</span>
+                          <div className="flex-1 h-3 bg-white/5 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-primary"
+                              style={{ width: `${Math.max(0.5, prob * 100)}%` }}
+                            />
+                          </div>
+                          <span className="w-12 font-mono text-xs text-primary">{percentage}%</span>
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </div>

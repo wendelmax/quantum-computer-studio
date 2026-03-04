@@ -3,10 +3,15 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
-  "main": "./src/api.ts",
-  "types": "./src/api.ts",
+  "main": "./dist-lib/index.umd.js",
+  "module": "./dist-lib/index.es.js",
+  "types": "./dist-lib/index.d.ts",
   "exports": {
-    ".": "./src/api.ts"
+    ".": {
+      "types": "./dist-lib/index.d.ts",
+      "import": "./dist-lib/index.es.js",
+      "require": "./dist-lib/index.umd.js"
+    }
   },
   "description": "Interactive quantum computing simulator with circuit builder, 9 algorithms, oracles, data lab, and API terminal",
   "keywords": [
@@ -51,6 +56,7 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
-    "vite": "^5.4.6"
+    "vite": "^5.4.6",
+    "vite-plugin-dts": "^4.5.4"
   }
 }
