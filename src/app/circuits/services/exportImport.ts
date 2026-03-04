@@ -1,4 +1,4 @@
-import type { Circuit, CircuitGate } from '../../../types/Circuit'
+import type { Circuit, CircuitGate } from 'quantum-computer-js'
 
 function getGateSymbol(type: string): string {
   const map: Record<string, string> = {
@@ -20,7 +20,7 @@ export function exportToQASM(circuit: Circuit): string {
 
   for (const gate of circuit.gates) {
     const symbol = getGateSymbol(gate.type)
-    
+
     if (gate.control !== undefined) {
       lines.push(`${symbol} q[${gate.control}], q[${gate.target}];`)
     } else if (gate.angle !== undefined) {
@@ -46,7 +46,7 @@ export function exportToCirq(circuit: Circuit): string {
 
   for (const gate of circuit.gates) {
     const symbol = getGateSymbol(gate.type)
-    
+
     if (gate.control !== undefined) {
       lines.push(`    circuit.append(cirq.${symbol}(qubits[${gate.control}], qubits[${gate.target}]))`)
     } else if (gate.angle !== undefined) {
@@ -72,7 +72,7 @@ export function exportToQuil(circuit: Circuit): string {
 
   for (const gate of circuit.gates) {
     const symbol = getGateSymbol(gate.type).toUpperCase()
-    
+
     if (gate.control !== undefined) {
       lines.push(`${symbol} ${gate.control} ${gate.target}`)
     } else if (gate.angle !== undefined) {
@@ -93,7 +93,7 @@ function parseQASM(code: string): Circuit {
   for (const line of lines) {
     const trimmed = line.trim()
     if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('OPENQASM')) continue
-    
+
     const qregMatch = trimmed.match(/qreg\s+q\[(\d+)\]/i)
     if (qregMatch) {
       numQubits = parseInt(qregMatch[1])
@@ -102,10 +102,10 @@ function parseQASM(code: string): Circuit {
 
     const gateMatch = trimmed.match(/^(h|x|y|z|cx|rx|ry|rz)\s+[^\s]+\[(\d+)\](?:\s*,\s*[^\s]+\[(\d+)\])?/i)
     if (!gateMatch) continue
-    
+
     const [, type, target, control] = gateMatch
     const typeUpper = type.toUpperCase()
-    
+
     if (type === 'cx' || type === 'cy' || type === 'cz') {
       gates.push({ type: typeUpper, target: parseInt(control || target), control: parseInt(target) })
     } else if (type.startsWith('r')) {
@@ -131,7 +131,7 @@ function parseCirq(code: string): Circuit {
   while ((match = gateRegex.exec(code)) !== null) {
     const [, type, target, control] = match
     const typeUpper = type.toUpperCase()
-    
+
     if (control !== undefined) {
       gates.push({ type: typeUpper, target: parseInt(target), control: parseInt(control) })
     } else {

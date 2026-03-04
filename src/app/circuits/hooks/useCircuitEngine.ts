@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
-import type { Circuit, CircuitGate } from '../../../types/Circuit'
-import type { Result } from '../../../types/Result'
+import type { Circuit, CircuitGate, Result } from 'quantum-computer-js'
 import { setItem } from '../../../lib/safeStorage'
 import { runSimulation, type SimulatorOptions } from '../services/simulator'
 import { useQuantumStore } from '../../../store/quantumStore'

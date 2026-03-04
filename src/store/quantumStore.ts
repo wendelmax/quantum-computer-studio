@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Circuit } from '../types/Circuit'
+import type { Circuit } from 'quantum-computer-js'
 
 interface QuantumState {
     circuit: Circuit | null

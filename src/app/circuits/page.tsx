@@ -15,9 +15,9 @@ import Button from '../../components/Button'
 import { useTranslation } from 'react-i18next'
 import { useQuantumStore } from '../../store/quantumStore'
 import { parseJSON } from '../../lib/safeStorage'
-import { circuitDepth } from '../../lib/circuitUtils'
+import { circuitDepth } from 'quantum-computer-js'
 import { downloadFile } from '../../lib/exportUtils'
-import type { Circuit } from '../../types/Circuit'
+import type { Circuit } from 'quantum-computer-js'
 
 export default function CircuitsPage() {
   const { t } = useTranslation()

@@ -4,7 +4,7 @@ import { faPlay, faGauge } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../../components/Button'
 import { getPreset } from '../services/presets'
 import { runSimulation } from '../../circuits/services/simulator'
-import type { Circuit } from '../../../types/Circuit'
+import type { Circuit } from 'quantum-computer-js'
 
 type Props = {
   algorithm: string

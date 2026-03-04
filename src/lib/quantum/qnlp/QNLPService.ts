@@ -1,4 +1,4 @@
-import { Gate } from '../../../types/quantum'
+import { type CircuitGate as Gate } from 'quantum-computer-js'
 
 export interface WordEncoding {
   label: string
@@ -19,7 +19,7 @@ export const VOCABULARY: Record<string, WordEncoding> = {
     label: '🧀 food',
     circuit: (t) => [{ type: 'RY', target: t, angle: Math.PI / 4 }]
   },
-  
+
   // Verbs (Transformations/Gates)
   'chases': {
     label: '🏃 chases',
@@ -71,7 +71,7 @@ export function analyzeSentiment(probabilities: number[]): { label: string, scor
   // Simple heuristic: state |0> is positive, |1> is negative
   // In our encoding, 'cat' is |1> (negative), 'happy' rotates towards |0>
   const p0 = probabilities[0] || 0
-  
+
   if (p0 > 0.6) return { label: 'Positive', score: p0 }
   if (p0 < 0.4) return { label: 'Negative', score: 1 - p0 }
   return { label: 'Neutral', score: 0.5 }

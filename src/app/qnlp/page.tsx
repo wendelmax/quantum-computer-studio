@@ -6,7 +6,7 @@ import { parsePhraseToCircuit, analyzeSentiment, VOCABULARY } from '../../lib/qu
 import { runSimulation } from '../circuits/services/simulator'
 import { useTranslation } from 'react-i18next'
 import { useQuantumStore } from '../../store/quantumStore'
-import type { Circuit } from '../../types/Circuit'
+import type { Circuit } from 'quantum-computer-js'
 
 export default function QNLPPage() {
     const { t } = useTranslation()

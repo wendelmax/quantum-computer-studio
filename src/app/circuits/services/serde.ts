@@ -1,4 +1,4 @@
-import type { Circuit, CircuitGate } from '../../../types/Circuit'
+import type { Circuit, CircuitGate } from 'quantum-computer-js'
 
 type EnglishGate = { type: string; target: number; control?: number; control2?: number; target2?: number; angle?: number }
 type EnglishCircuit = { qubits: number; gates: EnglishGate[]; version?: string }

@@ -1,4 +1,4 @@
-import type { Circuit } from '../types/Circuit'
+import type { Circuit } from 'quantum-computer-js'
 
 export type QuantumSetCircuitDetail = { circuit: Circuit; autoRun?: boolean }
 export type QuantumAlgorithmExecutionDetail = { algorithm: string; executionTime: number; states: number }
