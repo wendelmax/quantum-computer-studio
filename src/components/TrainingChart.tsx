@@ -32,7 +32,8 @@ export default function TrainingChart({ data, title = 'Cost Function Convergence
     return (
         <Card title={title}>
             <div className="w-full overflow-hidden">
-                <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
+                <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto" aria-label={title} role="img">
+                    <title>{title}</title>
                     {/* Axes */}
                     <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="currentColor" strokeWidth="1" className="text-theme-border" />
                     <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="currentColor" strokeWidth="1" className="text-theme-border" />

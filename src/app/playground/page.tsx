@@ -7,6 +7,7 @@ import Card from '../../components/Card'
 import Button from '../../components/Button'
 import { qasmToCircuit } from './services/qasmParser'
 import { runSimulation } from '../circuits/services/simulator'
+import { useQuantumStore } from '../../store/quantumStore'
 
 const EXAMPLE_CODES = {
   bell: `OPENQASM 2.0
@@ -44,13 +45,14 @@ export default function PlaygroundPage() {
   const [output, setOutput] = useState('')
   const [results, setResults] = useState<Record<string, number> | null>(null)
   const [error, setError] = useState<string>('')
-  
-  React.useEffect(()=>{ try { localStorage.setItem('quantum:play:code', code) } catch {} }, [code])
+  const setStoreCircuit = useQuantumStore(state => state.setCircuit)
+
+  React.useEffect(() => { try { localStorage.setItem('quantum:play:code', code) } catch { } }, [code])
 
   async function runInWorker() {
     setError('')
     setResults(null)
-    
+
     try {
       const circuit = qasmToCircuit(code, 5)
       const result = await runSimulation(circuit)
@@ -65,9 +67,7 @@ export default function PlaygroundPage() {
   const loadToStudio = () => {
     try {
       const circuit = qasmToCircuit(code, 5)
-      localStorage.setItem('quantum:loadCircuit', JSON.stringify(circuit))
-      localStorage.setItem('quantum:circuit', JSON.stringify(circuit))
-      window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit, autoRun: false } }))
+      setStoreCircuit(circuit as any, false)
       window.location.href = '/circuits'
     } catch (err: any) {
       setError(err.message || 'Failed to load circuit')
@@ -78,9 +78,9 @@ export default function PlaygroundPage() {
     <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div className="lg:col-span-8 flex flex-col gap-4">
         <h2 className="text-2xl font-semibold text-theme-text">QASM Playground</h2>
-        
+
         <QASMEditor value={code} onChange={setCode} />
-        
+
         <div className="flex items-center gap-3">
           <RunButton onRun={runInWorker} />
           <Button variant="secondary" onClick={loadToStudio}>
@@ -105,10 +105,10 @@ export default function PlaygroundPage() {
                 .map(([state, prob]) => (
                   <div key={state} className="flex flex-col items-center">
                     <div className="w-8 h-16 bg-theme-surface/30 border border-theme-border rounded flex items-end">
-                      <div className="w-full bg-primary/60" style={{height: `${prob*100}%`}} />
+                      <div className="w-full bg-primary/60" style={{ height: `${prob * 100}%` }} />
                     </div>
                     <div className="mt-1 text-[10px] text-theme-text-muted font-mono">{state}</div>
-                    <div className="text-[10px] text-theme-text-muted">{(prob*100).toFixed(1)}%</div>
+                    <div className="text-[10px] text-theme-text-muted">{(prob * 100).toFixed(1)}%</div>
                   </div>
                 ))}
             </div>

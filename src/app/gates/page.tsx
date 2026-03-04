@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
+import { useQuantumStore } from '../../store/quantumStore'
 
 type GateInfo = {
   name: string
@@ -72,40 +73,39 @@ const gates: GateInfo[] = [
 export default function GatesLibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [selectedGate, setSelectedGate] = useState<string | null>(null)
+  const storeCircuit = useQuantumStore(state => state.circuit)
+  const setStoreCircuit = useQuantumStore(state => state.setCircuit)
 
   const categories = ['All', 'Pauli', 'Rotation', 'Two-qubit']
-  
-  const filteredGates = selectedCategory === 'All' 
-    ? gates 
+
+  const filteredGates = selectedCategory === 'All'
+    ? gates
     : gates.filter(g => g.category === selectedCategory)
 
   const selectedGateInfo = selectedGate ? gates.find(g => g.symbol === selectedGate) : null
 
   const addToStudio = (symbol: string) => {
     try {
-      const raw = localStorage.getItem('quantum:circuit')
       let circuit
-      if (raw) {
-        circuit = JSON.parse(raw)
+      if (storeCircuit) {
+        circuit = JSON.parse(JSON.stringify(storeCircuit))
       } else {
         const rawPrefs = localStorage.getItem('quantum:prefs:numQubits')
         const numQubits = rawPrefs ? parseInt(rawPrefs) : 2
         circuit = { numQubits, gates: [] }
       }
-      
+
       const newGate: any = { type: symbol, target: 0 }
-      
+
       if (symbol === 'CNOT') {
         newGate.control = 0
         if (!circuit.numQubits || circuit.numQubits < 2) {
           circuit.numQubits = 2
         }
       }
-      
+
       circuit.gates.push(newGate)
-      localStorage.setItem('quantum:circuit', JSON.stringify(circuit))
-      localStorage.setItem('quantum:loadCircuit', JSON.stringify(circuit))
-      window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit, autoRun: false } }))
+      setStoreCircuit(circuit as any, false)
       window.location.href = '/circuits'
     } catch {
       window.location.href = '/circuits'
@@ -126,11 +126,10 @@ export default function GatesLibraryPage() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded transition-colors ${
-                  selectedCategory === cat
+                className={`px-4 py-2 rounded transition-colors ${selectedCategory === cat
                     ? 'bg-primary text-white'
                     : 'bg-theme-surface/50 border border-theme-border hover:border-primary text-theme-text'
-                }`}
+                  }`}
               >
                 {cat}
               </button>

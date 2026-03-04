@@ -2,8 +2,8 @@ import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import type { Circuit, CircuitGate } from '../../../types/Circuit'
 import type { Result } from '../../../types/Result'
 import { setItem } from '../../../lib/safeStorage'
-import { validateCircuit } from '../../../lib/circuitUtils'
 import { runSimulation, type SimulatorOptions } from '../services/simulator'
+import { useQuantumStore } from '../../../store/quantumStore'
 
 export type { Circuit }
 export type Gate = CircuitGate
@@ -14,6 +14,7 @@ const MAX_HISTORY = 50
 const emptyCircuit = (n: number): Circuit => ({ numQubits: n, gates: [] })
 
 export function useCircuitEngine(initialQubitCount: number = 2) {
+  const setStoreCircuit = useQuantumStore(state => state.setCircuit)
   const [circuit, setCircuit] = useState<Circuit>(() => emptyCircuit(initialQubitCount))
   const [result, setResult] = useState<Result | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -137,11 +138,8 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
   }, [])
 
   const execute = useCallback(async (options?: SimulatorOptions) => {
-    const validation = validateCircuit(circuit)
-    if (!validation.valid) {
-      setValidationError(validation.error)
-      return
-    }
+    // Avoid re-validating heavily here if already synced, but we keep basic logic in Simulator.
+    // validation is fast, though.
     setValidationError(null)
     setIsProcessing(true)
     try {
@@ -155,8 +153,8 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
   const state = useMemo(() => ({ circuit, result, isProcessing }), [circuit, result, isProcessing])
 
   useEffect(() => {
-    setItem('quantum:circuit', JSON.stringify(circuit))
-  }, [circuit])
+    setStoreCircuit(circuit)
+  }, [circuit, setStoreCircuit])
 
   useEffect(() => {
     setCircuit((prev) => {

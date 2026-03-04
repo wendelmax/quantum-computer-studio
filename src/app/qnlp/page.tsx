@@ -4,11 +4,14 @@ import Card from '../../components/Card'
 import Button from '../../components/Button'
 import { parsePhraseToCircuit, analyzeSentiment, VOCABULARY } from '../../lib/quantum/qnlp/QNLPService'
 import { runSimulation } from '../circuits/services/simulator'
-import { QUANTUM_SET_CIRCUIT } from '../../lib/events'
-import { setItem } from '../../lib/safeStorage'
+import { useTranslation } from 'react-i18next'
+import { useQuantumStore } from '../../store/quantumStore'
+import type { Circuit } from '../../types/Circuit'
 
 export default function QNLPPage() {
+    const { t } = useTranslation()
     const navigate = useNavigate()
+    const setCircuit = useQuantumStore(state => state.setCircuit)
     const [phrase, setPhrase] = useState('cat happy')
     const [sentiment, setSentiment] = useState<{ label: string, score: number } | null>(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -19,10 +22,7 @@ export default function QNLPPage() {
             const { gates, numQubits } = parsePhraseToCircuit(phrase)
             const circuit = { gates, numQubits }
 
-            // Update local storage for studio
-            setItem('quantum:loadCircuit', JSON.stringify(circuit))
-            setItem('quantum:circuit', JSON.stringify(circuit))
-            setItem('quantum:prefs:numQubits', String(numQubits))
+            setCircuit(circuit as Circuit)
 
             const result = await runSimulation(circuit)
             const res = analyzeSentiment(Object.values(result.probabilities))
@@ -37,10 +37,7 @@ export default function QNLPPage() {
     const openInStudio = () => {
         const { gates, numQubits } = parsePhraseToCircuit(phrase)
         const circuit = { gates, numQubits }
-        setItem('quantum:loadCircuit', JSON.stringify(circuit))
-        setItem('quantum:circuit', JSON.stringify(circuit))
-        setItem('quantum:prefs:numQubits', String(numQubits))
-        window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit, autoRun: true } }))
+        setCircuit(circuit as Circuit, true)
         navigate('/circuits')
     }
 
@@ -48,27 +45,27 @@ export default function QNLPPage() {
         <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
             <div className="lg:col-span-8 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold text-theme-text">Quantum NLP (QNLP)</h2>
-                    <Button onClick={() => navigate('/circuits')}>Open Quantum Studio</Button>
+                    <h2 className="text-2xl font-semibold text-theme-text">{t('qnlp.title')}</h2>
+                    <Button onClick={() => navigate('/circuits')}>{t('qnlp.open_studio')}</Button>
                 </div>
 
-                <Card title="Semantic Reasoning" description="Type a phrase to convert it into a quantum circuit">
+                <Card title={t('qnlp.semantic_reasoning')} description={t('qnlp.semantic_desc')}>
                     <div className="space-y-4">
                         <div className="flex gap-2">
                             <input
                                 type="text"
                                 value={phrase}
                                 onChange={(e) => setPhrase(e.target.value)}
-                                placeholder="e.g. cat happy, cat chases mouse hungry"
+                                placeholder={t('qnlp.placeholder')}
                                 className="flex-1 px-4 py-2 rounded bg-theme-surface border border-theme-border text-theme-text focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                             <Button onClick={handleRun} disabled={isLoading}>
-                                {isLoading ? 'Analyzing...' : 'Analyze'}
+                                {isLoading ? t('qnlp.analyzing') : t('qnlp.analyze_btn')}
                             </Button>
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                            <span className="text-xs text-theme-text-muted self-center">Try:</span>
+                            <span className="text-xs text-theme-text-muted self-center">{t('qnlp.try_label')}</span>
                             {['cat happy', 'cat hungry', 'cat chases mouse', 'mouse eats food'].map(example => (
                                 <button
                                     key={example}
@@ -84,18 +81,18 @@ export default function QNLPPage() {
 
                 {sentiment && (
                     <Card
-                        title="Sentiment Analysis Results"
+                        title={t('qnlp.results_title')}
                         className={`border-l-4 ${sentiment.label === 'Positive' ? 'border-l-emerald-500' : sentiment.label === 'Negative' ? 'border-l-rose-500' : 'border-l-amber-500'}`}
                     >
                         <div className="flex items-center justify-between">
                             <div>
-                                <div className="text-theme-text-muted text-xs uppercase tracking-wider font-semibold">Classification</div>
+                                <div className="text-theme-text-muted text-xs uppercase tracking-wider font-semibold">{t('qnlp.classification')}</div>
                                 <div className={`text-2xl font-bold ${sentiment.label === 'Positive' ? 'text-emerald-400' : sentiment.label === 'Negative' ? 'text-rose-400' : 'text-amber-400'}`}>
                                     {sentiment.label}
                                 </div>
                             </div>
                             <div className="text-right">
-                                <div className="text-theme-text-muted text-xs uppercase tracking-wider font-semibold">Quantum Score</div>
+                                <div className="text-theme-text-muted text-xs uppercase tracking-wider font-semibold">{t('qnlp.quantum_score')}</div>
                                 <div className="text-2xl font-mono font-semibold text-theme-text">
                                     {(sentiment.score * 100).toFixed(1)}%
                                 </div>
@@ -104,10 +101,10 @@ export default function QNLPPage() {
 
                         <div className="mt-6 pt-6 border-t border-theme-border">
                             <div className="text-sm text-theme-text mb-4">
-                                The sentiment is derived from the final quantum state of the circuit representation.
+                                {t('qnlp.results_desc')}
                             </div>
                             <Button variant="secondary" onClick={openInStudio} className="w-full">
-                                Visualize Circuit in Studio
+                                {t('qnlp.visualize_btn')}
                             </Button>
                         </div>
                     </Card>
@@ -115,7 +112,7 @@ export default function QNLPPage() {
             </div>
 
             <div className="lg:col-span-4 flex flex-col gap-4">
-                <Card title="Active Vocabulary">
+                <Card title={t('qnlp.vocab_title')}>
                     <div className="space-y-3">
                         {Object.entries(VOCABULARY).map(([word, data]) => (
                             <div key={word} className="flex items-center justify-between p-2 rounded bg-theme-border/20">
@@ -128,21 +125,21 @@ export default function QNLPPage() {
                     </div>
                 </Card>
 
-                <Card title="How it Works">
+                <Card title={t('qnlp.how_it_works_title')}>
                     <div className="text-xs text-theme-text space-y-3 leading-relaxed">
                         <p>
-                            QNLP maps language structures (nouns, verbs) to quantum objects (states, gates).
+                            {t('qnlp.how_it_works_desc1')}
                         </p>
                         <p>
-                            This demo uses a simplified <strong>DisCoCat</strong> (Distributional Compositional Categorical) model where:
+                            {t('qnlp.how_it_works_desc2')}
                         </p>
                         <ul className="list-disc list-inside space-y-1 text-theme-text-muted">
-                            <li><strong>Nouns</strong> define initial qubit states</li>
-                            <li><strong>Adjectives</strong> apply rotation gates (phases)</li>
-                            <li><strong>Verbs</strong> act as entangling operations</li>
+                            <li><strong>{t('qnlp.noun_desc')}</strong></li>
+                            <li><strong>{t('qnlp.adj_desc')}</strong></li>
+                            <li><strong>{t('qnlp.verb_desc')}</strong></li>
                         </ul>
                         <p className="mt-2 pt-2 border-t border-theme-border">
-                            The final "sentiment" is measured by the probability of the system collapsing into a base state.
+                            {t('qnlp.how_it_works_desc3')}
                         </p>
                     </div>
                 </Card>

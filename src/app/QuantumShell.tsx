@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFlask, faChartLine, faChartBar, faGlobe, faHashtag, faCog, faBook, faTerminal, faMinus, faExpand, faTimes, faHome, faImages, faCode, faTachometerAlt, faSlidersH, faBox, faBars, faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import Button from '../components/Button'
 import { CircuitPrefsProvider } from './CircuitPrefs'
-import { removeItem } from '../lib/safeStorage'
-import { QUANTUM_CLEAR_CIRCUIT, QUANTUM_SET_CIRCUIT } from '../lib/events'
+import { useQuantumStore } from '../store/quantumStore'
 import { useTranslation } from 'react-i18next'
 
 const NAV_ITEMS: { path: string; key: string; icon: typeof faFlask }[] = [
@@ -35,46 +34,41 @@ const navLinkClassCollapsed = ({ isActive }: { isActive: boolean }) =>
 export default function QuantumShell() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(isHome)
   const [focusMode, setFocusMode] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Sync sidebar state when navigating back to home if user hasn't manually changed it?
+  // Actually, let's just use an effect to collapse it when entering home if we want strictly "auto"
+  React.useEffect(() => {
+    if (isHome) setSidebarCollapsed(true)
+    else setSidebarCollapsed(false)
+  }, [isHome])
+
+  const clearCircuitStore = useQuantumStore(state => state.clearCircuit)
+  const circuit = useQuantumStore(state => state.circuit)
+
   const clearCircuit = () => {
-    removeItem('quantum:circuit')
-    removeItem('quantum:loadCircuit')
-    window.dispatchEvent(new CustomEvent(QUANTUM_CLEAR_CIRCUIT))
+    clearCircuitStore()
     navigate('/')
   }
 
   const [status, setStatus] = useState<{ qubits: number; gates: number; states: number }>({ qubits: 0, gates: 0, states: 0 })
 
   React.useEffect(() => {
-    const updateStatus = (e: any) => {
-      const circuit = e.detail?.circuit
-      if (circuit) {
-        setStatus({
-          qubits: circuit.numQubits || 0,
-          gates: circuit.gates?.length || 0,
-          states: Math.pow(2, circuit.numQubits || 0)
-        })
-      }
+    if (circuit) {
+      setStatus({
+        qubits: circuit.numQubits || 0,
+        gates: circuit.gates?.length || 0,
+        states: Math.pow(2, circuit.numQubits || 0)
+      })
+    } else {
+      setStatus({ qubits: 0, gates: 0, states: 0 })
     }
-    window.addEventListener(QUANTUM_SET_CIRCUIT, updateStatus)
-    window.addEventListener(QUANTUM_CLEAR_CIRCUIT, () => setStatus({ qubits: 0, gates: 0, states: 0 }))
-
-    // Initial load
-    try {
-      const saved = localStorage.getItem('quantum:circuit')
-      if (saved) {
-        const c = JSON.parse(saved)
-        setStatus({ qubits: c.numQubits || 0, gates: c.gates?.length || 0, states: Math.pow(2, c.numQubits || 0) })
-      }
-    } catch { }
-
-    return () => {
-      window.removeEventListener(QUANTUM_SET_CIRCUIT, updateStatus)
-    }
-  }, [])
+  }, [circuit])
 
   const showSidebar = !focusMode && !sidebarCollapsed
   const showCollapsed = !focusMode && sidebarCollapsed
@@ -98,30 +92,36 @@ export default function QuantumShell() {
                   <FontAwesomeIcon icon={faHome} className="text-primary group-hover:scale-110 transition-transform" />
                 </Link>
                 <div className="flex flex-col">
-                  <Link to="/" className="text-lg sm:text-2xl font-bold tracking-tight text-white hover:text-primary transition-colors truncate">Quantum Studio</Link>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] uppercase tracking-widest text-theme-text-muted font-bold">{t('shell.simulator_engine')}</span>
+                  <Link to="/" className="text-xl sm:text-2xl font-black tracking-tighter text-white hover:text-primary transition-colors flex items-center gap-2">
+                    Quantum<span className="text-primary">Studio</span>
+                  </Link>
+                  <div className="flex items-center gap-2 opacity-60">
+                    <span className="text-[10px] font-bold tracking-widest text-primary/80">{t('shell.simulator_engine')}</span>
+                    <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
                   </div>
                 </div>
               </div>
 
-              <div className="hidden md:flex items-center gap-6 px-4 py-2 rounded-full bg-black/20 border border-white/5 mx-4 flex-1 max-w-md justify-center">
-                <div className="flex flex-col items-center">
-                  <span className="text-[9px] uppercase text-theme-text-muted font-bold">{t('shell.qubits')}</span>
-                  <span className="text-sm font-mono text-primary">{status.qubits}</span>
+              {!isHome && (
+                <div className="hidden md:flex items-center gap-6 px-4 py-2 rounded-full bg-black/20 border border-white/5 mx-4 flex-1 max-w-md justify-center animate-fade-in">
+                  <div className="flex flex-col items-center">
+                    <span className="text-[9px] uppercase text-theme-text-muted font-bold">{t('shell.qubits')}</span>
+                    <span className="text-sm font-mono text-primary">{status.qubits}</span>
+                  </div>
+                  <div className="w-px h-6 bg-white/10" />
+                  <div className="flex flex-col items-center">
+                    <span className="text-[9px] uppercase text-theme-text-muted font-bold">{t('shell.gates')}</span>
+                    <span className="text-sm font-mono text-green-400">{status.gates}</span>
+                  </div>
+                  <div className="w-px h-6 bg-white/10" />
+                  <div className="flex flex-col items-center">
+                    <span className="text-[9px] uppercase text-theme-text-muted font-bold">{t('shell.states')}</span>
+                    <span className="text-sm font-mono text-purple-400">{status.states.toLocaleString()}</span>
+                  </div>
                 </div>
-                <div className="w-px h-6 bg-white/10" />
-                <div className="flex flex-col items-center">
-                  <span className="text-[9px] uppercase text-theme-text-muted font-bold">{t('shell.gates')}</span>
-                  <span className="text-sm font-mono text-green-400">{status.gates}</span>
-                </div>
-                <div className="w-px h-6 bg-white/10" />
-                <div className="flex flex-col items-center">
-                  <span className="text-[9px] uppercase text-theme-text-muted font-bold">{t('shell.states')}</span>
-                  <span className="text-sm font-mono text-purple-400">{status.states.toLocaleString()}</span>
-                </div>
-              </div>
+              )}
+
+              {isHome && <div className="flex-1" />}
 
               <div className="flex items-center gap-1 sm:gap-3 text-theme-text-muted shrink-0">
                 <a
@@ -199,10 +199,10 @@ export default function QuantumShell() {
                   ))}
 
                   <div className="mt-8 px-3 py-4 rounded-2xl bg-primary/10 border border-primary/20">
-                    <div className="text-[10px] uppercase font-black text-primary mb-2 tracking-widest">Active Circuit</div>
+                    <div className="text-[10px] uppercase font-black text-primary mb-2 tracking-widest">{t('shell.active_circuit')}</div>
                     <div className="flex items-end justify-between">
                       <div className="text-2xl font-mono text-white leading-none">{status.qubits}q</div>
-                      <div className="text-[10px] text-primary/70 font-bold uppercase">{status.gates} operators</div>
+                      <div className="text-[10px] text-primary/70 font-bold uppercase">{status.gates} {t('shell.operators')}</div>
                     </div>
                   </div>
                 </nav>

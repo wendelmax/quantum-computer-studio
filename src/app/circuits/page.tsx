@@ -12,52 +12,33 @@ import { useCircuitEngine } from './hooks/useCircuitEngine'
 import { useCircuitPrefs } from '../CircuitPrefs'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
-import { getItem, removeItem, setItem, parseJSON } from '../../lib/safeStorage'
-import { QUANTUM_SET_CIRCUIT } from '../../lib/events'
+import { useTranslation } from 'react-i18next'
+import { useQuantumStore } from '../../store/quantumStore'
+import { parseJSON } from '../../lib/safeStorage'
 import { circuitDepth } from '../../lib/circuitUtils'
 import { downloadFile } from '../../lib/exportUtils'
 import type { Circuit } from '../../types/Circuit'
 
 export default function CircuitsPage() {
+  const { t } = useTranslation()
+  const storeCircuit = useQuantumStore(state => state.circuit)
+  const autoRun = useQuantumStore(state => state.autoRun)
+  const setStoreCircuit = useQuantumStore(state => state.setCircuit)
   const { numQubits, shots } = useCircuitPrefs()
   const engine = useCircuitEngine(numQubits)
   const [selectedGate, setSelectedGate] = useState<string | undefined>(undefined)
   const depth = circuitDepth(engine.circuit)
 
   useEffect(() => {
-    const loadCircuit = async () => {
-      await new Promise(resolve => setTimeout(resolve, 0))
-      const raw = getItem('quantum:loadCircuit')
-      if (raw) {
-        const parsed = parseJSON<Circuit | null>(raw, null)
-        if (parsed && typeof parsed.numQubits === 'number' && Array.isArray(parsed.gates)) {
-          engine.replaceCircuit(parsed)
-        }
-        removeItem('quantum:loadCircuit')
-        if (getItem('quantum:autoRun') === '1') {
-          removeItem('quantum:autoRun')
-          engine.execute()
-        }
+    if (storeCircuit && !engine.circuit.gates.length && !engine.canUndo) {
+      // First load or empty circuit
+      engine.replaceCircuit(storeCircuit)
+      if (autoRun) {
+        setStoreCircuit(storeCircuit, false)
+        setTimeout(() => engine.execute(), 50)
       }
     }
-    loadCircuit()
-  }, [engine.replaceCircuit, engine.execute])
-
-  useEffect(() => {
-    let isMounted = true
-    const handler = (e: CustomEvent<{ circuit: Circuit; autoRun?: boolean }>) => {
-      const detail = e?.detail
-      if (detail?.circuit && isMounted) {
-        engine.replaceCircuit(detail.circuit)
-        if (detail.autoRun) engine.execute()
-      }
-    }
-    window.addEventListener(QUANTUM_SET_CIRCUIT, handler as EventListener)
-    return () => {
-      isMounted = false
-      window.removeEventListener(QUANTUM_SET_CIRCUIT, handler as EventListener)
-    }
-  }, [engine.replaceCircuit, engine.execute])
+  }, []) // initial load
 
   const handleRun = useCallback(() => engine.execute(), [engine.execute])
   const handleRunShots = useCallback(() => engine.execute({ shots }), [engine.execute, shots])
@@ -87,7 +68,7 @@ export default function CircuitsPage() {
       const b64 = btoa(unescape(encodeURIComponent(json)))
       const url = `${window.location.origin}${window.location.pathname}#circuit=${b64}`
       navigator.clipboard?.writeText(url)
-    } catch {}
+    } catch { }
   }, [engine.circuit])
 
   useEffect(() => {
@@ -100,45 +81,45 @@ export default function CircuitsPage() {
         if (parsed && typeof parsed.numQubits === 'number' && Array.isArray(parsed.gates)) {
           engine.replaceCircuit(parsed)
         }
-      } catch {}
+      } catch { }
     }
   }, [])
 
   return (
     <div className="p-4 lg:p-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <h2 className="text-xl sm:text-2xl font-semibold text-theme-text">Quantum Studio</h2>
+        <h2 className="text-xl sm:text-2xl font-semibold text-theme-text">{t('studio.title')}</h2>
         <div className="flex items-center gap-4 text-xs text-theme-text-muted">
           <div className="flex items-center gap-1">
             <span className="font-mono">{engine.circuit.gates.length}</span>
-            <span>gates</span>
+            <span>{t('studio.gates')}</span>
           </div>
           <div className="w-px h-4 bg-theme-border" />
           <div className="flex items-center gap-1">
             <span className="font-mono">{depth}</span>
-            <span>depth</span>
+            <span>{t('studio.depth')}</span>
           </div>
           <div className="w-px h-4 bg-theme-border" />
           <div className="flex items-center gap-1">
             <span className="font-mono">{numQubits}</span>
-            <span>qubits</span>
+            <span>{t('studio.qubits')}</span>
           </div>
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <div className="lg:col-span-8 flex flex-col gap-4">
-          <CircuitCanvas circuit={engine.circuit} selectedGate={selectedGate} onPlace={(g, target)=> engine.addGate(g, target)} onRemove={(target, idx)=> engine.removeGateAt(target, idx)} onMove={(fromTarget, fromIdx, toTarget, toIdx)=> engine.moveGate(fromTarget, fromIdx, toTarget, toIdx)} />
+          <CircuitCanvas circuit={engine.circuit} selectedGate={selectedGate} onPlace={(g, target) => engine.addGate(g, target)} onRemove={(target, idx) => engine.removeGateAt(target, idx)} onMove={(fromTarget, fromIdx, toTarget, toIdx) => engine.moveGate(fromTarget, fromIdx, toTarget, toIdx)} />
           <QubitTimeline circuit={engine.circuit} />
           {engine.isProcessing && (
-            <Card title="Running" description="Simulating circuit..." className="animate-slide-up border-primary/50">
+            <Card title={t('studio.running')} description={t('studio.simulating')} className="animate-slide-up border-primary/50">
               <div className="flex items-center gap-3 py-2">
                 <div className="w-5 h-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-                <span className="text-sm text-theme-text-muted">Computing state vector and probabilities</span>
+                <span className="text-sm text-theme-text-muted">{t('studio.computing')}</span>
               </div>
             </Card>
           )}
           {!engine.isProcessing && engine.result?.probabilities && Object.keys(engine.result.probabilities).length > 0 && (
-            <Card title="Results" description="Probabilities distribution" className="animate-slide-up">
+            <Card title={t('studio.results')} description={t('studio.prob_dist')} className="animate-slide-up">
               <div className="flex justify-end mb-2">
                 <Button
                   variant="secondary"
@@ -152,7 +133,7 @@ export default function CircuitsPage() {
                     downloadFile(JSON.stringify(payload, null, 2), 'circuit-result.json', 'application/json')
                   }}
                 >
-                  Export result
+                  {t('studio.export_btn')}
                 </Button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
@@ -188,17 +169,15 @@ export default function CircuitsPage() {
         <div className="lg:col-span-4 flex flex-col gap-4">
           <GatePanel
             numQubits={numQubits}
-            onAdd={(g, target, angle, control, control2, target2)=> engine.addGate(g, target, angle, control, control2, target2)}
-            onSelect={(g)=> setSelectedGate(g)}
+            onAdd={(g, target, angle, control, control2, target2) => engine.addGate(g, target, angle, control, control2, target2)}
+            onSelect={(g) => setSelectedGate(g)}
             initialStates={engine.circuit.initialStates}
             onSetInitialState={engine.setInitialState}
           />
-          <AlgorithmsInline onLoadAlgorithm={(id, autoRun)=> {
+          <AlgorithmsInline onLoadAlgorithm={(id, autoRunPreset) => {
             const preset = getPreset(id)
             engine.replaceCircuit(preset)
-            setItem('quantum:circuit', JSON.stringify(preset))
-            setItem('quantum:prefs:numQubits', String(preset.numQubits))
-            if (autoRun) engine.execute()
+            if (autoRunPreset) engine.execute()
           }} />
           <CircuitControls
             onRun={handleRun}
@@ -209,20 +188,20 @@ export default function CircuitsPage() {
             canRedo={engine.canRedo}
             validationError={engine.validationError}
             circuitJSON={JSON.stringify(engine.circuit)}
-            onImport={(txt)=> {
+            onImport={(txt) => {
               const parsed = parseJSON<Circuit | null>(txt, null)
               if (parsed && typeof parsed.numQubits === 'number' && Array.isArray(parsed.gates)) engine.replaceCircuit(parsed)
             }}
           />
           <div className="mt-2 flex gap-2 flex-wrap">
             <Button variant="secondary" className="text-xs transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={handleRunShots}>
-              Run (shots {shots})
+              {t('studio.run_shots', { shots })}
             </Button>
             <Button variant="secondary" className="text-xs transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={() => engine.execute({ noise: 0.05 })}>
-              Run (noise 5%)
+              {t('studio.run_noise')}
             </Button>
             <Button variant="secondary" className="text-xs transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={shareUrl}>
-              Copy share link
+              {t('studio.copy_link')}
             </Button>
           </div>
         </div>

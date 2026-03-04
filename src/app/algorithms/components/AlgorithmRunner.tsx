@@ -4,6 +4,7 @@ import { faPlay, faGauge } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../../components/Button'
 import { getPreset } from '../services/presets'
 import { runSimulation } from '../../circuits/services/simulator'
+import type { Circuit } from '../../../types/Circuit'
 
 type Props = {
   algorithm: string
@@ -15,13 +16,13 @@ export default function AlgorithmRunner({ algorithm }: Props) {
   async function runPreview() {
     const preset = getPreset(algorithm)
     const t0 = performance.now()
-    const res = await runSimulation(preset as any)
+    const res = await runSimulation(preset as Circuit)
     const t1 = performance.now()
     setMs(t1 - t0)
     setSummary(`states=${Object.keys(res.probabilities).length}`)
     try {
       window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit: preset, autoRun: true } }))
-    } catch {}
+    } catch { }
   }
   return (
     <div className="p-4 rounded bg-bg-card border border-theme-border">

@@ -5,7 +5,7 @@ import { faSave, faDownload, faTrash, faEye, faUpload, faExternalLink, faTimes }
 import Button from '../../components/Button'
 import Card from '../../components/Card'
 import { getItem, setItem, parseJSON } from '../../lib/safeStorage'
-import { QUANTUM_SET_CIRCUIT } from '../../lib/events'
+import { useQuantumStore } from '../../store/quantumStore'
 
 type CircuitGallery = {
   id: string
@@ -22,6 +22,8 @@ export default function GalleryPage() {
   const [showSaveModal, setShowSaveModal] = useState(false)
   const [saveName, setSaveName] = useState('')
   const [saveDescription, setSaveDescription] = useState('')
+  const circuit = useQuantumStore(state => state.circuit)
+  const setCircuit = useQuantumStore(state => state.setCircuit)
 
   useEffect(() => {
     loadSavedCircuits()
@@ -36,42 +38,31 @@ export default function GalleryPage() {
   }
 
   const openSaveModal = () => {
-    const raw = getItem('quantum:circuit')
-    if (!raw) return
-    try {
-      const circuit = JSON.parse(raw)
-      setSaveName(`Circuit ${savedCircuits.length + 1}`)
-      setSaveDescription(`${circuit.gates?.length ?? 0} gates on ${circuit.numQubits ?? 0} qubits`)
-      setShowSaveModal(true)
-    } catch {}
+    if (!circuit) return
+    setSaveName(`Circuit ${savedCircuits.length + 1}`)
+    setSaveDescription(`${circuit.gates?.length ?? 0} gates on ${circuit.numQubits ?? 0} qubits`)
+    setShowSaveModal(true)
   }
 
   const saveCurrentCircuit = () => {
-    const raw = getItem('quantum:circuit')
-    if (!raw) return
-    try {
-      const circuit = JSON.parse(raw)
-      const newCircuit: CircuitGallery = {
-        id: Date.now().toString(),
-        name: saveName.trim() || `Circuit ${savedCircuits.length + 1}`,
-        description: saveDescription.trim() || `${circuit.gates?.length ?? 0} gates on ${circuit.numQubits ?? 0} qubits`,
-        circuit,
-        date: new Date().toISOString()
-      }
-      const updated = [newCircuit, ...savedCircuits].slice(0, 20)
-      setSavedCircuits(updated)
-      setItem('quantum:gallery', JSON.stringify(updated))
-      setShowSaveModal(false)
-    } catch {}
+    if (!circuit) return
+    const newCircuit: CircuitGallery = {
+      id: Date.now().toString(),
+      name: saveName.trim() || `Circuit ${savedCircuits.length + 1}`,
+      description: saveDescription.trim() || `${circuit.gates?.length ?? 0} gates on ${circuit.numQubits ?? 0} qubits`,
+      circuit,
+      date: new Date().toISOString()
+    }
+    const updated = [newCircuit, ...savedCircuits].slice(0, 20)
+    setSavedCircuits(updated)
+    setItem('quantum:gallery', JSON.stringify(updated))
+    setShowSaveModal(false)
   }
 
   const loadCircuit = (id: string) => {
     const item = savedCircuits.find(c => c.id === id)
     if (!item) return
-    setItem('quantum:loadCircuit', JSON.stringify(item.circuit))
-    setItem('quantum:circuit', JSON.stringify(item.circuit))
-    setItem('quantum:prefs:numQubits', String((item.circuit as { numQubits?: number }).numQubits ?? 2))
-    window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit: item.circuit, autoRun: false } }))
+    setCircuit(item.circuit as any)
     navigate('/circuits')
   }
 
@@ -199,9 +190,9 @@ export default function GalleryPage() {
               Export Gallery
             </Button>
             <p className="mt-3">Import circuits from JSON:</p>
-            <input 
-              type="file" 
-              accept=".json" 
+            <input
+              type="file"
+              accept=".json"
               className="w-full text-xs"
               onChange={async (e) => {
                 const file = e.target.files?.[0]
@@ -213,7 +204,7 @@ export default function GalleryPage() {
                     setSavedCircuits(imported)
                     setItem('quantum:gallery', JSON.stringify(imported))
                   }
-                } catch {}
+                } catch { }
               }}
             />
           </div>

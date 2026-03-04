@@ -12,15 +12,33 @@ import ExecutionHistory from './components/ExecutionHistory'
 import TrainingChart from '../../components/TrainingChart'
 import { runSimulation } from '../circuits/services/simulator'
 import type { Algorithm } from '../../types/Algorithm'
-import { setItem } from '../../lib/safeStorage'
-import { QUANTUM_SET_CIRCUIT, QUANTUM_ALGORITHM_EXECUTION } from '../../lib/events'
+import { QUANTUM_ALGORITHM_EXECUTION } from '../../lib/events'
+import { useQuantumStore } from '../../store/quantumStore'
+import { useTranslation } from 'react-i18next'
+import type { Circuit } from '../../types/Circuit'
 import list from './data/algorithms-list.json'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import { downloadFile, probabilitiesToCSV } from '../../lib/exportUtils'
 
+const algorithmDescriptions: Record<string, string> = {
+  grover: "Grover's algorithm is a quantum search algorithm that finds a target item in an unstructured database in O(√N) queries. Classical algorithms require O(N) queries.",
+  'deutsch-jozsa': "The Deutsch-Jozsa algorithm determines if a function is constant or balanced with just one query, demonstrating quantum advantage over classical computing.",
+  shor: "Shor's algorithm is designed to factor large integers exponentially faster than classical algorithms, with implications for cryptography.",
+  qft: "Quantum Fourier Transform (QFT) is a linear transformation that takes a quantum state and converts it into the frequency domain, fundamental to many algorithms.",
+  qpe: "Quantum Phase Estimation is used to estimate the eigenvalue of a unitary operator, crucial for algorithms like Shor's and HHL.",
+  'bernstein-vazirani': "The Bernstein-Vazirani algorithm identifies a hidden string using a single query, demonstrating exponential speedup over classical methods for oracle problems.",
+  simon: "Simon's algorithm solves the hidden subgroup problem efficiently, providing exponential advantage for finding periodic functions and inspiring Shor's algorithm.",
+  qaoa: "Quantum Approximate Optimization Algorithm is a hybrid classical-quantum algorithm for solving combinatorial optimization problems using variational methods.",
+  vqe: "Variational Quantum Eigensolver is a quantum-classical hybrid algorithm for finding the ground state energy of molecular systems using quantum circuits."
+}
+
+const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced']
+
 export default function AlgorithmsPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
+  const setCircuit = useQuantumStore(state => state.setCircuit)
   const [current, setCurrent] = useState<string | null>(null)
   const [chart, setChart] = useState<Record<string, number> | undefined>(undefined)
   const [description, setDescription] = useState<string>('')
@@ -40,20 +58,7 @@ export default function AlgorithmsPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showResultExport])
 
-  const algorithmDescriptions: Record<string, string> = {
-    grover: "Grover's algorithm is a quantum search algorithm that finds a target item in an unstructured database in O(√N) queries. Classical algorithms require O(N) queries.",
-    'deutsch-jozsa': "The Deutsch-Jozsa algorithm determines if a function is constant or balanced with just one query, demonstrating quantum advantage over classical computing.",
-    shor: "Shor's algorithm is designed to factor large integers exponentially faster than classical algorithms, with implications for cryptography.",
-    qft: "Quantum Fourier Transform (QFT) is a linear transformation that takes a quantum state and converts it into the frequency domain, fundamental to many algorithms.",
-    qpe: "Quantum Phase Estimation is used to estimate the eigenvalue of a unitary operator, crucial for algorithms like Shor's and HHL.",
-    'bernstein-vazirani': "The Bernstein-Vazirani algorithm identifies a hidden string using a single query, demonstrating exponential speedup over classical methods for oracle problems.",
-    simon: "Simon's algorithm solves the hidden subgroup problem efficiently, providing exponential advantage for finding periodic functions and inspiring Shor's algorithm.",
-    qaoa: "Quantum Approximate Optimization Algorithm is a hybrid classical-quantum algorithm for solving combinatorial optimization problems using variational methods.",
-    vqe: "Variational Quantum Eigensolver is a quantum-classical hybrid algorithm for finding the ground state energy of molecular systems using quantum circuits."
-  }
-
   const categories = useMemo(() => ['All', ...Array.from(new Set(list.map((a: Algorithm) => a.category).filter(Boolean)))] as string[], [])
-  const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced']
 
   const filteredAlgorithms = useMemo(() => {
     return list.filter((alg: Algorithm) => {
@@ -68,11 +73,7 @@ export default function AlgorithmsPage() {
     const preset = getPreset(id)
     setCurrent(id)
     setDescription(algorithmDescriptions[id] || '')
-    setItem('quantum:loadCircuit', JSON.stringify(preset))
-    setItem('quantum:circuit', JSON.stringify(preset))
-    setItem('quantum:prefs:numQubits', String(preset.numQubits))
-    setItem('quantum:autoRun', '1')
-    window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit: preset, autoRun: true } }))
+    setCircuit(preset as Circuit, true)
 
     const startTime = performance.now()
 
@@ -100,11 +101,7 @@ export default function AlgorithmsPage() {
 
   function openInStudio(id: string) {
     const preset = getPreset(id)
-    setItem('quantum:loadCircuit', JSON.stringify(preset))
-    setItem('quantum:circuit', JSON.stringify(preset))
-    setItem('quantum:prefs:numQubits', String(preset.numQubits))
-    setItem('quantum:autoRun', '1')
-    window.dispatchEvent(new CustomEvent(QUANTUM_SET_CIRCUIT, { detail: { circuit: preset, autoRun: true } }))
+    setCircuit(preset as Circuit, true)
     navigate('/circuits')
   }
 
@@ -112,8 +109,8 @@ export default function AlgorithmsPage() {
     <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div className="lg:col-span-8 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-theme-text">Quantum Algorithms</h2>
-          <Button onClick={() => navigate('/circuits')}>Open Quantum Studio</Button>
+          <h2 className="text-2xl font-semibold text-theme-text">{t('algorithms.title')}</h2>
+          <Button onClick={() => navigate('/circuits')}>{t('algorithms.open_studio')}</Button>
         </div>
 
         <Card>
@@ -121,7 +118,7 @@ export default function AlgorithmsPage() {
             <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-muted text-sm" />
             <input
               type="text"
-              placeholder="Search algorithms..."
+              placeholder={t('algorithms.search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full px-3 py-2 pl-10 rounded text-sm"
@@ -155,7 +152,7 @@ export default function AlgorithmsPage() {
           </div>
         </Card>
 
-        <Card title={`Algorithm Library (${filteredAlgorithms.length})`} description="Select an algorithm to run and visualize">
+        <Card title={t('algorithms.library_title', { count: filteredAlgorithms.length })} description={t('algorithms.library_desc')}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {filteredAlgorithms.map((a) => (
               <AlgorithmCard key={a.id} algorithm={a} onRun={() => loadIntoStudio(a.id)} onOpenInStudio={openInStudio} />
@@ -164,14 +161,14 @@ export default function AlgorithmsPage() {
         </Card>
 
         {current && description && (
-          <Card title="Algorithm Description">
+          <Card title={t('algorithms.desc_title')}>
             <p className="text-sm text-theme-text">{description}</p>
             <div className="mt-3 flex gap-2">
               <Button onClick={() => navigate('/circuits')}>
-                Open in Studio
+                {t('home.open_studio')}
               </Button>
               <Button variant="secondary" onClick={() => navigate('/docs')}>
-                View Documentation
+                {t('algorithms.view_docs')}
               </Button>
             </div>
           </Card>
@@ -213,18 +210,17 @@ export default function AlgorithmsPage() {
 
         <ExecutionHistory />
 
-        <Card title="About Quantum Algorithms">
+        <Card title={t('algorithms.about_title')}>
           <div className="text-xs text-theme-text space-y-2">
             <p>
-              Quantum algorithms leverage superposition and entanglement to solve problems
-              exponentially faster than classical computers for specific tasks.
+              {t('algorithms.about_desc1')}
             </p>
             <p>
-              <strong>Time Complexity:</strong>
+              <strong>{t('algorithms.complexity_title')}</strong>
               <br />
-              • Classical: O(N)
+              • {t('algorithms.classical_complexity')}
               <br />
-              • Quantum: O(√N) for search
+              • {t('algorithms.quantum_complexity')}
             </p>
           </div>
         </Card>

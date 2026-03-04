@@ -11,6 +11,7 @@ import TruthTable from './components/TruthTable'
 import OracleCircuit from './components/OracleCircuit'
 import OracleAnalysis from './components/OracleAnalysis'
 import type { Oracle } from './data/oracles'
+import { useQuantumStore } from '../../store/quantumStore'
 
 export default function OraclesPage() {
   const [selectedOracle, setSelectedOracle] = useState<string | null>(null)
@@ -21,6 +22,7 @@ export default function OraclesPage() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string>('All')
   const [showResultExport, setShowResultExport] = useState(false)
   const resultExportRef = useRef<HTMLDivElement>(null)
+  const setStoreCircuit = useQuantumStore(state => state.setCircuit)
 
   useEffect(() => {
     if (!showResultExport) return
@@ -78,14 +80,11 @@ export default function OraclesPage() {
   const loadToStudio = (id: string) => {
     const oracle = oracles.find(o => o.id === id)
     if (!oracle) return
-    
+
     try {
-      localStorage.setItem('quantum:loadCircuit', JSON.stringify(oracle.circuit))
-      localStorage.setItem('quantum:circuit', JSON.stringify(oracle.circuit))
-      localStorage.setItem('quantum:prefs:numQubits', String(oracle.numQubits))
-      window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit: oracle.circuit, autoRun: false } }))
+      setStoreCircuit(oracle.circuit as any, false)
       window.location.href = '/circuits'
-    } catch {}
+    } catch { }
   }
 
   return (
@@ -98,8 +97,8 @@ export default function OraclesPage() {
 
         <Card>
           <p className="text-sm text-theme-text mb-4">
-            Oracles are black-box functions used in quantum algorithms like Deutsch–Jozsa, Grover, and Bernstein-Vazirani. 
-            An oracle can be <strong>constant</strong> (returns same value for all inputs), <strong>balanced</strong> (returns 0 for half and 1 for other half), 
+            Oracles are black-box functions used in quantum algorithms like Deutsch–Jozsa, Grover, and Bernstein-Vazirani.
+            An oracle can be <strong>constant</strong> (returns same value for all inputs), <strong>balanced</strong> (returns 0 for half and 1 for other half),
             or <strong>custom</strong> (phase-oracles for Grover search).
           </p>
         </Card>
@@ -238,7 +237,7 @@ export default function OraclesPage() {
         <Card title="About Oracles">
           <div className="text-xs text-theme-text space-y-2">
             <p>
-              The Deutsch–Jozsa algorithm determines if an oracle is constant or balanced 
+              The Deutsch–Jozsa algorithm determines if an oracle is constant or balanced
               in just one query, while classical computers need 2^n queries.
             </p>
             <p>

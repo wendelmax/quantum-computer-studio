@@ -6,27 +6,25 @@ import { faDownload, faBook } from '@fortawesome/free-solid-svg-icons'
 import { runSimulation } from '../circuits/services/simulator'
 import type { Circuit, Gate, ExecutionResult } from '../circuits/hooks/useCircuitEngine'
 import Card from '../../components/Card'
+import { useQuantumStore } from '../../store/quantumStore'
 
 const QUANTUM_SNIPPETS = [
   {
     label: 'createCircuit',
     kind: 'snippet' as const,
     insertText: 'const circuit = {\n  numQubits: $1,\n  gates: [$2]\n}\nconst result = await runSimulation(circuit)\nconsole.log(\'Probabilities:\', result.probabilities)\nresult',
-    insertTextRules: 4 as any,
     documentation: 'Create a quantum circuit'
   },
   {
     label: 'bellState',
     kind: 'snippet' as const,
     insertText: 'const circuit = {\n  numQubits: 2,\n  gates: [\n    { type: \'H\', target: 0 },\n    { type: \'CNOT\', target: 1, control: 0 }\n  ]\n}\nconst result = await runSimulation(circuit)\nresult',
-    insertTextRules: 4 as any,
     documentation: 'Create Bell state |00⟩ + |11⟩'
   },
   {
     label: 'superposition',
     kind: 'snippet' as const,
     insertText: 'const circuit = {\n  numQubits: 1,\n  gates: [{ type: \'H\', target: 0 }]\n}\nconst result = await runSimulation(circuit)\nresult',
-    insertTextRules: 4 as any,
     documentation: 'Create 50/50 superposition'
   }
 ]
@@ -134,6 +132,7 @@ export default function APIPage() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [editorHeight, setEditorHeight] = useState(300)
   const terminalRef = useRef<HTMLDivElement>(null)
+  const setStoreCircuit = useQuantumStore(state => state.setCircuit)
 
   useEffect(() => {
     if (terminalRef.current) {
@@ -148,20 +147,20 @@ export default function APIPage() {
 
     setIsProcessing(true)
     const consoleLogs: string[] = []
-    
+
     const customConsole = {
       log: (...args: any[]) => {
-        consoleLogs.push(args.map(arg => 
+        consoleLogs.push(args.map(arg =>
           typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
         ).join(' '))
       }
     }
 
     setHistory(prev => [...prev, { input: cmd, output: null, type: 'success' }])
-    
+
     try {
       const runSimulation = (await import('../circuits/services/simulator')).runSimulation
-      
+
       const func = new Function('runSimulation', 'Math', 'console', `
         return (async () => {
           try {
@@ -171,14 +170,14 @@ export default function APIPage() {
           }
         })()
       `)
-      
+
       const result = await func(runSimulation, Math, customConsole)
 
       let outputParts: string[] = []
       if (consoleLogs.length > 0) {
         outputParts.push(...consoleLogs)
       }
-      
+
       let formattedOutput: any = result
       if (typeof result === 'object' && result !== null) {
         formattedOutput = JSON.stringify(result, null, 2)
@@ -187,7 +186,7 @@ export default function APIPage() {
       } else {
         formattedOutput = 'undefined'
       }
-      
+
       if (outputParts.length > 0 && formattedOutput !== 'undefined') {
         outputParts.push('')
         outputParts.push('Result:')
@@ -236,13 +235,13 @@ export default function APIPage() {
         alert('No circuit found in code. Make sure you have a "const circuit = {...}" declaration.')
         return
       }
-      
+
       startPos = input.indexOf('{', startPos)
       if (startPos === -1) {
         alert('Invalid circuit syntax')
         return
       }
-      
+
       let depth = 0
       let endPos = startPos
       for (let i = startPos; i < input.length; i++) {
@@ -255,19 +254,16 @@ export default function APIPage() {
           }
         }
       }
-      
+
       if (depth !== 0) {
         alert('Unbalanced braces in circuit')
         return
       }
-      
+
       const circuitStr = input.substring(startPos, endPos)
       const func = new Function(`return ${circuitStr}`)
       const circuit = func()
-      localStorage.setItem('quantum:loadCircuit', JSON.stringify(circuit))
-      localStorage.setItem('quantum:circuit', JSON.stringify(circuit))
-      localStorage.setItem('quantum:prefs:numQubits', String(circuit.numQubits || 2))
-      window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit, autoRun: false } }))
+      setStoreCircuit(circuit as any, false)
       window.location.href = '/circuits'
     } catch (err) {
       alert('Failed to parse circuit: ' + (err as Error).message)
@@ -389,11 +385,11 @@ export default function APIPage() {
           </form>
         </Card>
 
-        <Card className="flex flex-col" style={{ minHeight: '200px' }}>
+        <Card className="flex flex-col min-h-[200px]">
           <div className="mb-2 px-3 pt-3">
             <h3 className="text-sm font-medium text-theme-text">Output</h3>
           </div>
-          <div 
+          <div
             className="flex-1 bg-theme-surface rounded-lg p-4 font-mono text-sm overflow-y-auto text-theme-text"
             style={{ minHeight: '200px' }}
           >
@@ -405,13 +401,12 @@ export default function APIPage() {
                   </div>
                 )}
                 {cmd.output && (
-                  <div className={`${
-                    cmd.type === 'error' 
-                      ? 'text-red-400 bg-red-950/20 border border-red-800/30' 
-                      : cmd.type === 'info' 
-                      ? 'text-theme-text-muted' 
+                  <div className={`${cmd.type === 'error'
+                    ? 'text-red-400 bg-red-950/20 border border-red-800/30'
+                    : cmd.type === 'info'
+                      ? 'text-theme-text-muted'
                       : 'text-theme-text bg-primary/5 border border-primary/20'
-                  } whitespace-pre-wrap p-2 rounded mt-1`}>
+                    } whitespace-pre-wrap p-2 rounded mt-1`}>
                     {cmd.output}
                   </div>
                 )}
@@ -420,9 +415,9 @@ export default function APIPage() {
 
             {isProcessing && (
               <div className="text-primary flex items-center gap-2 animate-pulse">
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0ms'}} />
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '150ms'}} />
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '300ms'}} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 <span>Running simulation...</span>
               </div>
             )}

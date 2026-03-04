@@ -9,43 +9,47 @@ import SampleDatasetSelector from './components/SampleDatasetSelector'
 import DataExporter from './components/DataExporter'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
+import { useTranslation } from 'react-i18next'
+import { useQuantumStore } from '../../store/quantumStore'
 
 export default function DataLabPage() {
+  const { t } = useTranslation()
   const [rows, setRows] = useState<string[][]>([])
   const [normRows, setNormRows] = useState<number[][]>([])
-  const [stats, setStats] = useState<{min: number, max: number, mean: number} | null>(null)
+  const [stats, setStats] = useState<{ min: number, max: number, mean: number } | null>(null)
   const [numQubits, setNumQubits] = useState(2)
   const [mappingMode, setMappingMode] = useState<'amplitude' | 'angle'>('amplitude')
   const [selectedColumns, setSelectedColumns] = useState<number[]>([0])
   const [showAdvanced, setShowAdvanced] = useState(true)
-  
-  React.useEffect(()=>{
-    try { localStorage.setItem('quantum:datalab:raw', JSON.stringify(rows)) } catch{}
+  const setStoreCircuit = useQuantumStore(state => state.setCircuit)
+
+  React.useEffect(() => {
+    try { localStorage.setItem('quantum:datalab:raw', JSON.stringify(rows)) } catch { }
   }, [rows])
-  
-  React.useEffect(()=>{
+
+  React.useEffect(() => {
     if (normRows.length > 0 && selectedColumns.length > 0) {
-      const selectedValues = normRows.flatMap(row => 
+      const selectedValues = normRows.flatMap(row =>
         selectedColumns.map(col => row[col] || 0)
       )
       const min = Math.min(...selectedValues)
       const max = Math.max(...selectedValues)
-      const mean = selectedValues.reduce((a,b) => a+b, 0) / selectedValues.length
+      const mean = selectedValues.reduce((a, b) => a + b, 0) / selectedValues.length
       setStats({ min, max, mean })
     }
   }, [normRows, selectedColumns])
-  
-  React.useEffect(()=>{
+
+  React.useEffect(() => {
     try {
       const raw = localStorage.getItem('quantum:datalab:raw')
       if (raw) setRows(JSON.parse(raw))
-    } catch{}
+    } catch { }
   }, [])
 
   async function normalizeInWorker(input: string[][]) {
     const w = new Worker(new URL('../../workers/dataWorker.ts', import.meta.url), { type: 'module' })
-    const out: number[][] = await new Promise((resolve, reject)=>{
-      const onMsg = (e: MessageEvent)=>{
+    const out: number[][] = await new Promise((resolve, reject) => {
+      const onMsg = (e: MessageEvent) => {
         const d = e.data
         if (d && d.ok) { w.removeEventListener('message', onMsg); resolve(d.rows) }
         else if (d && d.error) { w.removeEventListener('message', onMsg); reject(new Error(d.error)) }
@@ -73,34 +77,32 @@ export default function DataLabPage() {
           angle: mappingMode === 'angle' ? (row[0] || 0) * Math.PI : undefined
         }))
       }
-      localStorage.setItem('quantum:loadCircuit', JSON.stringify(circuit))
-      localStorage.setItem('quantum:circuit', JSON.stringify(circuit))
-      window.dispatchEvent(new CustomEvent('quantum:set-circuit', { detail: { circuit, autoRun: false } }))
+      setStoreCircuit(circuit as any, false)
       window.location.href = '/circuits'
-    } catch {}
+    } catch { }
   }
 
   return (
     <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div className="lg:col-span-8 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-theme-text">Data Lab</h2>
+          <h2 className="text-2xl font-semibold text-theme-text">{t('datalab.title')}</h2>
           <div className="flex gap-2">
             <DataExporter rawData={rows} normalizedData={normRows} />
-            <Button onClick={() => window.location.href = '/circuits'}>Open Quantum Studio</Button>
+            <Button onClick={() => window.location.href = '/circuits'}>{t('qnlp.open_studio')}</Button>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <Card title="Upload Dataset" description="Load CSV or TSV files">
-            <DataUploader onLoad={(r)=> { setRows(r); normalizeInWorker(r) }} />
+          <Card title={t('datalab.upload_title')} description={t('datalab.upload_desc')}>
+            <DataUploader onLoad={(r) => { setRows(r); normalizeInWorker(r) }} />
           </Card>
-          
+
           <SampleDatasetSelector onLoad={(data) => { setRows(data); normalizeInWorker(data) }} />
         </div>
 
         {rows.length > 0 && (
-          <Card title="Dataset Preview" description={`Showing first ${Math.min(20, rows.length)} rows`}>
+          <Card title={t('datalab.preview_title')} description={t('datalab.preview_desc', { count: Math.min(20, rows.length) })}>
             <DatasetViewer data={rows} />
           </Card>
         )}
@@ -108,27 +110,26 @@ export default function DataLabPage() {
         {normRows.length > 0 && (
           <>
             <DataChart data={normRows} selectedColumns={selectedColumns} />
-            
-            <Card 
-              title="Column Selection" 
-              description="Select which columns to visualize"
+
+            <Card
+              title={t('datalab.column_selection_title')}
+              description={t('datalab.column_selection_desc')}
             >
               <div className="flex flex-wrap gap-2">
                 {normRows[0] && Array.from({ length: normRows[0].length }, (_, i) => (
                   <button
                     key={i}
                     onClick={() => {
-                      setSelectedColumns(prev => 
-                        prev.includes(i) 
+                      setSelectedColumns(prev =>
+                        prev.includes(i)
                           ? prev.filter(col => col !== i)
                           : [...prev, i]
                       )
                     }}
-                    className={`px-3 py-1.5 rounded text-sm transition-all ${
-                      selectedColumns.includes(i)
-                        ? 'bg-primary text-white'
-                        : 'bg-theme-surface text-theme-text hover:bg-theme-border/50'
-                    }`}
+                    className={`px-3 py-1.5 rounded text-sm transition-all ${selectedColumns.includes(i)
+                      ? 'bg-primary text-white'
+                      : 'bg-theme-surface text-theme-text hover:bg-theme-border/50'
+                      }`}
                   >
                     Col {i + 1}
                   </button>
@@ -136,15 +137,15 @@ export default function DataLabPage() {
               </div>
               {selectedColumns.length === 0 && (
                 <div className="mt-2 text-xs text-amber-400">
-                  Select at least one column to visualize
+                  {t('datalab.column_selection_warning')}
                 </div>
               )}
             </Card>
-            
+
             {stats && selectedColumns.length > 0 && (
-              <Card 
-                title="Basic Statistics"
-                description="Statistical overview of selected columns"
+              <Card
+                title={t('datalab.stats_title')}
+                description={t('datalab.stats_desc')}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                   <div>
@@ -164,14 +165,14 @@ export default function DataLabPage() {
             )}
 
             {showAdvanced && <AdvancedStats data={normRows} />}
-            
+
             {normRows.length > 0 && (
               <Card>
                 <button
                   onClick={() => setShowAdvanced(!showAdvanced)}
                   className="text-sm text-primary hover:text-accent transition-colors"
                 >
-                  {showAdvanced ? '▼' : '▶'} {showAdvanced ? 'Hide' : 'Show'} Advanced Statistics
+                  {showAdvanced ? '▼' : '▶'} {showAdvanced ? t('datalab.hide_advanced') : t('datalab.show_advanced')}
                 </button>
               </Card>
             )}
@@ -180,66 +181,65 @@ export default function DataLabPage() {
       </div>
 
       <div className="lg:col-span-4 flex flex-col gap-4">
-        <QuantumMappingPanel 
+        <QuantumMappingPanel
           numQubits={numQubits}
           mappingMode={mappingMode}
           onNumQubitsChange={setNumQubits}
           onMappingModeChange={setMappingMode}
         />
-        
+
         {normRows.length > 0 && (
           <>
-            <QuantumStatePreview 
-              data={normRows} 
+            <QuantumStatePreview
+              data={normRows}
               numQubits={numQubits}
               mappingMode={mappingMode}
             />
 
-            <Card title="Quantum Integration">
+            <Card title={t('datalab.quantum_integration_title')}>
               <div className="text-xs text-theme-text mb-3">
-                Map your normalized data to quantum states and run computations.
+                {t('datalab.quantum_integration_desc')}
               </div>
               <div className="space-y-2 mb-3">
                 <div className="text-xs text-theme-text-muted">
-                  {mappingMode === 'amplitude' 
-                    ? `Amplitude encoding will create superposition states with ${normRows.length} amplitudes`
-                    : `Angle encoding will create rotation gates with ${normRows.length} angles`}
+                  {mappingMode === 'amplitude'
+                    ? t('datalab.amplitude_desc', { count: normRows.length })
+                    : t('datalab.angle_desc', { count: normRows.length })}
                 </div>
                 <div className="text-xs text-theme-text-muted">
-                  Qubits: {numQubits} (can represent {2**numQubits} states)
+                  {t('datalab.qubits_desc', { count: numQubits, states: 2 ** numQubits })}
                 </div>
               </div>
               <Button className="w-full" onClick={exportToQuantum}>
-                Create Circuit from Data
+                {t('datalab.create_circuit_btn')}
               </Button>
             </Card>
           </>
         )}
 
         {!normRows.length && (
-          <Card title="Instructions">
+          <Card title={t('datalab.instructions_title')}>
             <div className="text-xs text-theme-text space-y-2">
-              <p>1. Upload a CSV/TSV file or load a sample dataset</p>
-              <p>2. Data will be automatically normalized</p>
-              <p>3. Configure quantum mapping mode</p>
-              <p>4. Preview quantum state encoding</p>
-              <p>5. Export to Quantum Studio</p>
+              <p>{t('datalab.step1')}</p>
+              <p>{t('datalab.step2')}</p>
+              <p>{t('datalab.step3')}</p>
+              <p>{t('datalab.step4')}</p>
+              <p>{t('datalab.step5')}</p>
             </div>
           </Card>
         )}
 
-        <Card title="About Data Lab">
+        <Card title={t('datalab.about_title')}>
           <div className="text-xs text-theme-text space-y-2">
             <p>
-              The Data Lab allows you to convert classical data into quantum states, 
-              enabling quantum machine learning and data processing.
+              {t('datalab.about_desc')}
             </p>
             <p>
-              <strong>Supported formats:</strong> CSV, TSV
+              <strong>{t('datalab.formats')}</strong> CSV, TSV
               <br />
-              <strong>Processing:</strong> Automatic normalization
+              <strong>{t('datalab.processing')}</strong> Automatic normalization
               <br />
-              <strong>Mapping:</strong> Amplitude or Angle encoding
+              <strong>{t('datalab.mapping')}</strong> Amplitude or Angle encoding
             </p>
           </div>
         </Card>
