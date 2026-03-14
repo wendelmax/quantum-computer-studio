@@ -9,6 +9,7 @@
     "nav": {
         "studio": "Studio",
         "algorithms": "Algorithms",
+        "qml_hub": "QML Hub",
         "data_lab": "Data Lab",
         "state_viewer": "States",
         "gates": "Gates",
@@ -94,6 +95,7 @@
         "copy_link": "Copy share link",
         "copy_link_success": "Circuit link copied to clipboard!",
         "copy_link_error": "Failed to copy link.",
+        "target_environment": "Target Environment",
         "share_link_error": "Error generating share link.",
         "copy_qasm_success": "QASM copied to clipboard!",
         "copy_qasm_error": "Failed to copy QASM.",
@@ -160,6 +162,13 @@
         "quantum_score": "Quantum Score",
         "results_desc": "The sentiment is derived from the final quantum state of the circuit representation.",
         "visualize_btn": "Visualize Circuit in Studio",
+        "export_lambeq": "Export Lambeq Pipeline (.py)",
+        "syntax": {
+            "title": "Quantum Syntax Tree",
+            "empty_phrase": "Type a phrase to see its syntactic structure.",
+            "interpretation": "DisCoCat Structure:",
+            "interpretation_desc": " Nouns occupy quantum wires (states). Verbs and adjectives act as quantum operators causing entanglement or phase rotations between subjects."
+        },
         "vocab_title": "Active Vocabulary",
         "how_it_works_title": "How it Works",
         "how_it_works_desc1": "QNLP maps language structures (nouns, verbs) to quantum objects (states, gates).",

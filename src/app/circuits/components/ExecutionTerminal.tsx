@@ -33,13 +33,16 @@ export default function ExecutionTerminal({ circuit, probabilities, processing, 
 
   const vectorEntries = stateVector && numQubits ? (() => {
     const items: Array<{ state: string; amp: string; prob: number }> = []
-    for (let i = 0; i < stateVector.length; i += 2) {
+    const limit = 256 // Safety limit for DOM elements
+    let count = 0
+    for (let i = 0; i < stateVector.length && count < limit; i += 2) {
       const r = stateVector[i]
       const im = stateVector[i + 1] ?? 0
       const prob = r * r + im * im
       if (prob > 1e-6) {
         const state = (i / 2).toString(2).padStart(numQubits, '0')
         items.push({ state, amp: formatComplex(r, im), prob })
+        count++
       }
     }
     return items.sort((a, b) => b.prob - a.prob)

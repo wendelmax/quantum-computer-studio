@@ -56,9 +56,9 @@ export default function VisualQubit({ state, isSuperposition, isCollapsing, coll
                             exit={{ opacity: 0, scale: 1.2 }}
                         >
                             <motion.circle
-                                cx="50"
-                                cy="50"
-                                r="30"
+                                cx={50}
+                                cy={50}
+                                r={30}
                                 fill="url(#sphereGradient)"
                                 filter="url(#glow)"
                                 animate={{
@@ -100,9 +100,9 @@ export default function VisualQubit({ state, isSuperposition, isCollapsing, coll
                 {!isSuperposition && !isCollapsing && (
                     <motion.circle
                         layoutId="qubit-dot"
-                        cx="50"
+                        cx={50}
                         cy={collapsedTo === '1' ? 90 : 10}
-                        r="4"
+                        r={4}
                         fill="var(--color-primary)"
                         filter="url(#glow)"
                         initial={{ scale: 0 }}
@@ -115,14 +115,14 @@ export default function VisualQubit({ state, isSuperposition, isCollapsing, coll
                 <AnimatePresence>
                     {isCollapsing && (
                         <motion.circle
-                            cx="50"
-                            cy="50"
-                            initial={{ r: 30, opacity: 0.8, scale: 1 }}
+                            cx={50}
+                            cy={50}
+                            r={30}
+                            initial={{ r: 30, opacity: 0.8 }}
                             animate={{
                                 r: 0,
                                 opacity: 0,
                                 cy: collapsedTo === '1' ? 90 : 10,
-                                fill: collapsedTo === '1' ? '#a855f7' : '#0ea5e9'
                             }}
                             transition={{ duration: 0.4, ease: "circIn" }}
                             className="fill-primary"

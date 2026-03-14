@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFlask, faChartLine, faChartBar, faGlobe, faHashtag, faCog, faBook, faTerminal, faMinus, faExpand, faTimes, faHome, faImages, faCode, faTachometerAlt, faSlidersH, faBox, faBars, faCommentDots, faVial } from '@fortawesome/free-solid-svg-icons'
+import { faFlask, faChartLine, faChartBar, faGlobe, faHashtag, faCog, faBook, faTerminal, faMinus, faExpand, faTimes, faHome, faImages, faCode, faTachometerAlt, faSlidersH, faBox, faBars, faCommentDots, faVial, faBrain } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import Button from '../components/Button'
 import { CircuitPrefsProvider } from './CircuitPrefs'
@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 const NAV_ITEMS: { path: string; key: string; icon: typeof faFlask }[] = [
   { path: '/circuits', key: 'studio', icon: faFlask },
   { path: '/algorithms', key: 'algorithms', icon: faChartLine },
+  { path: '/qml-hub', key: 'qml_hub', icon: faBrain },
   { path: '/visual-lab', key: 'visual_lab', icon: faVial },
   { path: '/data-lab', key: 'data_lab', icon: faChartBar },
   { path: '/state-viewer', key: 'state_viewer', icon: faGlobe },

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { motion, AnimatePresence } from 'framer-motion'
 import { faChartBar, faBolt } from '@fortawesome/free-solid-svg-icons'
 import CircuitCanvas from './components/CircuitCanvas'
 import GatePanel from './components/GatePanel'
@@ -20,7 +21,7 @@ import { useCircuitPrefs } from '../CircuitPrefs'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import { useTranslation } from 'react-i18next'
-import { useQuantumStore } from '../../store/quantumStore'
+import { useQuantumStore, MAX_QUBITS_LOCAL, MAX_CIRCUIT_DEPTH } from '../../store/quantumStore'
 import { parseJSON } from '../../lib/safeStorage'
 import { toast } from 'sonner'
 import { circuitDepth, QuantumMetrics } from 'quantum-computer-js'
@@ -39,6 +40,7 @@ export default function CircuitsPage() {
   const [codeLanguage, setCodeLanguage] = useState<'qasm' | 'js' | 'qiskit' | 'cirq' | 'braket' | 'pennylane' | 'qsharp'>('qasm')
   const [qasmError, setQasmError] = useState<string | null>(null)
   const depth = circuitDepth(engine.circuit)
+  const isTooHeavy = engine.circuit.numQubits > MAX_QUBITS_LOCAL || depth > MAX_CIRCUIT_DEPTH
 
   useEffect(() => {
     if (storeCircuit && !engine.circuit.gates.length && !engine.canUndo) {
@@ -144,13 +146,13 @@ export default function CircuitsPage() {
       {/* Top Toolbar (Ribbon) */}
       <div className="mb-4 animate-fade-in shadow-sm">
         <CircuitControls
-          onRun={handleRun}
+          onRun={isTooHeavy ? undefined : handleRun}
           onReset={engine.reset}
           onUndo={engine.undo}
           onRedo={engine.redo}
           canUndo={engine.canUndo}
           canRedo={engine.canRedo}
-          validationError={engine.validationError || qasmError}
+          validationError={isTooHeavy ? `Safety Limit: Circuit too heavy for local CPU. (> ${MAX_QUBITS_LOCAL} qubits or > ${MAX_CIRCUIT_DEPTH} depth)` : (engine.validationError || qasmError)}
           circuitJSON={JSON.stringify(engine.circuit)}
           onImport={(txt) => {
             const parsed = parseJSON<Circuit | null>(txt, null)
@@ -158,10 +160,20 @@ export default function CircuitsPage() {
           }}
         />
         <div className="mt-2 flex gap-2 flex-wrap px-1">
-          <Button variant="secondary" className="text-xs transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={handleRunShots}>
+          <Button 
+            variant="secondary" 
+            className={`text-xs transition-transform duration-200 ${isTooHeavy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-[0.98]'}`} 
+            onClick={isTooHeavy ? undefined : handleRunShots}
+            disabled={isTooHeavy}
+          >
             {t('studio.run_shots', { shots })}
           </Button>
-          <Button variant="secondary" className="text-xs transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={() => engine.execute({ noise: 0.05 })}>
+          <Button 
+            variant="secondary" 
+            className={`text-xs transition-transform duration-200 ${isTooHeavy ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-[0.98]'}`} 
+            onClick={isTooHeavy ? undefined : () => engine.execute({ noise: 0.05 })}
+            disabled={isTooHeavy}
+          >
             {t('studio.run_noise')}
           </Button>
           <Button variant="secondary" className="text-xs transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={shareUrl}>

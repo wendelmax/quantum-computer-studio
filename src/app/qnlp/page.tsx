@@ -5,6 +5,8 @@ import { faChevronDown, faChevronRight, faPlus } from '@fortawesome/free-solid-s
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import { parsePhraseToCircuit, analyzeSentiment, VOCABULARY } from '../../lib/quantum/qnlp/QNLPService'
+import { generateLambeqScript } from '../../lib/quantum/qnlp/lambeqExport'
+import SyntaxTreeViewer from './components/SyntaxTreeViewer'
 import { runSimulation } from '../circuits/services/simulator'
 import { useTranslation } from 'react-i18next'
 import { useQuantumStore } from '../../store/quantumStore'
@@ -58,6 +60,16 @@ export default function QNLPPage() {
         const circuit = { gates, numQubits }
         setCircuit(circuit as Circuit, true)
         navigate('/circuits')
+    }
+
+    const downloadLambeqScript = () => {
+        const scriptContent = generateLambeqScript(phrase)
+        const element = document.createElement("a")
+        const file = new Blob([scriptContent], { type: 'text/plain' })
+        element.href = URL.createObjectURL(file)
+        element.download = "qnlp_lambeq_experiment.py"
+        document.body.appendChild(element)
+        element.click()
     }
 
     return (
@@ -128,12 +140,21 @@ export default function QNLPPage() {
                             <div className="text-sm text-theme-text mb-4">
                                 {t('qnlp.results_desc')}
                             </div>
-                            <Button variant="secondary" onClick={openInStudio} className="w-full">
-                                {t('qnlp.visualize_btn')}
-                            </Button>
+                            <div className="flex gap-2 w-full mt-4">
+                                <Button variant="secondary" onClick={openInStudio} className="flex-1">
+                                    {t('qnlp.visualize_btn')}
+                                </Button>
+                                <Button variant="primary" onClick={downloadLambeqScript} className="flex-1 bg-python hover:bg-python-dark text-white border-none">
+                                    {t('qnlp.export_lambeq', 'Export Lambeq Pipeline (.py)')}
+                                </Button>
+                            </div>
                         </div>
                     </Card>
                 )}
+
+                <Card title={t('qnlp.syntax.title', 'Quantum Syntax Tree')}>
+                     <SyntaxTreeViewer phrase={phrase} />
+                </Card>
             </div>
 
             <div className="lg:col-span-4 flex flex-col gap-4">

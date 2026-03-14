@@ -9,6 +9,7 @@
     "nav": {
         "studio": "Studio",
         "algorithms": "Algoritmos",
+        "qml_hub": "QML Hub",
         "data_lab": "Data Lab",
         "state_viewer": "Estados",
         "gates": "Gates",
@@ -94,6 +95,7 @@
         "copy_link": "Copiar link de compartilhamento",
         "copy_link_success": "Link do circuito copiado para a área de transferência!",
         "copy_link_error": "Falha ao copiar link.",
+        "target_environment": "Ambiente Alvo",
         "share_link_error": "Erro ao gerar link de compartilhamento.",
         "copy_qasm_success": "QASM copiado para a área de transferência!",
         "copy_qasm_error": "Falha ao copiar QASM.",
@@ -161,6 +163,13 @@
         "quantum_score": "Score Quântico",
         "results_desc": "O sentimento é derivado do estado quântico final da representação do circuito.",
         "visualize_btn": "Visualizar Circuito no Studio",
+        "export_lambeq": "Exportar Pipeline Lambeq (.py)",
+        "syntax": {
+            "title": "Árvore Sintática Quântica",
+            "empty_phrase": "Digite uma frase para visualizar sua estrutura sintática.",
+            "interpretation": "Estrutura DisCoCat:",
+            "interpretation_desc": " Substantivos ocupam os fios quânticos (estados). Verbos e adjetivos atuam como operadores quânticos causando emaranhamento ou rotações de fase entre os sujeitos."
+        },
         "vocab_title": "Vocabulário Ativo",
         "how_it_works_title": "Como Funciona",
         "how_it_works_desc1": "QNLP mapeia estruturas de linguagem (substantivos, verbos) para objetos quânticos (estados, gates).",

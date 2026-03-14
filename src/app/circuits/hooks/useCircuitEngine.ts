@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import type { Circuit, CircuitGate, Result } from 'quantum-computer-js'
+import { circuitDepth } from 'quantum-computer-js'
 import { setItem } from '../../../lib/safeStorage'
 import { runSimulation, type SimulatorOptions } from '../services/simulator'
-import { useQuantumStore } from '../../../store/quantumStore'
+import { useQuantumStore, MAX_QUBITS_LOCAL, MAX_CIRCUIT_DEPTH } from '../../../store/quantumStore'
 
 export type { Circuit }
 export type Gate = CircuitGate
@@ -14,6 +15,7 @@ const emptyCircuit = (n: number): Circuit => ({ numQubits: n, gates: [] })
 
 export function useCircuitEngine(initialQubitCount: number = 2) {
   const setStoreCircuit = useQuantumStore(state => state.setCircuit)
+  const setStoreResult = useQuantumStore(state => state.setExecutionResult)
   const [circuit, setCircuit] = useState<Circuit>(() => emptyCircuit(initialQubitCount))
   const [result, setResult] = useState<Result | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -106,8 +108,9 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
     setHistoryIndex(0)
     setCircuit(empty)
     setResult(null)
+    setStoreResult(null)
     setValidationError(null)
-  }, [circuit.numQubits])
+  }, [circuit.numQubits, setStoreResult])
 
   const undo = useCallback(() => {
     if (historyIndexRef.current <= 0) return
@@ -136,18 +139,68 @@ export function useCircuitEngine(initialQubitCount: number = 2) {
     }))
   }, [])
 
+  const { topology, noiseProfile } = useQuantumStore()
+
+  const checkTopology = useCallback((gate: CircuitGate, numQubits: number, top: string): boolean => {
+    if (top === 'all-to-all') return true
+    if (gate.control === undefined) return true // Single qubit gates are always valid
+
+    const c = gate.control
+    const t = gate.target
+
+    if (top === 'linear') {
+      return Math.abs(c - t) === 1
+    }
+    if (top === 'ring') {
+      const diff = Math.abs(c - t)
+      return diff === 1 || diff === numQubits - 1
+    }
+    if (top === 'grid') {
+      const w = Math.ceil(Math.sqrt(numQubits))
+      const r1 = Math.floor(c / w), c1 = c % w
+      const r2 = Math.floor(t / w), c2 = t % w
+      return (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1
+    }
+    return true
+  }, [])
+
   const execute = useCallback(async (options?: SimulatorOptions) => {
-    // Avoid re-validating heavily here if already synced, but we keep basic logic in Simulator.
-    // validation is fast, though.
     setValidationError(null)
+    
+    // Topology Check
+    for (const gate of circuit.gates) {
+        if (!checkTopology(gate as CircuitGate, circuit.numQubits, topology)) {
+            setValidationError(`Hardware Constraint: Gate connection |${gate.control}⟩ → |${gate.target}⟩ violates '${topology}' topology.`)
+            return
+        }
+    }
+
+    // Resource limits check
+    const depth = circuitDepth(circuit)
+    if (circuit.numQubits > MAX_QUBITS_LOCAL) {
+      setValidationError(`Critical: Circuit exceeds local qubit limit (${MAX_QUBITS_LOCAL}). Deployment to Cloud QPU required.`)
+      return
+    }
+    if (depth > MAX_CIRCUIT_DEPTH) {
+      setValidationError(`Critical: Circuit exceeds maximum local depth (${MAX_CIRCUIT_DEPTH}). Please optimize your algorithm.`)
+      return
+    }
+
     setIsProcessing(true)
     try {
-      const res = await runSimulation(circuit, options)
+      // Merge global noise profile with execution options
+      const finalOptions = {
+        ...options,
+        noise: options?.noise ?? noiseProfile.gateError,
+        // We'll simulate readout error by potentially flipping bits in results if we had a shots-based runner
+      }
+      const res = await runSimulation(circuit, finalOptions)
       setResult(res)
+      setStoreResult(res)
     } finally {
       setIsProcessing(false)
     }
-  }, [circuit])
+  }, [circuit, setStoreResult, topology, noiseProfile, checkTopology])
 
   const state = useMemo(() => ({ circuit, result, isProcessing }), [circuit, result, isProcessing])
 

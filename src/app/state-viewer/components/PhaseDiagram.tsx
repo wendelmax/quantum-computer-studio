@@ -28,7 +28,7 @@ export default function PhaseDiagram({ stateVector, numQubits }: Props) {
     }
   }
 
-  const maxProb = Math.max(...amplitudes.map(a => a.prob))
+  const maxProb = Math.max(...amplitudes.map(a => a.prob), 1e-10)
 
   return (
     <div className="p-4 bg-bg-card border border-theme-border rounded">
