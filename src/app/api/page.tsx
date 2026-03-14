@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Editor, { Monaco } from '@monaco-editor/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload, faBook } from '@fortawesome/free-solid-svg-icons'
+import { faDownload, faBook, faCopy, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { runSimulation, type Circuit, type CircuitGate as Gate, type Result as ExecutionResult } from 'quantum-computer-js'
 import Card from '../../components/Card'
 import { useQuantumStore } from '../../store/quantumStore'
@@ -144,6 +144,7 @@ export default function APIPage() {
   }, [input])
 
   const [isProcessing, setIsProcessing] = useState(false)
+  const [copiedId, setCopiedId] = useState<number | null>(null)
   const [editorHeight, setEditorHeight] = useState(300)
   const terminalRef = useRef<HTMLDivElement>(null)
   const setStoreCircuit = useQuantumStore(state => state.setCircuit)
@@ -257,13 +258,13 @@ export default function APIPage() {
     try {
       let startPos = input.indexOf('const circuit =')
       if (startPos === -1) {
-        toast.error(t('api.no_circuit_found', 'No circuit found in code. Make sure you have a "const circuit = {...}" declaration.'))
+        toast.error(t('api.no_circuit_found'))
         return
       }
 
       startPos = input.indexOf('{', startPos)
       if (startPos === -1) {
-        toast.error(t('api.invalid_syntax', 'Invalid circuit syntax'))
+        toast.error(t('api.invalid_syntax'))
         return
       }
 
@@ -281,7 +282,7 @@ export default function APIPage() {
       }
 
       if (depth !== 0) {
-        toast.error(t('api.unbalanced_braces', 'Unbalanced braces in circuit'))
+        toast.error(t('api.unbalanced_braces'))
         return
       }
 
@@ -291,7 +292,7 @@ export default function APIPage() {
       setStoreCircuit(circuit as any, false)
       window.location.href = '/circuits'
     } catch (err) {
-      toast.error(t('api.parse_failed', 'Failed to parse circuit: ') + (err as Error).message)
+      toast.error(t('api.parse_failed') + (err as Error).message)
     }
   }
 
@@ -321,13 +322,19 @@ export default function APIPage() {
     })
   }
 
+  const copySnippet = (code: string, id: number) => {
+    navigator.clipboard.writeText(code)
+    setCopiedId(id)
+    setTimeout(() => setCopiedId(null), 2000)
+  }
+
   return (
     <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div className="lg:col-span-8 flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="min-w-0">
-            <h2 className="text-xl sm:text-2xl font-semibold text-theme-text">Quantum API</h2>
-            <p className="text-xs text-theme-text-muted mt-1">Interactive REPL for quantum circuit programming</p>
+            <h2 className="text-xl sm:text-2xl font-semibold text-theme-text">{t('api.title')}</h2>
+            <p className="text-xs text-theme-text-muted mt-1">{t('api.subtitle')}</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -345,10 +352,12 @@ export default function APIPage() {
               -
             </button>
             <button
-              onClick={clearHistory}
+              onClick={() => {
+                if (confirm(t('gallery.clear_confirm'))) clearHistory()
+              }}
               className="px-3 py-2 text-xs rounded border border-theme-border hover:border-primary transition-colors text-theme-text"
             >
-              Clear
+              {t('shell.clear', { defaultValue: 'Clear' })}
             </button>
           </div>
         </div>
@@ -395,10 +404,10 @@ export default function APIPage() {
                 {isProcessing ? (
                   <span className="flex items-center gap-2">
                     <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Running...
+                    {t('api.running')}
                   </span>
                 ) : (
-                  'Execute'
+                  t('api.execute')
                 )}
               </button>
               {hasCircuit && (
@@ -407,20 +416,20 @@ export default function APIPage() {
                   onClick={loadCircuitToStudio}
                   className="px-6 py-2 bg-theme-surface border border-theme-border hover:border-primary hover:bg-primary/10 rounded transition-all font-medium text-theme-text"
                 >
-                  Open in Studio
+                  {t('qnlp.open_studio')}
                 </button>
               )}
             </div>
             <div className="text-xs text-theme-text-muted mt-2 flex items-center gap-2">
               <span>💡</span>
-              <span>{hasCircuit ? 'Execute code or open circuit in Studio' : 'Press Ctrl+Enter or click Execute'}</span>
+              <span>{t('api.copy_shortcut')}</span>
             </div>
-          </form>
+           forms  </form>
         </Card>
 
         <Card className="flex flex-col min-h-[200px]">
           <div className="mb-2 px-3 pt-3">
-            <h3 className="text-sm font-medium text-theme-text">Output</h3>
+            <h3 className="text-sm font-medium text-theme-text">{t('api.output_title')}</h3>
           </div>
           <div
             className="flex-1 bg-theme-surface rounded-lg p-4 font-mono text-sm overflow-y-auto text-theme-text"
@@ -471,13 +480,13 @@ export default function APIPage() {
                 <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                 <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                 <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                <span>Running simulation...</span>
+                <span>{t('api.running')}</span>
               </div>
             )}
           </div>
         </Card>
 
-        <Card title="Quick Reference">
+        <Card title={t('api.quick_ref')}>
           <div className="text-xs space-y-2 font-mono text-theme-text">
             <div>
               <span className="text-primary">runSimulation(circuit)</span> - Run simulation
@@ -498,7 +507,7 @@ export default function APIPage() {
       </div>
 
       <div className="lg:col-span-4 flex flex-col gap-4">
-        <Card title="Library" description="Use in other systems">
+        <Card title={t('api.library_title')} description={t('api.library_desc')}>
           <div className="space-y-2 mt-2">
             <a
               href="/quantum-computer-js-lib.zip"
@@ -506,37 +515,45 @@ export default function APIPage() {
               className="flex items-center gap-2 p-3 rounded bg-theme-surface/50 border border-theme-border hover:border-primary hover:bg-primary/10 transition-all text-sm text-theme-text"
             >
               <FontAwesomeIcon icon={faDownload} className="text-primary" />
-              Download library (zip)
+              {t('api.download_zip')}
             </a>
             <Link
               to="/lib-docs"
               className="flex items-center gap-2 p-3 rounded bg-theme-surface/50 border border-theme-border hover:border-primary hover:bg-primary/10 transition-all text-sm text-theme-text"
             >
               <FontAwesomeIcon icon={faBook} className="text-primary" />
-              Library API reference
+              {t('api.lib_docs')}
             </Link>
           </div>
         </Card>
 
-        <Card title="Code Examples">
+        <Card title={t('api.examples_title')}>
           <div className="space-y-2 max-h-96 overflow-y-auto scrollbar-thin">
             {EXAMPLES.map((example, idx) => (
-              <button
-                key={idx}
-                onClick={() => loadExample(example.code)}
-                className="w-full text-left p-3 bg-theme-surface/50 border border-theme-border rounded hover:border-primary hover:bg-primary/10 transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-medium text-theme-text group-hover:text-primary transition-colors">{example.name}</div>
-                  <span className="text-theme-text-muted group-hover:text-primary transition-colors">›</span>
-                </div>
-                <div className="text-[10px] text-theme-text-muted mt-1 group-hover:text-theme-text transition-colors">{example.description}</div>
-              </button>
+              <div key={idx} className="group relative">
+                <button
+                  onClick={() => loadExample(example.code)}
+                  className="w-full text-left p-3 bg-theme-surface/50 border border-theme-border rounded hover:border-primary hover:bg-primary/10 transition-all"
+                >
+                  <div className="flex items-center justify-between pr-8">
+                    <div className="text-xs font-medium text-theme-text group-hover:text-primary transition-colors">{example.name}</div>
+                    <span className="text-theme-text-muted group-hover:text-primary transition-colors">›</span>
+                  </div>
+                  <div className="text-[10px] text-theme-text-muted mt-1 group-hover:text-theme-text transition-colors">{example.description}</div>
+                </button>
+                <button 
+                  onClick={() => copySnippet(example.code, idx)}
+                  className="absolute right-3 top-3 p-1.5 rounded bg-theme-surface border border-theme-border hover:border-primary text-theme-text-muted hover:text-primary transition-all opacity-0 group-hover:opacity-100"
+                  title="Copy code"
+                >
+                  <FontAwesomeIcon icon={copiedId === idx ? faCheck : faCopy} className="text-xs" />
+                </button>
+              </div>
             ))}
           </div>
         </Card>
 
-        <Card title="Available Gates">
+        <Card title={t('api.available_gates', { defaultValue: 'Available Gates' })}>
           <div className="text-xs space-y-1 text-theme-text">
             <div><span className="text-primary font-bold">H</span> - Hadamard (superposition)</div>
             <div><span className="text-primary font-bold">X</span> - Pauli-X (NOT/Bit flip)</div>
@@ -549,7 +566,7 @@ export default function APIPage() {
           </div>
         </Card>
 
-        <Card title="Return Value">
+        <Card title={t('api.return_value_title')}>
           <div className="text-xs text-theme-text space-y-2">
             <div>
               Returns object with:
@@ -561,7 +578,7 @@ export default function APIPage() {
           </div>
         </Card>
 
-        <Card title="Tips">
+        <Card title={t('api.tips_title')}>
           <div className="text-xs text-theme-text space-y-2">
             <div>• Use <code className="px-1 py-0.5 bg-theme-surface rounded">Math.PI</code> for angles</div>
             <div>• Use <code className="px-1 py-0.5 bg-theme-surface rounded">await</code> for async</div>
@@ -573,3 +590,4 @@ export default function APIPage() {
     </div>
   )
 }
+

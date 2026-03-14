@@ -67,16 +67,16 @@ export default function QMLHubPage() {
                         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
                             <FontAwesomeIcon icon={faBrain} />
                         </div>
-                        QML Hub <span className="text-primary/50 text-sm font-bold uppercase tracking-widest ml-2">Variational Algorithms</span>
+                        {t('qml.title')} <span className="text-primary/50 text-sm font-bold uppercase tracking-widest ml-2">{t('qml.subtitle')}</span>
                     </h2>
                     <p className="text-theme-text-muted text-sm mt-1 font-medium italic">
-                        Explore Quantum Machine Learning and Variational Optimization (NISQ-Era computing).
+                        {t('qml.desc')}
                     </p>
                 </div>
                 <div className="flex gap-2">
                     <Button onClick={openInStudio} disabled={!template}>
                         <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2" />
-                        Open in Studio
+                        {t('qnlp.open_studio')}
                     </Button>
                 </div>
             </header>
@@ -84,7 +84,7 @@ export default function QMLHubPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Sidebar: Template Selection */}
                 <div className="lg:col-span-4 space-y-4">
-                    <Card title="Available Templates" description="Select a predefined variational circuit.">
+                    <Card title={t('qml.templates_title')} description={t('qml.templates_desc')}>
                         <div className="space-y-2">
                             {templates.map(t => (
                                 <button
@@ -104,10 +104,10 @@ export default function QMLHubPage() {
                         </div>
                     </Card>
 
-                    <Card title="Algorithm Stats">
+                    <Card title={t('qml.stats_title')}>
                         <div className="grid grid-cols-2 gap-3 text-center">
                             <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                                <div className="text-[10px] uppercase font-black text-theme-text-muted mb-1">Qubits</div>
+                                <div className="text-[10px] uppercase font-black text-theme-text-muted mb-1">{t('shell.qubits')}</div>
                                 <div className="text-xl font-mono text-primary">{template?.numQubits}</div>
                             </div>
                             <div className="p-3 rounded-xl bg-white/5 border border-white/5">
@@ -120,18 +120,18 @@ export default function QMLHubPage() {
 
                 {/* Main Content: Visualization & Training */}
                 <div className="lg:col-span-8 space-y-6">
-                    <Card title="Training Dashboard" description="Run the variational optimizer loop.">
+                    <Card title={t('qml.dashboard_title')} description={t('qml.dashboard_desc')}>
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] uppercase font-black text-theme-text-muted">Target Objective</span>
+                                        <span className="text-[10px] uppercase font-black text-theme-text-muted">{t('qml.target_objective')}</span>
                                         <span className="text-sm font-bold text-white capitalize">{template?.category === 'Chemistry' ? 'Ground State Energy' : 'Cost Minimization'}</span>
                                     </div>
                                 </div>
                                 <Button onClick={startTraining} disabled={isTraining} className="bg-primary hover:bg-primary/80 text-black font-black">
                                     <FontAwesomeIcon icon={faPlay} className="mr-2" />
-                                    {isTraining ? 'Optimizing...' : 'Run Optimization'}
+                                    {isTraining ? t('qml.optimizing') : t('qml.run_optimization')}
                                 </Button>
                             </div>
 
@@ -141,7 +141,7 @@ export default function QMLHubPage() {
                                 ) : (
                                     <div className="w-full h-full flex flex-col items-center justify-center text-theme-text-muted opacity-40">
                                         <FontAwesomeIcon icon={faChartLine} className="text-4xl mb-3" />
-                                        <p className="text-xs font-bold uppercase tracking-widest">Awaiting execution data...</p>
+                                        <p className="text-xs font-bold uppercase tracking-widest">{t('qml.awaiting_data')}</p>
                                     </div>
                                 )}
                             </div>
@@ -149,23 +149,23 @@ export default function QMLHubPage() {
                     </Card>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Card title="Topology Preview">
+                        <Card title={t('qml.topology_title')}>
                             <div className="flex flex-col items-center justify-center py-6">
                                 <div className="relative w-32 h-32 flex items-center justify-center">
                                     <div className="absolute inset-0 border-2 border-primary/20 rounded-full animate-pulse" />
                                     <FontAwesomeIcon icon={faNetworkWired} className="text-3xl text-primary" />
                                 </div>
                                 <p className="text-[10px] text-theme-text-muted font-bold uppercase tracking-widest mt-4">
-                                    Hardware-Efficient mapping
+                                    {t('qml.topology_desc')}
                                 </p>
                             </div>
                         </Card>
-                        <Card title="Quantum Advantage">
+                        <Card title={t('qml.advantage_title')}>
                             <div className="space-y-3 py-2">
                                 <p className="text-[11px] text-theme-text leading-relaxed">
                                     {template?.category === 'Chemistry' 
-                                        ? 'VQE algorithms bypass the exponential Hilbert space memory requirement of classical diagonalization (Full CI).'
-                                        : 'QAOA provides a heuristic pathway to solve combinatorial optimization problems traditionally hard for classical simulated annealing.'}
+                                        ? t('qml.chemistry_advantage')
+                                        : t('qml.optimization_advantage')}
                                 </p>
                                 <div className="flex items-center gap-2 pt-2">
                                     <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[9px] font-black uppercase tracking-tighter">Polynomial Scaling</span>
@@ -179,3 +179,4 @@ export default function QMLHubPage() {
         </div>
     )
 }
+

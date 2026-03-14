@@ -1,30 +1,53 @@
 import React, { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFlask, faChartLine, faChartBar, faGlobe, faHashtag, faCog, faBook, faTerminal, faMinus, faExpand, faTimes, faHome, faImages, faCode, faTachometerAlt, faSlidersH, faBox, faBars, faCommentDots, faVial, faBrain } from '@fortawesome/free-solid-svg-icons'
+import { faFlask, faChartLine, faChartBar, faGlobe, faHashtag, faCog, faBook, faTerminal, faMinus, faExpand, faTimes, faHome, faCode, faTachometerAlt, faSlidersH, faBox, faBars, faCommentDots, faVial, faBrain, faMicrochip } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import Button from '../components/Button'
 import { CircuitPrefsProvider } from './CircuitPrefs'
 import { useQuantumStore } from '../store/quantumStore'
 import { useTranslation } from 'react-i18next'
 
-const NAV_ITEMS: { path: string; key: string; icon: typeof faFlask }[] = [
-  { path: '/circuits', key: 'studio', icon: faFlask },
-  { path: '/algorithms', key: 'algorithms', icon: faChartLine },
-  { path: '/qml-hub', key: 'qml_hub', icon: faBrain },
-  { path: '/visual-lab', key: 'visual_lab', icon: faVial },
-  { path: '/data-lab', key: 'data_lab', icon: faChartBar },
-  { path: '/state-viewer', key: 'state_viewer', icon: faGlobe },
-  { path: '/gates', key: 'gates', icon: faHashtag },
-  { path: '/oracles', key: 'oracles', icon: faCog },
-  { path: '/qnlp', key: 'qnlp', icon: faCommentDots },
-  { path: '/gallery', key: 'gallery', icon: faImages },
-  { path: '/playground', key: 'playground', icon: faCode },
-  { path: '/execution', key: 'execution', icon: faTachometerAlt },
-  { path: '/docs', key: 'documentation', icon: faBook },
-  { path: '/api', key: 'api_terminal', icon: faTerminal },
-  { path: '/lib-docs', key: 'library_api', icon: faBox },
-  { path: '/settings', key: 'settings', icon: faSlidersH },
+interface NavItem { path: string; key: string; icon: any }
+
+const NAV_GROUPS: { category: string; items: NavItem[] }[] = [
+  {
+    category: 'cat_build',
+    items: [
+      { path: '/circuits', key: 'studio', icon: faFlask },
+      { path: '/algorithms', key: 'algorithms', icon: faChartLine },
+      { path: '/oracles', key: 'oracles', icon: faMicrochip },
+    ]
+  },
+  {
+    category: 'cat_labs',
+    items: [
+      { path: '/visual-lab', key: 'visual_lab', icon: faVial },
+      { path: '/data-lab', key: 'data_lab', icon: faChartBar },
+      { path: '/state-viewer', key: 'state_viewer', icon: faGlobe },
+    ]
+  },
+  {
+    category: 'cat_research',
+    items: [
+      { path: '/qml-hub', key: 'qml_hub', icon: faBrain },
+      { path: '/qnlp', key: 'qnlp', icon: faCommentDots },
+    ]
+  },
+  {
+    category: 'cat_resources',
+    items: [
+      { path: '/gates', key: 'gates', icon: faHashtag },
+      { path: '/docs', key: 'documentation', icon: faBook },
+      { path: '/api', key: 'api_terminal', icon: faTerminal },
+    ]
+  },
+  {
+    category: 'cat_system',
+    items: [
+      { path: '/settings', key: 'settings', icon: faSlidersH },
+    ]
+  }
 ]
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -189,15 +212,22 @@ export default function QuantumShell() {
           <div className="grid grid-cols-12 min-h-[calc(100vh-160px)]">
             {showSidebar && (
               <aside className="hidden lg:block col-span-2 border-r border-white/5 bg-black/10 overflow-y-auto scrollbar-thin">
-                <nav className="flex flex-col gap-1 p-4" aria-label="Main navigation">
-                  <div className="text-[10px] uppercase font-black text-theme-text-muted mb-4 tracking-widest px-3">{t('common.applications')}</div>
-                  {NAV_ITEMS.map(({ path, key, icon }) => (
-                    <NavLink key={path} to={path} className={navLinkClass}>
-                      <span className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-sm text-primary shadow-inner">
-                        <FontAwesomeIcon icon={icon} />
-                      </span>
-                      <span className="text-sm font-medium">{t(`nav.${key}`)}</span>
-                    </NavLink>
+                <nav className="flex flex-col gap-6 p-4" aria-label="Main navigation">
+                  {NAV_GROUPS.map((group) => (
+                    <div key={group.category} className="space-y-1">
+                      <div className="text-[9px] uppercase font-black text-theme-text-muted mb-2 tracking-widest px-3 opacity-50 flex items-center gap-2">
+                        {t(`nav.${group.category}`)}
+                        <div className="h-px flex-1 bg-white/5" />
+                      </div>
+                      {group.items.map(({ path, key, icon }) => (
+                        <NavLink key={path} to={path} className={navLinkClass}>
+                          <span className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-xs text-primary shadow-inner">
+                            <FontAwesomeIcon icon={icon} />
+                          </span>
+                          <span className="text-xs font-bold tracking-tight">{t(`nav.${key}`)}</span>
+                        </NavLink>
+                      ))}
+                    </div>
                   ))}
 
                   <div className="mt-8 px-3 py-4 rounded-2xl bg-primary/10 border border-primary/20">
@@ -213,11 +243,15 @@ export default function QuantumShell() {
 
             {showCollapsed && (
               <aside className="hidden lg:block col-span-1 border-r border-white/5 bg-black/10 overflow-y-auto scrollbar-thin">
-                <nav className="flex flex-col gap-3 p-4 items-center" aria-label="Main navigation">
-                  {NAV_ITEMS.map(({ path, key, icon }) => (
-                    <NavLink key={path} to={path} className={navLinkClassCollapsed} title={t(`nav.${key}`)}>
-                      <FontAwesomeIcon icon={icon} className="text-lg text-primary" />
-                    </NavLink>
+                <nav className="flex flex-col gap-4 p-4 items-center" aria-label="Main navigation">
+                  {NAV_GROUPS.map((group) => (
+                    <div key={group.category} className="flex flex-col gap-2 border-b border-white/5 pb-2 last:border-0">
+                      {group.items.map(({ path, key, icon }) => (
+                        <NavLink key={path} to={path} className={navLinkClassCollapsed} title={t(`nav.${key}`)}>
+                          <FontAwesomeIcon icon={icon} className="text-base text-primary opacity-80" />
+                        </NavLink>
+                      ))}
+                    </div>
                   ))}
                 </nav>
               </aside>
@@ -238,19 +272,26 @@ export default function QuantumShell() {
                 aria-hidden="true"
               />
               <aside className="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-bg-card border-r border-theme-border z-50 lg:hidden flex flex-col pt-16 pb-4 overflow-y-auto">
-                <nav className="flex flex-col gap-1 p-3" aria-label="Main navigation">
-                  {NAV_ITEMS.map(({ path, key, icon }) => (
-                    <NavLink
-                      key={path}
-                      to={path}
-                      className={navLinkClass}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <span className="w-8 h-8 rounded-md bg-theme-surface flex items-center justify-center text-sm text-primary shrink-0">
-                        <FontAwesomeIcon icon={icon} />
-                      </span>
-                      <span className="text-sm text-theme-text">{t(`nav.${key}`)}</span>
-                    </NavLink>
+                <nav className="flex flex-col gap-4 p-3" aria-label="Main navigation">
+                  {NAV_GROUPS.map((group) => (
+                    <div key={group.category} className="space-y-1">
+                      <div className="text-[9px] uppercase font-black text-theme-text-muted mb-2 tracking-widest px-3 opacity-50">
+                        {t(`nav.${group.category}`)}
+                      </div>
+                      {group.items.map(({ path, key, icon }) => (
+                        <NavLink
+                          key={path}
+                          to={path}
+                          className={navLinkClass}
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <span className="w-8 h-8 rounded-md bg-theme-surface flex items-center justify-center text-sm text-primary shrink-0">
+                            <FontAwesomeIcon icon={icon} />
+                          </span>
+                          <span className="text-sm text-theme-text font-bold">{t(`nav.${key}`)}</span>
+                        </NavLink>
+                      ))}
+                    </div>
                   ))}
                 </nav>
               </aside>

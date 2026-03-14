@@ -6,7 +6,6 @@ import AlgorithmsPage from './app/algorithms/page'
 import DataLabPage from './app/data-lab/page'
 import ExecutionPage from './app/execution/page'
 import DocsPage from './app/docs/page'
-import GalleryPage from './app/gallery/page'
 import PlaygroundPage from './app/playground/page'
 import SettingsPage from './app/settings/page'
 import QuantumShell from './app/QuantumShell'
@@ -43,7 +42,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="docs" element={<DocsPage />} />
           <Route path="api" element={<APIPage />} />
           <Route path="lib-docs" element={<LibDocsPage />} />
-          <Route path="gallery" element={<GalleryPage />} />
           <Route path="playground" element={<PlaygroundPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>

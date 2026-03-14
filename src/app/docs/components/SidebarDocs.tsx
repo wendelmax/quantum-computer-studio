@@ -13,39 +13,52 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 const iconMap: Record<string, any> = {
-  'Getting Started': faRocket,
-  'Mathematical Foundations': faCalculator,
-  'Quantum Concepts': faAtom,
-  'Algorithms': faBrain,
-  'QASM': faCode,
-  'API': faTerminal,
-  'Best Practices': faCheckCircle,
-  'Troubleshooting': faBug,
-  'Project Information': faInfoCircle
+  'getting-started': faRocket,
+  'math': faCalculator,
+  'concepts': faAtom,
+  'algorithms': faBrain,
+  'qasm': faCode,
+  'api': faTerminal,
+  'best-practices': faCheckCircle,
+  'troubleshooting': faBug,
+  'project-info': faInfoCircle
 }
 
-export default function SidebarDocs({ items, onSelect, selected }: { items: string[]; onSelect: (id: string)=>void; selected: string }) {
+type SidebarItem = {
+  id: string
+  label: string
+}
+
+export default function SidebarDocs({ 
+  items, 
+  onSelect, 
+  selected 
+}: { 
+  items: SidebarItem[]; 
+  onSelect: (id: string)=>void; 
+  selected: string 
+}) {
   return (
-    <aside className="w-full lg:w-56 border-b lg:border-b-0 lg:border-r border-theme-border bg-theme-surface/30">
-      <div className="p-4 border-b border-theme-border">
+    <aside className="w-full border-b lg:border-b-0 lg:border-r border-theme-border bg-theme-surface/30 h-full rounded-xl overflow-hidden">
+      <div className="p-4 border-b border-theme-border bg-theme-surface/50">
         <h3 className="text-sm font-semibold text-theme-text">Documentation</h3>
       </div>
-      <ul className="text-sm py-2">
+      <ul className="text-sm py-2 overflow-y-auto">
         {items.map(i => {
-          const Icon = iconMap[i] || faInfoCircle
-          const isSelected = selected === i
+          const Icon = iconMap[i.id] || faInfoCircle
+          const isSelected = selected === i.id
           return (
-            <li key={i}>
+            <li key={i.id}>
               <button 
-                className={`w-full text-left px-3 py-2.5 transition-colors flex items-center gap-2 ${
+                className={`w-full text-left px-4 py-3 transition-all flex items-center gap-3 ${
                   isSelected 
-                    ? 'bg-primary text-white border-l-2 border-accent' 
-                    : 'hover:bg-theme-surface hover:text-primary text-theme-text'
+                    ? 'bg-primary text-white font-bold' 
+                    : 'hover:bg-theme-surface hover:text-primary text-theme-text-muted hover:text-theme-text'
                 }`} 
-                onClick={()=> onSelect(i)}
+                onClick={()=> onSelect(i.id)}
               >
-                <FontAwesomeIcon icon={Icon} className="text-xs w-4" />
-                <span>{i}</span>
+                <FontAwesomeIcon icon={Icon} className={`text-xs w-4 ${isSelected ? 'text-white' : 'text-primary'}`} />
+                <span>{i.label}</span>
               </button>
             </li>
           )
@@ -54,5 +67,3 @@ export default function SidebarDocs({ items, onSelect, selected }: { items: stri
     </aside>
   )
 }
-
-

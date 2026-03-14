@@ -1,4 +1,6 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import Card from '../../../components/Card'
 
 type Props = {
   quantumComplexity?: string
@@ -7,10 +9,10 @@ type Props = {
 }
 
 export default function ComplexityComparison({ quantumComplexity, classicalComplexity, algorithmName }: Props) {
+  const { t } = useTranslation()
   if (!quantumComplexity && !classicalComplexity) return null
 
   const getComplexityValue = (complexity: string): number => {
-    // Maps complexity notation to numeric value for bar chart scaling
     if (complexity.includes('O(1)') || complexity.includes('O(√N)')) return 1
     if (complexity.includes('O(n)') || complexity.includes('O(log')) return 2
     if (complexity.includes('O(n²)')) return 3
@@ -23,18 +25,21 @@ export default function ComplexityComparison({ quantumComplexity, classicalCompl
   const classicalValue = classicalComplexity ? getComplexityValue(classicalComplexity) : 0
 
   return (
-    <div className="p-4 rounded bg-bg-card border border-theme-border">
-      <h4 className="text-sm font-medium mb-3 text-theme-text">Complexity Comparison</h4>
-      <div className="space-y-3">
+    <Card className="p-5 border-primary/10">
+      <h4 className="text-[10px] font-black uppercase tracking-widest mb-5 text-theme-text-muted flex items-center gap-2">
+         <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+         {t('algorithms.comparison_title')}
+      </h4>
+      <div className="space-y-6">
         {quantumComplexity && (
           <div>
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-xs text-theme-text-muted">Quantum</span>
-              <span className="text-xs font-mono text-primary">{quantumComplexity}</span>
+            <div className="flex justify-between items-end mb-2">
+              <span className="text-[10px] font-black uppercase text-primary/80 tracking-tighter">{t('algorithms.quantum_label')}</span>
+              <span className="text-xs font-black font-mono text-primary">{quantumComplexity}</span>
             </div>
-            <div className="h-3 bg-theme-surface rounded overflow-hidden">
+            <div className="h-2 bg-theme-border/20 rounded-full overflow-hidden border border-theme-border/10">
               <div 
-                className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-500"
+                className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-700 ease-out"
                 style={{ width: `${Math.min(100, (quantumValue / Math.max(quantumValue, classicalValue)) * 100)}%` }}
               />
             </div>
@@ -42,13 +47,13 @@ export default function ComplexityComparison({ quantumComplexity, classicalCompl
         )}
         {classicalComplexity && (
           <div>
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-xs text-theme-text-muted">Classical</span>
-              <span className="text-xs font-mono text-theme-text-muted">{classicalComplexity}</span>
+            <div className="flex justify-between items-end mb-2">
+              <span className="text-[10px] font-black uppercase text-theme-text-muted tracking-tighter">{t('algorithms.classical_label')}</span>
+              <span className="text-xs font-black font-mono text-theme-text-muted opacity-80">{classicalComplexity}</span>
             </div>
-            <div className="h-3 bg-theme-surface rounded overflow-hidden">
+            <div className="h-2 bg-theme-border/20 rounded-full overflow-hidden border border-theme-border/10">
               <div 
-                className="h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-500"
+                className="h-full bg-gradient-to-r from-theme-text-muted to-theme-border transition-all duration-700 ease-out"
                 style={{ width: `${Math.min(100, (classicalValue / Math.max(quantumValue, classicalValue)) * 100)}%` }}
               />
             </div>
@@ -56,14 +61,13 @@ export default function ComplexityComparison({ quantumComplexity, classicalCompl
         )}
       </div>
       {quantumValue > 0 && classicalValue > 0 && quantumValue < classicalValue && (
-        <div className="mt-3 pt-3 border-t border-theme-border">
-          <div className="flex items-center gap-2 text-xs text-green-400">
-            <span>✓</span>
-            <span>Quantum advantage: {((1 - quantumValue / classicalValue) * 100).toFixed(0)}% faster</span>
+        <div className="mt-6 pt-5 border-t border-theme-border/50">
+          <div className="flex items-center gap-2 text-[10px] font-bold text-green-400 uppercase tracking-tighter">
+            <span className="w-5 h-5 rounded-lg bg-green-500/10 flex items-center justify-center border border-green-500/20">✓</span>
+            <span>{t('algorithms.advantage_label')} {((1 - quantumValue / classicalValue) * 100).toFixed(0)}% {t('algorithms.faster')}</span>
           </div>
         </div>
       )}
-    </div>
+    </Card>
   )
 }
-

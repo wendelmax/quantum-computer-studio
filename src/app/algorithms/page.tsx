@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faFilter, faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faFilter, faDownload, faPlay, faExternalLinkAlt, faMicrochip, faBrain, faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import { getPreset } from './services/presets'
 import AlgorithmCard from './components/AlgorithmCard'
 import AlgorithmRunner from './components/AlgorithmRunner'
@@ -21,19 +21,7 @@ import Card from '../../components/Card'
 import Button from '../../components/Button'
 import { downloadFile, probabilitiesToCSV } from '../../lib/exportUtils'
 
-const algorithmDescriptions: Record<string, string> = {
-  grover: "Grover's algorithm is a quantum search algorithm that finds a target item in an unstructured database in O(√N) queries. Classical algorithms require O(N) queries.",
-  'deutsch-jozsa': "The Deutsch-Jozsa algorithm determines if a function is constant or balanced with just one query, demonstrating quantum advantage over classical computing.",
-  shor: "Shor's algorithm is designed to factor large integers exponentially faster than classical algorithms, with implications for cryptography.",
-  qft: "Quantum Fourier Transform (QFT) is a linear transformation that takes a quantum state and converts it into the frequency domain, fundamental to many algorithms.",
-  qpe: "Quantum Phase Estimation is used to estimate the eigenvalue of a unitary operator, crucial for algorithms like Shor's and HHL.",
-  'bernstein-vazirani': "The Bernstein-Vazirani algorithm identifies a hidden string using a single query, demonstrating exponential speedup over classical methods for oracle problems.",
-  simon: "Simon's algorithm solves the hidden subgroup problem efficiently, providing exponential advantage for finding periodic functions and inspiring Shor's algorithm.",
-  qaoa: "Quantum Approximate Optimization Algorithm is a hybrid classical-quantum algorithm for solving combinatorial optimization problems using variational methods.",
-  vqe: "Variational Quantum Eigensolver is a quantum-classical hybrid algorithm for finding the ground state energy of molecular systems using quantum circuits."
-}
-
-const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced']
+const difficulties = ['all', 'beginner', 'intermediate', 'advanced']
 
 export default function AlgorithmsPage() {
   const { t } = useTranslation()
@@ -41,10 +29,9 @@ export default function AlgorithmsPage() {
   const setCircuit = useQuantumStore(state => state.setCircuit)
   const [current, setCurrent] = useState<string | null>(null)
   const [chart, setChart] = useState<Record<string, number> | undefined>(undefined)
-  const [description, setDescription] = useState<string>('')
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('All')
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all')
   const [showResultExport, setShowResultExport] = useState(false)
   const [trainingData, setTrainingData] = useState<{ iteration: number, cost: number }[]>([])
   const resultExportRef = useRef<HTMLDivElement>(null)
@@ -58,13 +45,24 @@ export default function AlgorithmsPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showResultExport])
 
-  const categories = useMemo(() => ['All', ...Array.from(new Set(list.map((a: Algorithm) => a.category).filter(Boolean)))] as string[], [])
+  const categoriesKeys: Record<string, string> = {
+    'Search': 'search',
+    'Deutsch Family': 'deutsch',
+    'Hidden Subgroup': 'hidden',
+    'Cryptography': 'crypto',
+    'Transform': 'transform',
+    'Phase Estimation': 'phase',
+    'Optimization': 'optimization',
+    'Chemistry': 'chemistry'
+  }
+
+  const categories = useMemo(() => ['all', ...Array.from(new Set(list.map((a: Algorithm) => a.category).filter(Boolean)))] as string[], [])
 
   const filteredAlgorithms = useMemo(() => {
     return list.filter((alg: Algorithm) => {
       const matchesSearch = !searchTerm || alg.name.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesCategory = selectedCategory === 'All' || alg.category === selectedCategory
-      const matchesDifficulty = selectedDifficulty === 'All' || alg.difficulty === selectedDifficulty
+      const matchesCategory = selectedCategory === 'all' || alg.category === selectedCategory
+      const matchesDifficulty = selectedDifficulty === 'all' || alg.difficulty?.toLowerCase() === selectedDifficulty
       return matchesSearch && matchesCategory && matchesDifficulty
     }) as Algorithm[]
   }, [searchTerm, selectedCategory, selectedDifficulty])
@@ -72,12 +70,10 @@ export default function AlgorithmsPage() {
   function loadIntoStudio(id: string) {
     const preset = getPreset(id)
     setCurrent(id)
-    setDescription(algorithmDescriptions[id] || '')
     setCircuit(preset as Circuit, true)
 
     const startTime = performance.now()
 
-    // Simulate training data for variational algorithms
     if (id === 'vqe' || id === 'qaoa') {
       const data = Array.from({ length: 20 }, (_, i) => ({
         iteration: i + 1,
@@ -106,102 +102,170 @@ export default function AlgorithmsPage() {
   }
 
   return (
-    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div className="lg:col-span-8 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-theme-text">{t('algorithms.title')}</h2>
-          <Button onClick={() => navigate('/circuits')}>{t('algorithms.open_studio')}</Button>
+    <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in zoom-in-95 duration-500">
+      <div className="lg:col-span-8 flex flex-col gap-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                   <FontAwesomeIcon icon={faPlay} className="text-xl text-primary" />
+                </div>
+                <h2 className="text-4xl font-black text-theme-text tracking-tight uppercase italic">{t('algorithms.title')}</h2>
+            </div>
+            <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
+               {t('algorithms.library_desc')}
+            </p>
+          </div>
+          <Button onClick={() => navigate('/circuits')} variant="primary" className="rounded-2xl px-8 shadow-2xl shadow-primary/30 border border-primary/40">
+             <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2 text-xs" />
+             {t('algorithms.open_studio')}
+          </Button>
         </div>
 
-        <Card>
-          <div className="mb-4 relative">
-            <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-muted text-sm" />
-            <input
-              type="text"
-              placeholder={t('algorithms.search_placeholder')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 pl-10 rounded text-sm"
-            />
-          </div>
-          <div className="flex gap-2 mb-4">
-            <div className="flex-1 relative">
-              <FontAwesomeIcon icon={faFilter} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-muted text-sm" />
+        <Card className="p-2 bg-theme-surface/30 border-primary/5">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1 relative group">
+              <FontAwesomeIcon icon={faSearch} className="absolute left-4 top-1/2 -translate-y-1/2 text-theme-text-muted group-focus-within:text-primary transition-colors" />
+              <input
+                type="text"
+                placeholder={t('algorithms.search_placeholder')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-theme-border/10 border border-theme-border/30 focus:border-primary/50 focus:ring-8 focus:ring-primary/5 rounded-2xl py-3 pl-11 pr-4 text-sm font-medium text-theme-text outline-none transition-all"
+              />
+            </div>
+            
+            <div className="flex gap-2 p-1 bg-theme-border/20 rounded-2xl border border-theme-border/50">
+              {difficulties.map(diff => (
+                <button
+                  key={diff}
+                  onClick={() => setSelectedDifficulty(diff)}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
+                    selectedDifficulty === diff
+                      ? 'bg-theme-surface text-primary shadow-sm border border-primary/10'
+                      : 'text-theme-text-muted hover:text-theme-text'
+                  }`}
+                >
+                  {diff === 'all' ? t('gates_lib.categories.all') : t(`algorithms.difficulty_${diff}`)}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative min-w-[200px]">
+              <FontAwesomeIcon icon={faFilter} className="absolute left-4 top-1/2 -translate-y-1/2 text-theme-text-muted" />
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 pl-10 rounded text-sm appearance-none"
+                className="w-full h-full bg-theme-border/10 border border-theme-border/30 rounded-2xl py-3 pl-11 pr-4 text-sm font-bold text-theme-text appearance-none outline-none focus:border-primary/50 uppercase tracking-tighter"
               >
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex-1 relative">
-              <FontAwesomeIcon icon={faFilter} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-muted text-sm" />
-              <select
-                value={selectedDifficulty}
-                onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="w-full px-3 py-2 pl-10 rounded text-sm appearance-none"
-              >
-                {difficulties.map(diff => (
-                  <option key={diff} value={diff}>{diff}</option>
+                <option value="all">{t('gates_lib.categories.all')}</option>
+                {categories.filter(c => c !== 'all').map(cat => (
+                  <option key={cat} value={cat} className="bg-bg text-theme-text">{t(`algorithms.categories.${categoriesKeys[cat] || cat.toLowerCase()}`)}</option>
                 ))}
               </select>
             </div>
           </div>
         </Card>
 
-        <Card title={t('algorithms.library_title', { count: filteredAlgorithms.length })} description={t('algorithms.library_desc')}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {filteredAlgorithms.map((a) => (
-              <AlgorithmCard key={a.id} algorithm={a} onRun={() => loadIntoStudio(a.id)} onOpenInStudio={openInStudio} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {filteredAlgorithms.map((a) => (
+            <AlgorithmCard key={a.id} algorithm={a} onRun={() => loadIntoStudio(a.id)} onOpenInStudio={openInStudio} />
+          ))}
+        </div>
+
+        <div className="mt-8 space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-white/5" />
+            <h3 className="text-xs font-black text-theme-text-muted uppercase tracking-[0.3em]">{t('algorithms.specialized_title')}</h3>
+            <div className="h-px flex-1 bg-white/5" />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { id: 'oracles', path: '/oracles', icon: faMicrochip, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+              { id: 'qml', path: '/qml-hub', icon: faBrain, color: 'text-purple-400', bg: 'bg-purple-400/10' },
+              { id: 'qnlp', path: '/qnlp', icon: faCommentDots, color: 'text-emerald-400', bg: 'bg-emerald-400/10' }
+            ].map(m => (
+              <button
+                key={m.id}
+                onClick={() => navigate(m.path)}
+                className="group flex flex-col items-center justify-center p-6 rounded-3xl bg-theme-surface/40 border border-theme-border/30 hover:border-primary/50 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <div className={`w-14 h-14 rounded-2xl ${m.bg} ${m.color} flex items-center justify-center mb-4 border border-current/10 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+                  <FontAwesomeIcon icon={m.icon} className="text-xl" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-theme-text mb-1">{t(`nav.${m.id === 'qml' ? 'qml_hub' : m.id}`)}</span>
+                <p className="text-[9px] text-theme-text-muted font-medium opacity-60 leading-tight">
+                  {t(`algorithms.specialized_${m.id}_desc`)}
+                </p>
+              </button>
             ))}
           </div>
+        </div>
+
+        </div>
+
+      <div className="lg:col-span-4 flex flex-col gap-8">
+        <Card title={t('algorithms.details_title')} className="sticky top-6">
+          {current ? (
+            <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
+              <div className="p-5 rounded-2xl bg-theme-border/20 border border-theme-border/50 shadow-inner">
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-theme-text-muted mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  {t('algorithms.desc_title')}
+                </h3>
+                <p className="text-sm text-theme-text leading-relaxed italic opacity-80">
+                  {t(`algorithms.items.${current}`, { defaultValue: 'Quantum algorithm template for advanced research and simulation.' })}
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <Button onClick={() => openInStudio(current)} variant="primary" className="flex-1 py-3 rounded-2xl shadow-xl shadow-primary/20">
+                  <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2 text-xs" />
+                  {t('algorithms.open_studio_btn')}
+                </Button>
+                <Button variant="secondary" onClick={() => navigate('/docs')} className="px-6 rounded-2xl opacity-60 hover:opacity-100 border-theme-border/50">
+                  {t('algorithms.view_docs')}
+                </Button>
+              </div>
+
+              <div className="space-y-8 pt-4 border-t border-white/5">
+                <AlgorithmRunner algorithm={current} />
+                {trainingData.length > 0 && (
+                  <TrainingChart data={trainingData} title={`${current.toUpperCase()} ${t('qml.stats_title')}`} />
+                )}
+                <ComplexityComparison
+                  algorithmName={current}
+                  quantumComplexity={list.find((a: any) => a.id === current)?.complexity}
+                  classicalComplexity={list.find((a: any) => a.id === current)?.classicalComplexity}
+                />
+                <AlgorithmCircuits algorithmId={current} />
+              </div>
+            </div>
+          ) : (
+            <div className="py-24 flex flex-col items-center justify-center text-center space-y-4 opacity-40 grayscale">
+              <div className="w-20 h-20 rounded-3xl bg-theme-border/30 flex items-center justify-center mb-2 border border-theme-border/20">
+                <FontAwesomeIcon icon={faPlay} className="text-3xl" />
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest max-w-[200px] leading-relaxed">
+                {t('algorithms.select_to_view')}
+              </p>
+            </div>
+          )}
         </Card>
 
-        {current && description && (
-          <Card title={t('algorithms.desc_title')}>
-            <p className="text-sm text-theme-text">{description}</p>
-            <div className="mt-3 flex gap-2">
-              <Button onClick={() => navigate('/circuits')}>
-                {t('home.open_studio')}
-              </Button>
-              <Button variant="secondary" onClick={() => navigate('/docs')}>
-                {t('algorithms.view_docs')}
-              </Button>
-            </div>
-          </Card>
-        )}
-      </div>
-
-      <div className="lg:col-span-4 flex flex-col gap-4">
-        {current ? (
-          <>
-            <AlgorithmRunner algorithm={current} />
-            {trainingData.length > 0 && (
-              <TrainingChart data={trainingData} title={`${current.toUpperCase()} Training Progress`} />
-            )}
-            <ComplexityComparison
-              algorithmName={current}
-              quantumComplexity={list.find((a: Algorithm) => a.id === current)?.complexity}
-              classicalComplexity={list.find((a: Algorithm) => a.id === current)?.classicalComplexity}
-            />
-            <AlgorithmCircuits algorithmId={current} />
-          </>
-        ) : null}
-        <div className="relative" ref={resultExportRef}>
+        <div className="relative group" ref={resultExportRef}>
           <ResultChart data={chart} />
           {chart && Object.keys(chart).length > 0 && (
-            <div className="absolute top-2 right-2">
-              <Button variant="secondary" className="text-xs" onClick={() => setShowResultExport(!showResultExport)}>
-                <FontAwesomeIcon icon={faDownload} className="mr-1" />
-                Export
+            <div className="absolute top-6 right-6 group-hover:block transition-all">
+              <Button variant="secondary" className="text-[10px] py-1.5 px-4 bg-theme-surface/90 backdrop-blur border-theme-border/50 font-bold uppercase tracking-wider" onClick={() => setShowResultExport(!showResultExport)}>
+                <FontAwesomeIcon icon={faDownload} className="mr-2 opacity-70" />
+                {t('studio.export_btn')}
               </Button>
               {showResultExport && (
-                <div className="absolute right-0 top-full mt-1 z-10 bg-theme-surface border border-theme-border rounded-lg p-2 shadow-lg min-w-32">
-                  <button onClick={() => { downloadFile(JSON.stringify(chart, null, 2), 'algorithm-result.json', 'application/json'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">JSON</button>
-                  <button onClick={() => { downloadFile(probabilitiesToCSV(chart), 'algorithm-result.csv', 'text/csv'); setShowResultExport(false) }} className="w-full text-left px-3 py-2 text-xs hover:bg-theme-border/50 rounded text-theme-text">CSV</button>
+                <div className="absolute right-0 top-full mt-2 z-10 bg-theme-surface border border-theme-border/50 rounded-2xl p-2 shadow-2xl min-w-[160px] animate-in zoom-in-95 duration-200">
+                  <button onClick={() => { downloadFile(JSON.stringify(chart, null, 2), 'algorithm-result.json', 'application/json'); setShowResultExport(false) }} className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-wider hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">JSON Format</button>
+                  <button onClick={() => { downloadFile(probabilitiesToCSV(chart), 'algorithm-result.csv', 'text/csv'); setShowResultExport(false) }} className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-wider hover:bg-primary/10 hover:text-primary rounded-xl transition-colors">CSV Spreadsheet</button>
                 </div>
               )}
             </div>
@@ -210,18 +274,26 @@ export default function AlgorithmsPage() {
 
         <ExecutionHistory />
 
-        <Card title={t('algorithms.about_title')}>
-          <div className="text-xs text-theme-text space-y-2">
+        <Card className="p-6 border-theme-border/20 bg-theme-surface/20">
+           <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-theme-text-muted flex items-center gap-2">
+              <span className="w-1 h-3 bg-primary rounded-full" />
+              {t('algorithms.about_title')}
+           </h4>
+           <div className="text-xs text-theme-text-muted space-y-4 font-medium leading-relaxed">
             <p>
               {t('algorithms.about_desc1')}
             </p>
-            <p>
-              <strong>{t('algorithms.complexity_title')}</strong>
-              <br />
-              • {t('algorithms.classical_complexity')}
-              <br />
-              • {t('algorithms.quantum_complexity')}
-            </p>
+            <div className="p-4 rounded-2xl bg-theme-border/20 border border-theme-border/50 shadow-inner">
+              <strong className="text-theme-text block mb-3 text-[9px] font-black uppercase tracking-widest opacity-60">{t('algorithms.complexity_title')}</strong>
+              <div className="flex justify-between mt-2 border-b border-theme-border/20 pb-2">
+                 <span className="font-bold">{t('algorithms.classical_label')}</span>
+                 <span className="font-mono text-[10px] text-theme-text font-bold uppercase tracking-tighter">O(N)</span>
+              </div>
+              <div className="flex justify-between pt-2">
+                 <span className="font-bold">{t('algorithms.quantum_label')}</span>
+                 <span className="font-mono text-[10px] text-primary font-black uppercase tracking-tighter">O(√N)</span>
+              </div>
+            </div>
           </div>
         </Card>
       </div>

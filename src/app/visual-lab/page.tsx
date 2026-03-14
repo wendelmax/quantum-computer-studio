@@ -126,7 +126,7 @@ export default function VisualLabPage() {
                         className={`px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-2 ${sourceMode === 'sandbox' ? 'bg-primary text-black' : 'text-theme-text-muted hover:text-white'}`}
                     >
                         <FontAwesomeIcon icon={faFlask} />
-                        SANDBOX
+                        {t('gates_lib.categories.all').toUpperCase()} SANDBOX
                     </button>
                     <button
                         onClick={() => setSourceMode('integrated')}
@@ -140,7 +140,7 @@ export default function VisualLabPage() {
 
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-hidden">
                 <div className="lg:col-span-3 flex flex-col gap-6 order-2 lg:order-1 overflow-y-auto pb-4 pr-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                    <Card title="TELEMETRY SCAN">
+                    <Card title={t('visual_lab.telemetry_scan')}>
                         <div className="space-y-6">
                             <div className="space-y-4">
                                 <div className="space-y-2">
@@ -175,7 +175,7 @@ export default function VisualLabPage() {
                                 <div className="absolute top-0 right-0 p-2 opacity-20">
                                     <FontAwesomeIcon icon={faInfoCircle} className="text-xs" />
                                 </div>
-                                <h4 className="text-[10px] font-black text-primary uppercase tracking-widest block">Analysis Report</h4>
+                                <h4 className="text-[10px] font-black text-primary uppercase tracking-widest block">{t('oracles.details_title')}</h4>
                                 <p className="text-xs text-theme-text/80 leading-relaxed font-medium transition-colors group-hover:text-white">
                                     {sourceMode === 'integrated' 
                                         ? "Extracting single-qubit state vector from multi-qubit system. Trace logic applied for marginal representation."
@@ -199,7 +199,7 @@ export default function VisualLabPage() {
                         </div>
                     </Card>
 
-                    <Card title="CONTROL INTERFACE">
+                    <Card title={t('visual_lab.control_interface')}>
                         <div className="space-y-4">
                              {sourceMode === 'sandbox' ? (
                                 <>
@@ -219,13 +219,13 @@ export default function VisualLabPage() {
                                         className={`w-full py-4 rounded-xl font-black text-[11px] uppercase tracking-[0.2em] transition-all ${isSuperposition ? 'bg-accent text-white shadow-lg shadow-accent/20 animate-pulse' : 'opacity-20 grayscale'}`}
                                     >
                                         <FontAwesomeIcon icon={faZap} className="mr-2" />
-                                        Initialize Collapse
+                                        {t('visual_lab.initialize_collapse')}
                                     </Button>
                                     <button 
                                         onClick={reset}
                                         className="w-full text-[9px] font-black text-theme-text-muted hover:text-red-400 transition-colors py-2 uppercase tracking-widest"
                                     >
-                                        Hard Reset System
+                                        {t('visual_lab.hard_reset')}
                                     </button>
                                 </>
                              ) : (
@@ -295,7 +295,7 @@ export default function VisualLabPage() {
                                         </div>
                                         <div className="w-px h-12 bg-white/10" />
                                         <div className="flex-none text-right flex flex-col justify-center">
-                                            <div className="text-[9px] text-theme-text-muted font-black uppercase tracking-widest mb-1">State Sync</div>
+                                            <div className="text-[9px] text-theme-text-muted font-black uppercase tracking-widest mb-1">{t('visual_lab.state_sync')}</div>
                                             <div className="flex items-center gap-2 justify-end">
                                                <span className="text-[10px] font-mono text-theme-text-muted">{executionResult ? 'CONNECTED' : 'STANDBY'}</span>
                                                <div className={`w-1.5 h-1.5 rounded-full ${executionResult ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-yellow-500'}`} />
@@ -312,7 +312,7 @@ export default function VisualLabPage() {
                     <div className="flex items-center justify-between px-8 py-5 bg-theme-surface/20 rounded-3xl border border-theme-border/30 backdrop-blur-sm">
                         <div className="flex items-center gap-8">
                             <div className="flex flex-col gap-1.5">
-                                <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em]">Engine Stability</span>
+                                <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em]">{t('visual_lab.engine_stability')}</span>
                                 <div className="flex gap-1.5">
                                     {[...Array(12)].map((_, i) => (
                                         <motion.div 
@@ -333,7 +333,7 @@ export default function VisualLabPage() {
                             </div>
                             <div className="h-8 w-px bg-white/10" />
                             <div className="hidden md:flex flex-col gap-1">
-                                <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em]">Subsystem</span>
+                                <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em]">{t('visual_lab.subsystem')}</span>
                                 <span className="text-[10px] font-mono text-primary/80 tracking-tight font-bold">CRYOGENIC_PULSE_CORE_MOD_L4</span>
                             </div>
                         </div>

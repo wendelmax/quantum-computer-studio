@@ -1,0 +1,51 @@
+[
+  {
+    "id": "constant-0",
+    "name": "Constant Oracle (Always 0)",
+    "description": "Returns 0 for all possible inputs, representing a constant function",
+    "type": "constant",
+    "qubits": 2
+  },
+  {
+    "id": "constant-1",
+    "name": "Constant Oracle (Always 1)",
+    "description": "Returns 1 for all possible inputs, representing a constant function",
+    "type": "constant",
+    "qubits": 2
+  },
+  {
+    "id": "balanced-xor",
+    "name": "Balanced XOR Oracle",
+    "description": "Returns 1 when inputs differ (XOR operation)",
+    "type": "balanced",
+    "qubits": 2
+  },
+  {
+    "id": "balanced-parity",
+    "name": "Balanced Parity Oracle",
+    "description": "Returns 1 for odd parity (odd number of 1s)",
+    "type": "balanced",
+    "qubits": 2
+  },
+  {
+    "id": "phase-oracle-0",
+    "name": "Phase Oracle (|00⟩)",
+    "description": "Flips phase of |00⟩ state",
+    "type": "custom",
+    "qubits": 2
+  },
+  {
+    "id": "phase-oracle-1",
+    "name": "Phase Oracle (|11⟩)",
+    "description": "Flips phase of |11⟩ state",
+    "type": "custom",
+    "qubits": 2
+  },
+  {
+    "id": "phase-oracle-2",
+    "name": "Phase Oracle (|10⟩)",
+    "description": "Flips phase of |10⟩ state",
+    "type": "custom",
+    "qubits": 2
+  }
+]
