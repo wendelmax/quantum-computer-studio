@@ -6,7 +6,9 @@ import { circuitToQASM, parseQASM } from 'quantum-computer-js'
 import { toEnglishCircuit, fromAnyCircuit } from '../services/serde'
 import { exportToCirq, exportToQuil, importCircuit, detectFormat } from '../services/exportImport'
 import { copyToClipboard } from '../../../lib/exportUtils'
+import { toast } from 'sonner'
 import { getItem } from '../../../lib/safeStorage'
+import { useTranslation } from 'react-i18next'
 import type { Circuit } from 'quantum-computer-js'
 
 const DEFAULT_EXPORT_KEY = 'quantum:prefs:defaultExportFormat'
@@ -24,6 +26,7 @@ interface CircuitControlsProps {
 }
 
 const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, validationError, circuitJSON, onImport }: CircuitControlsProps) => {
+  const { t } = useTranslation()
   const fileRef = useRef<HTMLInputElement>(null)
   const [showExport, setShowExport] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
@@ -112,16 +115,16 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
   const [showNoiseMenu, setShowNoiseMenu] = useState(false)
 
   return (
-    <div className="rounded-lg p-3 bg-bg-card border border-theme-border transition-all duration-300 hover:border-primary/50">
+    <div className="rounded-lg p-2 bg-theme-surface/30 border border-theme-border flex items-center gap-2 flex-wrap shadow-sm mb-1 transition-all duration-300 hover:border-primary/50">
       {validationError && (
         <div className="mb-3 px-3 py-2 rounded bg-red-900/30 border border-red-700/50 text-xs text-red-300 animate-fade-in">
           {validationError}
         </div>
       )
       }
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-1 items-center gap-2 flex-wrap">
         <Button
-          className="flex-1 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
+          className="transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98] w-24"
           onClick={() => onRun?.({ optimize, noiseType })}
           title="Run (Ctrl+Enter)"
         >
@@ -159,13 +162,15 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
             )}
           </div>
         </div>
+        <div className="flex-1"></div>
         <Button variant="secondary" className="transition-transform duration-200 hover:scale-105 disabled:hover:scale-100" onClick={onUndo} disabled={!canUndo} title="Undo (Ctrl+Z)">
           <FontAwesomeIcon icon={faUndo} className="mr-1.5" />
         </Button>
         <Button variant="secondary" className="transition-transform duration-200 hover:scale-105 disabled:hover:scale-100" onClick={onRedo} disabled={!canRedo} title="Redo (Ctrl+Shift+Z)">
           <FontAwesomeIcon icon={faRedo} className="mr-1.5" />
         </Button>
-        <Button variant="secondary" className="flex-1 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={onReset}>
+        <div className="w-px h-6 bg-theme-border mx-1" />
+        <Button variant="secondary" className="transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]" onClick={onReset}>
           <FontAwesomeIcon icon={faRotateLeft} className="mr-1.5" />
           Reset
         </Button>
@@ -207,8 +212,18 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
         }} />
         <Button variant="secondary" onClick={async () => {
           if (!circuitJSON) return
-          const qasm = circuitToQASM(JSON.parse(circuitJSON))
-          await copyToClipboard(qasm)
+          try {
+            const qasm = circuitToQASM(JSON.parse(circuitJSON))
+            const ok = await copyToClipboard(qasm)
+            if (ok) {
+              toast.success(t('studio.copy_qasm_success'))
+            } else {
+              toast.error(t('studio.copy_qasm_error'))
+            }
+          } catch (e) {
+            console.error('Error generating QASM:', e)
+            toast.error(t('studio.qasm_gen_error'))
+          }
         }} title="Copy QASM">
           <FontAwesomeIcon icon={faCopy} className="mr-1.5" />
           QASM

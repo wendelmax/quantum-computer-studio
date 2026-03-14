@@ -18,12 +18,14 @@ import OraclesPage from './app/oracles/page'
 import APIPage from './app/api/page'
 import LibDocsPage from './app/lib-docs/page'
 import QNLPPage from './app/qnlp/page'
+import { Toaster } from 'sonner'
 import './index.css'
 import './i18n'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
+      <Toaster position="top-center" theme="dark" toastOptions={{ className: 'border border-theme-border bg-bg-card text-theme-text shadow-xl' }} />
       <Routes>
         <Route path="/" element={<QuantumShell />}>
           <Route index element={<QuantumHome />} />

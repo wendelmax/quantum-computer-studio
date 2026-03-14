@@ -91,7 +91,13 @@
         "export_btn": "Export result",
         "run_shots": "Run (shots {{shots}})",
         "run_noise": "Run (noise 5%)",
-        "copy_link": "Copy share link"
+        "copy_link": "Copy share link",
+        "copy_link_success": "Circuit link copied to clipboard!",
+        "copy_link_error": "Failed to copy link.",
+        "share_link_error": "Error generating share link.",
+        "copy_qasm_success": "QASM copied to clipboard!",
+        "copy_qasm_error": "Failed to copy QASM.",
+        "qasm_gen_error": "Error generating QASM code."
     },
     "qnlp": {
         "title": "Quantum NLP (QNLP)",

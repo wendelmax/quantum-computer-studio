@@ -6,6 +6,8 @@ import { faDownload, faBook } from '@fortawesome/free-solid-svg-icons'
 import { runSimulation, type Circuit, type CircuitGate as Gate, type Result as ExecutionResult } from 'quantum-computer-js'
 import Card from '../../components/Card'
 import { useQuantumStore } from '../../store/quantumStore'
+import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
 const QUANTUM_SNIPPETS = [
   {
@@ -109,6 +111,7 @@ result`
 ]
 
 export default function APIPage() {
+  const { t } = useTranslation()
   const [monacoTheme, setMonacoTheme] = useState<'vs' | 'vs-dark'>(() => {
     if (typeof document === 'undefined') return 'vs-dark'
     return (document.documentElement.getAttribute('data-theme') || 'dark') === 'light' ? 'vs' : 'vs-dark'
@@ -254,13 +257,13 @@ export default function APIPage() {
     try {
       let startPos = input.indexOf('const circuit =')
       if (startPos === -1) {
-        alert('No circuit found in code. Make sure you have a "const circuit = {...}" declaration.')
+        toast.error(t('api.no_circuit_found', 'No circuit found in code. Make sure you have a "const circuit = {...}" declaration.'))
         return
       }
 
       startPos = input.indexOf('{', startPos)
       if (startPos === -1) {
-        alert('Invalid circuit syntax')
+        toast.error(t('api.invalid_syntax', 'Invalid circuit syntax'))
         return
       }
 
@@ -278,7 +281,7 @@ export default function APIPage() {
       }
 
       if (depth !== 0) {
-        alert('Unbalanced braces in circuit')
+        toast.error(t('api.unbalanced_braces', 'Unbalanced braces in circuit'))
         return
       }
 
@@ -288,7 +291,7 @@ export default function APIPage() {
       setStoreCircuit(circuit as any, false)
       window.location.href = '/circuits'
     } catch (err) {
-      alert('Failed to parse circuit: ' + (err as Error).message)
+      toast.error(t('api.parse_failed', 'Failed to parse circuit: ') + (err as Error).message)
     }
   }
 
