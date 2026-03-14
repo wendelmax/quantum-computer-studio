@@ -120,7 +120,7 @@ export default function CircuitsPage() {
           </div>
           <div className="w-px h-4 bg-theme-border" />
           <div className="flex items-center gap-1">
-            <span className="font-mono">{numQubits}</span>
+            <span className="font-mono">{engine.circuit.numQubits}</span>
             <span>{t('studio.qubits')}</span>
           </div>
         </div>
@@ -206,7 +206,8 @@ export default function CircuitsPage() {
                     const complexSV = []
                     for (let i = 0; i < sv.length; i += 2) complexSV.push({ r: sv[i], i: sv[i + 1] })
                     // Trace out all but one qubit to see single-qubit mixedness
-                    const dm = QuantumMetrics.partialTrace(complexSV, numQubits, Array.from({ length: numQubits - 1 }, (_, i) => i + 1))
+                    const circQubits = engine.circuit.numQubits
+                    const dm = QuantumMetrics.partialTrace(complexSV, circQubits, Array.from({ length: Math.max(0, circQubits - 1) }, (_, i) => i + 1))
                     return QuantumMetrics.calculateEntropy(dm).toFixed(4)
                   })()}
                 </span>
@@ -223,12 +224,12 @@ export default function CircuitsPage() {
             probabilities={engine.result?.probabilities}
             processing={engine.isProcessing}
             stateVector={engine.result?.stateVector}
-            numQubits={numQubits}
+            numQubits={engine.circuit.numQubits}
           />
         </div>
         <div className="lg:col-span-4 flex flex-col gap-4">
           <GatePanel
-            numQubits={numQubits}
+            numQubits={engine.circuit.numQubits}
             onAdd={(g, target, angle, control, control2, target2) => engine.addGate(g, target, angle, control, control2, target2)}
             onSelect={(g) => setSelectedGate(g)}
             initialStates={engine.circuit.initialStates}
