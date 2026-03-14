@@ -6,12 +6,15 @@ import { copyToClipboard } from '../../../lib/exportUtils'
 import { toast } from 'sonner'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   circuit: Circuit
 }
 
 const JSEditor: React.FC<Props> = ({ circuit }) => {
+  const { t } = useTranslation()
+
   const code = useMemo(() => {
     const circuitObj = JSON.stringify(circuit, null, 2)
     return `import { runSimulation } from 'quantum-computer-js'
@@ -36,16 +39,16 @@ main().catch(console.error)
   const handleCopy = async () => {
     const ok = await copyToClipboard(code)
     if (ok) {
-      toast.success('JS snippet copied to clipboard!')
+      toast.success(t('studio.js_copy_success', 'JS snippet copied to clipboard!'))
     } else {
-      toast.error('Failed to copy JS snippet.')
+      toast.error(t('studio.js_copy_error', 'Failed to copy JS snippet.'))
     }
   }
 
   return (
     <Card
-      title="quantum-computer-js Snippet"
-      description="Use this code in your Node.js or browser project to run this exact circuit."
+      title={t('studio.js_snippet_title', 'quantum-computer-js Snippet')}
+      description={t('studio.js_snippet_desc', 'Use this code in your Node.js or browser project to run this exact circuit.')}
       className="flex flex-col relative"
     >
       <div className="absolute top-4 right-4 z-10">
@@ -54,7 +57,7 @@ main().catch(console.error)
           className="px-3 py-1.5 bg-theme-surface/80 hover:bg-theme-surface border border-theme-border rounded text-xs text-theme-text-muted hover:text-theme-text transition-colors shadow flex items-center gap-2"
         >
           <FontAwesomeIcon icon={faCopy} />
-          Copy Code
+          {t('studio.copy_code', 'Copy Code')}
         </button>
       </div>
       <div className="h-[400px] border border-theme-border rounded overflow-hidden relative mt-2">

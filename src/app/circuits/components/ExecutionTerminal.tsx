@@ -80,7 +80,7 @@ export default function ExecutionTerminal({ circuit, probabilities, processing, 
     return (
       <div className="bg-theme-surface/30 rounded-xl border border-theme-border/50 shadow-sm p-4 h-64 flex flex-col items-center justify-center text-center">
         <FontAwesomeIcon icon={faInfoCircle} className="text-theme-text-muted text-2xl mb-2 opacity-50" />
-        <span className="text-theme-text-muted">No execution results to display. Run the circuit to view metrics.</span>
+        <span className="text-theme-text-muted">{t('studio.no_results', 'No execution results to display. Run the circuit to view metrics.')}</span>
       </div>
     )
   }
@@ -94,7 +94,7 @@ export default function ExecutionTerminal({ circuit, probabilities, processing, 
           className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-all ${activeTab === 'metrics' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-theme-text-muted hover:text-theme-text hover:bg-theme-surface/50'} rounded-t-lg`}
         >
           <FontAwesomeIcon icon={faChartBar} />
-          Metrics & Probabilities
+          {t('studio.metrics_tabs_metrics', 'Metrics & Probabilities')}
         </button>
         {hasVector && (
           <button
@@ -102,7 +102,7 @@ export default function ExecutionTerminal({ circuit, probabilities, processing, 
             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-all ${activeTab === 'vector' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-theme-text-muted hover:text-theme-text hover:bg-theme-surface/50'} rounded-t-lg`}
           >
             <FontAwesomeIcon icon={faListUl} />
-            State Vector
+            {t('studio.metrics_tabs_vector', 'State Vector')}
           </button>
         )}
         <div className="flex-1" />
@@ -122,18 +122,18 @@ export default function ExecutionTerminal({ circuit, probabilities, processing, 
             {/* Top Metrics Row */}
             <div className="flex gap-4">
               <div className="px-4 py-3 rounded-lg bg-primary/10 border border-primary/20 flex flex-col min-w-[150px]">
-                <span className="text-[10px] uppercase text-primary font-bold tracking-widest mb-1">Von Neumann Entropy</span>
+                <span className="text-[10px] uppercase text-primary font-bold tracking-widest mb-1">{t('studio.von_neumann', 'Von Neumann Entropy')}</span>
                 <span className="text-2xl font-mono text-theme-text">{calculateEntropy()}</span>
               </div>
               <div className="px-4 py-3 rounded-lg bg-accent/10 border border-accent/20 flex flex-col min-w-[150px]">
-                <span className="text-[10px] uppercase text-accent font-bold tracking-widest mb-1">State Purity</span>
+                <span className="text-[10px] uppercase text-accent font-bold tracking-widest mb-1">{t('studio.state_purity', 'State Purity')}</span>
                 <span className="text-2xl font-mono text-theme-text">100%</span>
               </div>
             </div>
 
             {/* Probability Distribution */}
             <div>
-              <h4 className="text-sm font-medium text-theme-text mb-3">Top Probabilities</h4>
+              <h4 className="text-sm font-medium text-theme-text mb-3">{t('studio.top_probabilities', 'Top Probabilities')}</h4>
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
                 {entries.map(([state, prob], i) => (
                   <div
@@ -157,7 +157,7 @@ export default function ExecutionTerminal({ circuit, probabilities, processing, 
 
         {activeTab === 'vector' && (
           <div className="animate-fade-in">
-            <h4 className="text-sm font-medium text-theme-text mb-3">Raw State Vector Amplitudes</h4>
+            <h4 className="text-sm font-medium text-theme-text mb-3">{t('studio.raw_amplitudes', 'Raw State Vector Amplitudes')}</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {vectorEntries.map(({ state, amp, prob }) => (
                 <div key={state} className="flex items-center justify-between p-3 rounded-lg bg-bg-card/50 border border-theme-border/50 font-mono text-sm">

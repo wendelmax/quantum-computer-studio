@@ -10,6 +10,12 @@ import { toast } from 'sonner'
 import { getItem } from '../../../lib/safeStorage'
 import { useTranslation } from 'react-i18next'
 import type { Circuit } from 'quantum-computer-js'
+import { circuitToQASM3 } from '../../../lib/qasm3'
+import { generateQiskitCode } from './QiskitEditor'
+import { generateCirqCode } from './CirqEditor'
+import { generateBraketCode } from './BraketEditor'
+import { generatePennyLaneCode } from './PennyLaneEditor'
+import { generateQSharpCode } from './QSharpEditor'
 
 const DEFAULT_EXPORT_KEY = 'quantum:prefs:defaultExportFormat'
 
@@ -58,39 +64,76 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
     try {
       if (!circuitJSON) return
       const circuit: Circuit = JSON.parse(circuitJSON)
-      const qasm = circuitToQASM(circuit)
+      const qasm = circuitToQASM3(circuit)
       const blob = new Blob([qasm], { type: 'text/plain' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
       a.download = 'circuit.qasm'
       a.click()
-    } catch (err) {
-      console.error('QASM Export failed:', err)
-    }
+    } catch { }
+  }
+
+  const exportQiskit = () => {
+    try {
+      if (!circuitJSON) return
+      const circuit: Circuit = JSON.parse(circuitJSON)
+      const code = generateQiskitCode(circuit)
+      const blob = new Blob([code], { type: 'text/plain' })
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = 'circuit_qiskit.py'
+      a.click()
+    } catch { }
   }
 
   const exportCirq = () => {
     try {
       if (!circuitJSON) return
       const circuit: Circuit = JSON.parse(circuitJSON)
-      const cirq = exportToCirq(circuit)
-      const blob = new Blob([cirq], { type: 'text/plain' })
+      const code = generateCirqCode(circuit)
+      const blob = new Blob([code], { type: 'text/plain' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
-      a.download = 'circuit.py'
+      a.download = 'circuit_cirq.py'
       a.click()
     } catch { }
   }
 
-  const exportQuil = () => {
+  const exportBraket = () => {
     try {
       if (!circuitJSON) return
       const circuit: Circuit = JSON.parse(circuitJSON)
-      const quil = exportToQuil(circuit)
-      const blob = new Blob([quil], { type: 'text/plain' })
+      const code = generateBraketCode(circuit)
+      const blob = new Blob([code], { type: 'text/plain' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
-      a.download = 'circuit.quil'
+      a.download = 'circuit_braket.py'
+      a.click()
+    } catch { }
+  }
+
+  const exportPennyLane = () => {
+    try {
+      if (!circuitJSON) return
+      const circuit: Circuit = JSON.parse(circuitJSON)
+      const code = generatePennyLaneCode(circuit)
+      const blob = new Blob([code], { type: 'text/plain' })
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = 'circuit_pennylane.py'
+      a.click()
+    } catch { }
+  }
+
+  const exportQSharp = () => {
+    try {
+      if (!circuitJSON) return
+      const circuit: Circuit = JSON.parse(circuitJSON)
+      const code = generateQSharpCode(circuit)
+      const blob = new Blob([code], { type: 'text/plain' })
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = 'circuit.qs'
       a.click()
     } catch { }
   }
@@ -104,9 +147,12 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
   const defaultFormat = getItem(DEFAULT_EXPORT_KEY) || 'json'
   const exportOptions: { id: string; label: string; run: () => void }[] = [
     { id: 'json', label: 'Download JSON', run: () => { exportJSON(); setShowExport(false) } },
-    { id: 'qasm', label: 'QASM', run: () => { exportQASM(); setShowExport(false) } },
-    { id: 'cirq', label: 'Cirq', run: () => { exportCirq(); setShowExport(false) } },
-    { id: 'quil', label: 'Quil', run: () => { exportQuil(); setShowExport(false) } },
+    { id: 'qasm', label: 'OpenQASM 3.1', run: () => { exportQASM(); setShowExport(false) } },
+    { id: 'qiskit', label: 'IBM Qiskit', run: () => { exportQiskit(); setShowExport(false) } },
+    { id: 'cirq', label: 'Google Cirq', run: () => { exportCirq(); setShowExport(false) } },
+    { id: 'braket', label: 'Amazon Braket', run: () => { exportBraket(); setShowExport(false) } },
+    { id: 'pennylane', label: 'PennyLane', run: () => { exportPennyLane(); setShowExport(false) } },
+    { id: 'qsharp', label: 'Microsoft Q#', run: () => { exportQSharp(); setShowExport(false) } },
   ]
   const sorted = [...exportOptions].sort((a, b) => (a.id === defaultFormat ? -1 : b.id === defaultFormat ? 1 : 0))
 
@@ -210,24 +256,7 @@ const CircuitControls = ({ onRun, onReset, onUndo, onRedo, canUndo, canRedo, val
             onImport?.(txt)
           }
         }} />
-        <Button variant="secondary" onClick={async () => {
-          if (!circuitJSON) return
-          try {
-            const qasm = circuitToQASM(JSON.parse(circuitJSON))
-            const ok = await copyToClipboard(qasm)
-            if (ok) {
-              toast.success(t('studio.copy_qasm_success'))
-            } else {
-              toast.error(t('studio.copy_qasm_error'))
-            }
-          } catch (e) {
-            console.error('Error generating QASM:', e)
-            toast.error(t('studio.qasm_gen_error'))
-          }
-        }} title="Copy QASM">
-          <FontAwesomeIcon icon={faCopy} className="mr-1.5" />
-          QASM
-        </Button>
+
         <Button variant="secondary" onClick={() => fileRef.current?.click()}>
           <FontAwesomeIcon icon={faUpload} className="mr-1.5" />
           Import

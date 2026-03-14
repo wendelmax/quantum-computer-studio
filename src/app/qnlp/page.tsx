@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown, faChevronRight, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import { parsePhraseToCircuit, analyzeSentiment, VOCABULARY } from '../../lib/quantum/qnlp/QNLPService'
@@ -9,12 +11,29 @@ import { useQuantumStore } from '../../store/quantumStore'
 import type { Circuit } from 'quantum-computer-js'
 
 export default function QNLPPage() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const navigate = useNavigate()
     const setCircuit = useQuantumStore(state => state.setCircuit)
     const [phrase, setPhrase] = useState('cat happy')
     const [sentiment, setSentiment] = useState<{ label: string, score: number } | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
+        Noun: true,
+        Verb: true,
+        Adj: true
+    })
+
+    const toggleCategory = (cat: string) => {
+        setExpandedCategories(prev => ({ ...prev, [cat]: !prev[cat] }))
+    }
+
+    const addWordToPhrase = (word: string) => {
+        setPhrase(prev => {
+            const trimmed = prev.trim()
+            if (!trimmed) return word
+            return `${trimmed} ${word}`
+        })
+    }
 
     const handleRun = async () => {
         setIsLoading(true)
@@ -64,9 +83,15 @@ export default function QNLPPage() {
                             </Button>
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 mt-4">
                             <span className="text-xs text-theme-text-muted self-center">{t('qnlp.try_label')}</span>
-                            {['cat happy', 'cat hungry', 'cat chases mouse', 'mouse eats food'].map(example => (
+                            {(i18n.language.startsWith('pt') ? [
+                                t('qnlp.example_2', 'gato com fome'),
+                                t('qnlp.example_4', 'rato come comida')
+                            ] : [
+                                t('qnlp.example_1', 'cat happy'),
+                                t('qnlp.example_3', 'cat chases mouse'),
+                            ]).map(example => (
                                 <button
                                     key={example}
                                     onClick={() => setPhrase(example)}
@@ -113,15 +138,74 @@ export default function QNLPPage() {
 
             <div className="lg:col-span-4 flex flex-col gap-4">
                 <Card title={t('qnlp.vocab_title')}>
-                    <div className="space-y-3">
-                        {Object.entries(VOCABULARY).map(([word, data]) => (
-                            <div key={word} className="flex items-center justify-between p-2 rounded bg-theme-border/20">
-                                <span className="text-sm font-medium text-theme-text">{data.label}</span>
-                                <code className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                                    {word === 'cat' || word === 'mouse' ? 'Noun' : word === 'chases' || word === 'eats' ? 'Verb' : 'Adj'}
-                                </code>
-                            </div>
-                        ))}
+                    <div className="space-y-4">
+                        {(() => {
+                            // Group vocabulary by grammatical type
+                            const grouped: Record<string, { label: string, words: string[] }[]> = { Noun: [], Verb: [], Adj: [] }
+                            const processedLabels = new Set<string>()
+
+                            Object.entries(VOCABULARY).forEach(([word, data]) => {
+                                // Filter by current language
+                                const currentLang = i18n.language.startsWith('pt') ? 'pt' : 'en'
+                                if (data.lang && data.lang !== currentLang) return
+
+                                if (processedLabels.has(data.label)) {
+                                    // Add the word variation to the existing label group
+                                    for (const cat of ['Noun', 'Verb', 'Adj']) {
+                                        const entry = grouped[cat].find(e => e.label === data.label)
+                                        if (entry && !entry.words.includes(word)) entry.words.push(word)
+                                    }
+                                    return
+                                }
+                                processedLabels.add(data.label)
+
+                                const isNoun = data.label.includes('cat') || data.label.includes('gato') || data.label.includes('gata') || data.label.includes('mouse') || data.label.includes('rato') || data.label.includes('food') || data.label.includes('comida') || data.label.includes('dog') || data.label.includes('cão') || data.label.includes('cachorro')
+                                const isVerb = data.label.includes('chase') || data.label.includes('persegue') || data.label.includes('eat') || data.label.includes('come') || data.label.includes('sleep') || data.label.includes('dorme') || data.label.includes('like') || data.label.includes('gosta')
+                                const typeStr = isNoun ? 'Noun' : isVerb ? 'Verb' : 'Adj'
+                                
+                                grouped[typeStr].push({ label: data.label, words: [word] })
+                            })
+
+                            return ['Noun', 'Verb', 'Adj'].map(cat => (
+                                <div key={cat} className="flex flex-col gap-2 rounded bg-theme-border/10">
+                                    <button 
+                                        onClick={() => toggleCategory(cat)}
+                                        className="flex items-center justify-between p-2 rounded-t hover:bg-theme-border/20 transition-colors w-full text-left"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <code className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded uppercase tracking-wider font-bold">
+                                                {cat === 'Noun' ? t('qnlp.noun_desc', 'Noun').split(':')[0] : cat === 'Verb' ? t('qnlp.verb_desc', 'Verb').split(':')[0] : t('qnlp.adj_desc', 'Adjective').split(':')[0]}
+                                            </code>
+                                            <span className="text-xs text-theme-text-muted font-medium ml-1">({grouped[cat].length})</span>
+                                        </div>
+                                        <FontAwesomeIcon icon={expandedCategories[cat] ? faChevronDown : faChevronRight} className="text-xs text-theme-text-muted" />
+                                    </button>
+                                    
+                                    {expandedCategories[cat] && (
+                                        <div className="space-y-2 p-2 pt-0 animate-fade-in border-t border-theme-border/50">
+                                            {grouped[cat].map(item => (
+                                                <div key={item.label} className="flex flex-col gap-1.5 p-2 rounded bg-theme-surface border border-theme-border/50">
+                                                    <span className="text-xs font-semibold text-theme-text">{item.label}</span>
+                                                    <div className="flex flex-wrap gap-1.5">
+                                                        {item.words.map(w => (
+                                                            <button
+                                                                key={w}
+                                                                onClick={() => addWordToPhrase(w)}
+                                                                className="flex items-center gap-1 px-2 py-1 bg-theme-border/20 hover:bg-theme-border/50 hover:text-primary transition-colors rounded text-xs text-theme-text-muted cursor-pointer"
+                                                                title="Add to phrase"
+                                                            >
+                                                                <FontAwesomeIcon icon={faPlus} className="text-[8px] opacity-50" />
+                                                                {w}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        })()}
                     </div>
                 </Card>
 

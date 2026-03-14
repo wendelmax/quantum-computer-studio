@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Editor, { Monaco } from '@monaco-editor/react'
-import { parseQASM, circuitToQASM, type Circuit } from 'quantum-computer-js'
+import type { Circuit } from 'quantum-computer-js'
 import Card from '../../../components/Card'
+import { useTranslation } from 'react-i18next'
+import { circuitToQASM3, parseQASM3 } from '../../../lib/qasm3'
 
 interface Props {
     circuit: Circuit
@@ -10,6 +12,7 @@ interface Props {
 }
 
 const QASMEditor: React.FC<Props> = ({ circuit, onChange, onValidationError }) => {
+    const { t } = useTranslation()
     const [code, setCode] = useState<string>('')
     const [error, setError] = useState<string | null>(null)
     const isInternalChange = useRef(false)
@@ -21,7 +24,7 @@ const QASMEditor: React.FC<Props> = ({ circuit, onChange, onValidationError }) =
             return
         }
         try {
-            const qasm = circuitToQASM(circuit)
+            const qasm = circuitToQASM3(circuit)
             setCode(qasm)
             setError(null)
             onValidationError?.(null)
@@ -35,7 +38,7 @@ const QASMEditor: React.FC<Props> = ({ circuit, onChange, onValidationError }) =
         setCode(newCode)
 
         try {
-            const parsed = parseQASM(newCode)
+            const parsed = parseQASM3(newCode)
             setError(null)
             onValidationError?.(null)
             isInternalChange.current = true
@@ -49,14 +52,14 @@ const QASMEditor: React.FC<Props> = ({ circuit, onChange, onValidationError }) =
 
     return (
         <Card
-            title="OpenQASM 2.0 Editor"
-            description="Write QASM code to update the visual circuit in real-time."
+            title={t('studio.qasm_editor_title', 'OpenQASM 3.1 Editor')}
+            description={t('studio.qasm_editor_desc', 'Write QASM 3.1 code to update the visual circuit in real-time.')}
             className="flex flex-col"
         >
             <div className="h-[400px] border border-theme-border rounded overflow-hidden relative">
                 <Editor
                     height="100%"
-                    defaultLanguage="cpp" // QASM doesn't have a built-in language, cpp is close-ish or just plain text
+                    defaultLanguage="qsharp" // qsharp provides better syntax highlighting for QASM 3
                     theme="vs-dark"
                     value={code}
                     onChange={handleEditorChange}
@@ -71,7 +74,7 @@ const QASMEditor: React.FC<Props> = ({ circuit, onChange, onValidationError }) =
                 />
                 {error && (
                     <div className="absolute bottom-0 left-0 right-0 bg-rose-900/80 border-t border-rose-700 p-2 text-xs text-rose-100 backdrop-blur-sm z-10 transition-all">
-                        <span className="font-bold mr-1">Error:</span> {error}
+                        <span className="font-bold mr-1">{t('studio.qasm_error_label', 'Error:')}</span> {error}
                     </div>
                 )}
             </div>

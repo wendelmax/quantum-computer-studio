@@ -10,6 +10,11 @@ import CircuitControls from './components/CircuitControls'
 import QubitTimeline from './components/QubitTimeline'
 import QASMEditor from './components/QASMEditor'
 import JSEditor from './components/JSEditor'
+import QiskitEditor from './components/QiskitEditor'
+import CirqEditor from './components/CirqEditor'
+import BraketEditor from './components/BraketEditor'
+import PennyLaneEditor from './components/PennyLaneEditor'
+import QSharpEditor from './components/QSharpEditor'
 import { useCircuitEngine } from './hooks/useCircuitEngine'
 import { useCircuitPrefs } from '../CircuitPrefs'
 import Card from '../../components/Card'
@@ -30,7 +35,8 @@ export default function CircuitsPage() {
   const { numQubits, shots } = useCircuitPrefs()
   const engine = useCircuitEngine(numQubits)
   const [selectedGate, setSelectedGate] = useState<string | undefined>(undefined)
-  const [viewMode, setViewMode] = useState<'visual' | 'code' | 'js'>('visual')
+  const [mainView, setMainView] = useState<'visual' | 'code'>('visual')
+  const [codeLanguage, setCodeLanguage] = useState<'qasm' | 'js' | 'qiskit' | 'cirq' | 'braket' | 'pennylane' | 'qsharp'>('qasm')
   const [qasmError, setQasmError] = useState<string | null>(null)
   const depth = circuitDepth(engine.circuit)
 
@@ -99,27 +105,21 @@ export default function CircuitsPage() {
 
   return (
     <div className="p-4 lg:p-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-        <h2 className="text-xl sm:text-2xl font-semibold text-theme-text">{t('studio.title')}</h2>
+      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
+        <h2 className="text-xl sm:text-2xl font-semibold text-theme-text shrink-0">{t('studio.title')}</h2>
 
-        <div className="flex bg-theme-surface border border-theme-border rounded-lg p-1">
+        <div className="flex flex-wrap gap-1 bg-theme-surface border border-theme-border rounded-lg p-1">
           <button
-            onClick={() => setViewMode('visual')}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'visual' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
+            onClick={() => setMainView('visual')}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${mainView === 'visual' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
           >
-            Visual
+            {t('studio.view_visual', 'Visual')}
           </button>
           <button
-            onClick={() => setViewMode('code')}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'code' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
+            onClick={() => setMainView('code')}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${mainView === 'code' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
           >
-            QASM Code
-          </button>
-          <button
-            onClick={() => setViewMode('js')}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'js' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
-          >
-            JS Lib
+            {t('studio.view_code', 'Source Code')}
           </button>
         </div>
 
@@ -192,7 +192,7 @@ export default function CircuitsPage() {
         <div className="flex-1 flex flex-col gap-4 min-w-0">
           {/* Main Editor View */}
           <div className="bg-theme-surface/30 rounded-xl border border-theme-border/50 shadow-sm p-4 lg:p-5">
-          {viewMode === 'visual' ? (
+          {mainView === 'visual' ? (
             <>
               <CircuitCanvas
                 circuit={engine.circuit}
@@ -203,17 +203,43 @@ export default function CircuitsPage() {
               />
               <QubitTimeline circuit={engine.circuit} />
             </>
-          ) : viewMode === 'code' ? (
-            <div className="flex-1 min-h-[500px]">
-              <QASMEditor
-                circuit={engine.circuit}
-                onChange={(c) => engine.replaceCircuit(c)}
-                onValidationError={setQasmError}
-              />
-            </div>
           ) : (
-            <div className="flex-1 min-h-[500px]">
-              <JSEditor circuit={engine.circuit} />
+            <div className="flex-1 min-h-[500px] flex flex-col gap-3">
+              <div className="flex justify-end pr-2 h-10">
+                <select
+                  value={codeLanguage}
+                  onChange={(e) => setCodeLanguage(e.target.value as any)}
+                  className="bg-theme-surface border border-theme-border text-theme-text text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 outline-none font-medium cursor-pointer max-w-[200px]"
+                >
+                  <option value="qasm">{t('studio.view_qasm', 'QASM 3.1 Code')}</option>
+                  <option value="qiskit">{t('studio.view_qiskit', 'IBM Qiskit')}</option>
+                  <option value="cirq">{t('studio.view_cirq', 'Google Cirq')}</option>
+                  <option value="braket">{t('studio.view_braket', 'Amazon Braket')}</option>
+                  <option value="pennylane">{t('studio.view_penny', 'PennyLane')}</option>
+                  <option value="qsharp">{t('studio.view_qsharp', 'Microsoft Q#')}</option>
+                  <option value="js">{t('studio.view_js', 'JS Lib')}</option>
+                </select>
+              </div>
+
+              {codeLanguage === 'qasm' ? (
+                <QASMEditor
+                  circuit={engine.circuit}
+                  onChange={(c) => engine.replaceCircuit(c)}
+                  onValidationError={setQasmError}
+                />
+              ) : codeLanguage === 'qiskit' ? (
+                <QiskitEditor circuit={engine.circuit} />
+              ) : codeLanguage === 'cirq' ? (
+                <CirqEditor circuit={engine.circuit} />
+              ) : codeLanguage === 'braket' ? (
+                <BraketEditor circuit={engine.circuit} />
+              ) : codeLanguage === 'pennylane' ? (
+                <PennyLaneEditor circuit={engine.circuit} />
+              ) : codeLanguage === 'qsharp' ? (
+                <QSharpEditor circuit={engine.circuit} />
+              ) : (
+                <JSEditor circuit={engine.circuit} />
+              )}
             </div>
           )}
           </div>
