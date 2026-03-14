@@ -139,10 +139,12 @@ export default function QuantumShell() {
                     <span className="text-sm font-mono text-green-400">{status.gates}</span>
                   </div>
                   <div className="w-px h-6 bg-white/10" />
-                  <div className="flex flex-col items-center">
-                    <span className="text-[9px] uppercase text-theme-text-muted font-bold">{t('shell.states')}</span>
-                    <span className="text-sm font-mono text-purple-400">{status.states.toLocaleString()}</span>
-                  </div>
+                  <h1 className="text-xl font-black text-theme-text tracking-tighter uppercase flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+                      <FontAwesomeIcon icon={NAV_GROUPS.flatMap(g => g.items).find(i => i.path === location.pathname)?.icon || faFlask} className="text-xs text-primary" />
+                    </div>
+                    {t(NAV_GROUPS.flatMap(g => g.items).find(i => i.path === location.pathname)?.key || 'studio')}
+                  </h1>
                 </div>
               )}
 

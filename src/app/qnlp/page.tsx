@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronRight, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronRight, faPlus, faCommentDots, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import { parsePhraseToCircuit, analyzeSentiment, VOCABULARY } from '../../lib/quantum/qnlp/QNLPService'
@@ -75,9 +75,22 @@ export default function QNLPPage() {
     return (
         <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
             <div className="lg:col-span-8 flex flex-col gap-4">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold text-theme-text">{t('qnlp.title')}</h2>
-                    <Button onClick={() => navigate('/circuits')}>{t('qnlp.open_studio')}</Button>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                    <div>
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                               <FontAwesomeIcon icon={faCommentDots} className="text-xl text-primary" />
+                            </div>
+                            <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">{t('qnlp.title')}</h2>
+                        </div>
+                        <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
+                           {t('qnlp.semantic_desc')}
+                        </p>
+                    </div>
+                    <Button onClick={() => navigate('/circuits')} variant="secondary" className="px-6 py-2.5 rounded-xl border-theme-border/50 hover:border-primary/50 transition-all font-semibold">
+                        <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2 text-xs" />
+                        {t('qnlp.open_studio')}
+                    </Button>
                 </div>
 
                 <Card title={t('qnlp.semantic_reasoning')} description={t('qnlp.semantic_desc')}>

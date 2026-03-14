@@ -111,13 +111,17 @@ export default function VisualLabPage() {
 
     return (
         <div className="h-full min-h-[calc(100vh-80px)] bg-bg/50 mesh-gradient flex flex-col p-4 lg:p-6 overflow-hidden animate-fade-in font-sans">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-2xl font-black text-theme-text tracking-tighter flex items-center gap-2">
-                        <span className="text-primary"><FontAwesomeIcon icon={faVial} /></span>
-                        {t('nav.visual_lab', 'VISUAL LAB')}
-                        <span className="text-[10px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded uppercase tracking-widest ml-2 italic">Scientific Console</span>
-                    </h1>
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                <div>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                           <FontAwesomeIcon icon={faFlask} className="text-xl text-primary" />
+                        </div>
+                        <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">{t('nav.visual_lab', 'VISUAL LAB')}</h2>
+                    </div>
+                    <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
+                        {t('visual_lab.dashboard_desc', 'Interactive real-time qubit state visualization and control.')}
+                    </p>
                 </div>
 
                 <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-xl p-1">

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCube, faInfoCircle, faPlus, faMicrochip } from '@fortawesome/free-solid-svg-icons'
+import { faCube, faInfoCircle, faPlus, faMicrochip, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
 import { useQuantumStore } from '../../store/quantumStore'
@@ -87,18 +87,21 @@ export default function GatesLibraryPage() {
   return (
     <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in duration-500">
       <div className="lg:col-span-8 flex flex-col gap-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
-            <h2 className="text-3xl font-bold text-theme-text tracking-tight flex items-center gap-3">
-               <FontAwesomeIcon icon={faCube} className="text-primary" />
-               {t('gates_lib.title')}
-            </h2>
-            <p className="text-sm text-theme-text-muted mt-1">
+            <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                   <FontAwesomeIcon icon={faCube} className="text-xl text-primary" />
+                </div>
+                <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">{t('gates_lib.title')}</h2>
+            </div>
+            <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
                {t('gallery.empty_state')}
             </p>
           </div>
-          <Button onClick={() => navigate('/circuits')} variant="primary" className="shadow-lg shadow-primary/20">
-            {t('gates_lib.build_in_studio')}
+          <Button onClick={() => navigate('/circuits')} variant="secondary" className="px-6 py-2.5 rounded-xl border-theme-border/50 hover:border-primary/50 transition-all font-semibold">
+             <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2 text-xs" />
+             {t('studio.title')}
           </Button>
         </div>
 

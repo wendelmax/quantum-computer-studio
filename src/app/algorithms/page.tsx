@@ -110,7 +110,7 @@ export default function AlgorithmsPage() {
                 <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
                    <FontAwesomeIcon icon={faPlay} className="text-xl text-primary" />
                 </div>
-                <h2 className="text-4xl font-black text-theme-text tracking-tight uppercase italic">{t('algorithms.title')}</h2>
+                <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">{t('algorithms.title')}</h2>
             </div>
             <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
                {t('algorithms.library_desc')}

@@ -68,14 +68,16 @@ export default function OraclesPage() {
   return (
     <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in duration-500">
       <div className="lg:col-span-8 flex flex-col gap-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
-            <h2 className="text-3xl font-bold text-theme-text tracking-tight flex items-center gap-3">
-              <FontAwesomeIcon icon={faMicrochip} className="text-primary" />
-              {t('oracles.title')}
-            </h2>
-            <p className="text-sm text-theme-text-muted mt-1">
-              {t('oracles.desc')}
+            <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                   <FontAwesomeIcon icon={faMicrochip} className="text-xl text-primary" />
+                </div>
+                <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">{t('oracles.title')}</h2>
+            </div>
+            <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
+               {t('oracles.desc')}
             </p>
           </div>
           <Button onClick={() => navigate('/circuits')} variant="secondary" className="px-6 py-2.5 rounded-xl border-theme-border/50 hover:border-primary/50 transition-all font-semibold">

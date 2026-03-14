@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Button from '../../components/Button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMicrochip, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import Card from '../../components/Card'
 import { runSimulation } from '../circuits/services/simulator'
 import ExecutionMonitor from './components/ExecutionMonitor'
@@ -71,10 +73,25 @@ export default function ExecutionPage() {
   return (
     <div className="p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div className="lg:col-span-8 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-theme-text">{t('execution.monitor_title')}</h2>
-          <Button onClick={runCurrent} disabled={status === 'running'}>
-            {status === 'running' ? t('execution.running') : t('execution.run_circuit')}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                   <FontAwesomeIcon icon={faMicrochip} className="text-xl text-primary" />
+                </div>
+                <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">{t('execution.monitor_title')}</h2>
+            </div>
+            <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
+               {t('execution.monitor_desc', 'Monitor real-time quantum execution and system performance.')}
+            </p>
+          </div>
+          <Button onClick={runCurrent} disabled={status === 'running'} variant="primary" className="px-8 py-3 rounded-2xl shadow-lg shadow-primary/20 font-black uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95">
+            {status === 'running' ? (
+              <span className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
+                {t('execution.running')}
+              </span>
+            ) : t('execution.run_circuit')}
           </Button>
         </div>
 

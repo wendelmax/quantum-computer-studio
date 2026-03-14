@@ -106,40 +106,51 @@ export default function CircuitsPage() {
   }, [])
 
   return (
-    <div className="p-4 lg:p-6 animate-fade-in">
-      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-4">
-        <h2 className="text-xl sm:text-2xl font-semibold text-theme-text shrink-0">{t('studio.title')}</h2>
+    <div className="flex flex-col gap-8 animate-fade-in shadow-sm p-4 lg:p-6 pb-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+              <FontAwesomeIcon icon={faBolt} className="text-xl text-primary" />
+            </div>
+            <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">{t('studio.title')}</h2>
+          </div>
+          <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
+            {t('studio.subtitle', 'Design and simulate custom quantum circuits in real-time.')}
+          </p>
+        </div>
 
-        <div className="flex flex-wrap gap-1 bg-theme-surface border border-theme-border rounded-lg p-1">
+        <div className="flex items-center gap-3 bg-white/5 border border-theme-border/50 rounded-xl p-1 shrink-0">
           <button
             onClick={() => setMainView('visual')}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${mainView === 'visual' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
+            className={`px-4 py-1.5 rounded-lg text-xs font-black transition-all ${mainView === 'visual' ? 'bg-primary text-black' : 'text-theme-text-muted hover:text-white'}`}
           >
-            {t('studio.view_visual', 'Visual')}
+            {t('studio.view_visual', 'Visual Editor').toUpperCase()}
           </button>
           <button
             onClick={() => setMainView('code')}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${mainView === 'code' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-theme-text-muted hover:text-theme-text'}`}
+            className={`px-4 py-1.5 rounded-lg text-xs font-black transition-all ${mainView === 'code' ? 'bg-accent text-white shadow-lg shadow-accent/20' : 'text-theme-text-muted hover:text-white'}`}
           >
-            {t('studio.view_code', 'Source Code')}
+            {t('studio.view_code', 'Source Code').toUpperCase()}
           </button>
         </div>
+      </div>
 
-        <div className="flex items-center gap-4 text-xs text-theme-text-muted">
-          <div className="flex items-center gap-1">
-            <span className="font-mono">{engine.circuit.gates.length}</span>
-            <span>{t('studio.gates')}</span>
-          </div>
-          <div className="w-px h-4 bg-theme-border" />
-          <div className="flex items-center gap-1">
-            <span className="font-mono">{depth}</span>
-            <span>{t('studio.depth')}</span>
-          </div>
-          <div className="w-px h-4 bg-theme-border" />
-          <div className="flex items-center gap-1">
-            <span className="font-mono">{engine.circuit.numQubits}</span>
-            <span>{t('studio.qubits')}</span>
-          </div>
+      <div className="flex items-center gap-6 text-xs text-theme-text-muted font-black tracking-widest opacity-60">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+          <span className="font-mono">{engine.circuit.gates.length}</span>
+          <span>{t('studio.gates').toUpperCase()}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+          <span className="font-mono">{depth}</span>
+          <span>{t('studio.depth').toUpperCase()}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-theme-text" />
+          <span className="font-mono">{engine.circuit.numQubits}</span>
+          <span>{t('studio.qubits').toUpperCase()}</span>
         </div>
       </div>
 

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { faBook } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import SidebarDocs from './components/SidebarDocs'
 import MarkdownViewer from './components/MarkdownViewer'
 import { DOCS_CONTENT } from './docsContent'
@@ -22,15 +24,25 @@ export default function DocsPage() {
         />
       </div>
       <div className="lg:col-span-9 h-full flex flex-col overflow-hidden">
-        <div className="mb-4 flex-shrink-0">
-          <h2 className="text-2xl font-semibold text-theme-text">
-            {currentSection.title[lang] || currentSection.title['en']}
-          </h2>
+        <div className="mb-8 flex flex-col gap-6">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+               <FontAwesomeIcon icon={faBook} className="text-xl text-primary" />
+            </div>
+            <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">
+              {currentSection.title[lang] || currentSection.title['en']}
+            </h2>
+          </div>
+          <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
+            Documentation module for quantum concepts and API references.
+          </p>
+
           {activeSectionId === 'api' && (
-            <div className="mt-2 p-3 bg-primary/10 border border-primary/50 rounded">
-              <div className="text-sm text-theme-text">
-                <strong className="text-primary">{t('api.title')}</strong>: {t('api.subtitle')} {' '}
-                <a href="/api" className="underline hover:text-primary text-primary font-bold">/api</a>
+            <div className="p-3 bg-primary/10 border border-primary/20 rounded-2xl animate-in fade-in slide-in-from-left-4">
+              <div className="text-xs font-black uppercase tracking-widest text-theme-text flex items-center gap-3">
+                <span className="text-primary">ENDPOINT</span>
+                <span className="text-theme-text-muted opacity-50">API Reference:</span>
+                <a href="/api" className="text-primary hover:underline">/api</a>
               </div>
             </div>
           )}

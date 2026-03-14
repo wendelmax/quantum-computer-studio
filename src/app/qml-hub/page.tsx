@@ -61,21 +61,21 @@ export default function QMLHubPage() {
 
     return (
         <div className="p-4 lg:p-6 space-y-6">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-2xl font-black tracking-tight text-white flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                            <FontAwesomeIcon icon={faBrain} />
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                           <FontAwesomeIcon icon={faBrain} className="text-xl text-primary" />
                         </div>
-                        {t('qml.title')} <span className="text-primary/50 text-sm font-bold uppercase tracking-widest ml-2">{t('qml.subtitle')}</span>
-                    </h2>
-                    <p className="text-theme-text-muted text-sm mt-1 font-medium italic">
+                        <h2 className="text-3xl font-black text-theme-text tracking-tight uppercase">{t('qml.title')}</h2>
+                    </div>
+                    <p className="text-sm font-medium text-theme-text-muted opacity-60 ml-1">
                         {t('qml.desc')}
                     </p>
                 </div>
                 <div className="flex gap-2">
-                    <Button onClick={openInStudio} disabled={!template}>
-                        <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2" />
+                    <Button onClick={openInStudio} disabled={!template} variant="secondary" className="px-6 py-2.5 rounded-xl border-theme-border/50 hover:border-primary/50 transition-all font-semibold">
+                        <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2 text-xs" />
                         {t('qnlp.open_studio')}
                     </Button>
                 </div>
