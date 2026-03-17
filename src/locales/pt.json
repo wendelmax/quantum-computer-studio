@@ -16,7 +16,10 @@
         "view_details": "Ver Detalhes",
         "docs": "Documentação",
         "performance": "Desempenho",
-        "settings": "Configurações"
+        "settings": "Configurações",
+        "new_frontier": "A Nova Fronteira da",
+        "explore_convergence": "Explore a convergência entre computação quântica e inteligência artificial através de simuladores interativos, QNLP e otimizadores variacionais.",
+        "applications": "Aplicações"
     },
     "nav": {
         "cat_build": "Construir",
@@ -36,7 +39,8 @@
         "execution": "Execução",
         "documentation": "Documentação",
         "api_terminal": "API Terminal",
-        "settings": "Configurações"
+        "settings": "Configurações",
+        "library_api": "Library API"
     },
     "home": {
         "welcome": "Bem-vindo ao Quantum Computer Studio",
@@ -52,7 +56,29 @@
             "real_time_sim_desc": "Veja os estados quânticos evoluírem enquanto você constrói.",
             "cloud_exec": "Execução em Nuvem",
             "cloud_exec_desc": "Conecte-se a hardware quântico real e simuladores de alto desempenho."
-        }
+        },
+        "studio_title": "Studio",
+        "studio_desc": "Projete circuitos quânticos complexos com interface drag-and-drop intuitiva.",
+        "studio_link": "Abrir Quantum Computer Studio",
+        "algorithms_title": "Algoritmos",
+        "algorithms_desc": "Shor, Grover, VQE, QAOA e mais prontos para execução e aprendizado.",
+        "algorithms_link": "Ver Tabela",
+        "qnlp_title": "QNLP",
+        "qnlp_desc": "Combine linguagem natural com mecânica quântica para análise semântica.",
+        "qnlp_link": "Explorar QNLP",
+        "real_time_sim": "Simulação em Tempo Real",
+        "insights": "Insights",
+        "grover_insight": "Grover acelera buscas de O(N) para O(√N), encontrando |{{key}}⟩ exponencialmente mais rápido.",
+        "execution_engine": "Motor de Execução",
+        "reliability": "Confiabilidade",
+        "latency": "Latência",
+        "capacity": "Capacidade",
+        "qubits_count": "{{count}} Qubits",
+        "demo_tag": "Grover",
+        "resource_monitor": "Monitor de Recursos",
+        "lib_highlight": "Destaque da Biblioteca",
+        "shor_title": "Algoritmo de Shor",
+        "shor_desc": "Capaz de fatorar números inteiros exponencialmente mais rápido do que qualquer algoritmo clássico conhecido."
     },
     "studio": {
         "title": "Quantum Computer Studio",
@@ -81,7 +107,69 @@
         "canvas": {
             "empty_state": "Arraste portas da biblioteca para começar a construir seu circuito quântico.",
             "drop_zone": "Solte aqui"
-        }
+        },
+        "gates": "gates",
+        "depth": "depth",
+        "qubits": "qubits",
+        "running": "Running",
+        "simulating": "Simulating circuit...",
+        "computing": "Computing state vector and probabilities",
+        "results": "Results",
+        "prob_dist": "Probabilities distribution",
+        "export_btn": "Export result",
+        "run_shots": "Run (shots {{shots}})",
+        "run_noise": "Run (noise 5%)",
+        "copy_link": "Copy share link",
+        "copy_link_success": "Circuit link copied to clipboard!",
+        "copy_link_error": "Failed to copy link.",
+        "target_environment": "Target Environment",
+        "share_link_error": "Error generating share link.",
+        "copy_qasm_success": "QASM copied to clipboard!",
+        "copy_qasm_error": "Failed to copy QASM.",
+        "view_visual": "Visual",
+        "view_code": "Source Code",
+        "view_qasm": "QASM 3.1 Code",
+        "view_js": "JS Lib",
+        "metrics_tabs_metrics": "Metrics & Probabilities",
+        "metrics_tabs_vector": "State Vector",
+        "von_neumann": "Von Neumann Entropy",
+        "state_purity": "State Purity",
+        "top_probabilities": "Top Probabilities",
+        "raw_amplitudes": "Raw State Vector Amplitudes",
+        "no_results": "No execution results to display. Run the circuit to view metrics.",
+        "js_snippet_title": "quantum-computer-js Snippet",
+        "js_snippet_desc": "Use this code in your Node.js or browser project to run this exact circuit.",
+        "copy_code": "Copy Code",
+        "js_copy_success": "JS snippet copied to clipboard!",
+        "js_copy_error": "Failed to copy JS snippet.",
+        "qasm_editor_title": "OpenQASM 3.1 Editor",
+        "qasm_editor_desc": "Write QASM 3.1 code to update the visual circuit in real-time.",
+        "qasm_error_label": "Error:",
+        "qiskit_snippet_title": "IBM Qiskit Template",
+        "qiskit_snippet_desc": "Use this Python script to run your exact circuit on IBM Quantum hardware or local Aer simulators.",
+        "qiskit_copy_success": "IBM Qiskit script copied!",
+        "qiskit_copy_error": "Failed to copy script.",
+        "view_qiskit": "IBM Qiskit",
+        "view_cirq": "Google Cirq",
+        "cirq_snippet_title": "Google Cirq Template",
+        "cirq_snippet_desc": "Use this Python script to run your exact circuit using Google Quantum AI Cirq framework.",
+        "cirq_copy_success": "Cirq Python script copied!",
+        "cirq_copy_error": "Failed to copy script.",
+        "view_braket": "Amazon Braket",
+        "braket_snippet_title": "Amazon Braket Template",
+        "braket_snippet_desc": "Use this Python script to deploy your circuit via AWS Braket SDK (Local Simulator or QPUs like IonQ/Rigetti).",
+        "braket_copy_success": "AWS Braket Python script copied!",
+        "braket_copy_error": "Failed to copy script.",
+        "view_penny": "PennyLane",
+        "penny_snippet_title": "Xanadu PennyLane Template",
+        "penny_snippet_desc": "Use this Python script to build Quantum Machine Learning (QML) layers using Xanadu PennyLane framework.",
+        "penny_copy_success": "PennyLane Python script copied!",
+        "penny_copy_error": "Failed to copy script.",
+        "view_qsharp": "Microsoft Q#",
+        "qsharp_snippet_title": "Microsoft Q# Template",
+        "qsharp_snippet_desc": "Use this Q# script to run your exact circuit via the Microsoft Quantum Development Kit (QDK) or Azure Quantum.",
+        "qsharp_copy_success": "Q# script copied!",
+        "qsharp_copy_error": "Failed to copy script."
     },
     "execution": {
         "title": "Centro de Execução",
@@ -95,7 +183,27 @@
         "simulation_mode": "Modo de Simulação",
         "hardware_mode": "Modo de Hardware",
         "shots_count": "Número de Disparos",
-        "error_mitigation": "Mitigação de Erros"
+        "error_mitigation": "Mitigação de Erros",
+        "monitor_title": "Execution Monitor",
+        "run_circuit": "Run Circuit",
+        "running": "Running...",
+        "summary_title": "Execution Summary",
+        "no_execution": "No execution yet",
+        "ready": "Ready to run",
+        "history_title": "Execution History",
+        "run_label": "Run",
+        "states_count": "{{count}} states",
+        "load_circuit_title": "Load Circuit",
+        "load_circuit_desc": "Navigate to Quantum Studio to build or modify circuits before running here.",
+        "open_studio_btn": "Open Quantum Studio",
+        "about_title": "About Execution",
+        "about_desc": "Monitor circuit execution with real-time performance metrics and state visualization.",
+        "perf_indicators": "Performance indicators:",
+        "exec_time": "Execution time",
+        "states_discovered": "States discovered",
+        "gates_processed": "Gates processed",
+        "no_circuit": "No circuit loaded",
+        "sim_failed": "Simulation failed"
     },
     "gallery": {
         "title": "Galeria de Projetos",
@@ -106,7 +214,7 @@
         "empty_state": "Você ainda não tem projetos. Comece criando um novo do zero ou use um template."
     },
     "settings": {
-        "title": "Configurações Globais",
+        "title": "Quantum Settings",
         "desc": "Personalize o Quantum Computer Studio para seu fluxo de trabalho.",
         "appearance": "Aparência",
         "theme_label": "Tema Visual",
@@ -122,7 +230,10 @@
         "save_success": "Configurações salvas com sucesso",
         "advanced": "Avançado",
         "hw_accel": "Aceleração de Hardware (GPGPU)",
-        "telemetry": "Telemetria de Erros Ativa"
+        "telemetry": "Telemetria de Erros Ativa",
+        "integrations": "Integrations",
+        "language": "Language",
+        "system_config": "System Configuration"
     },
     "components": {
         "gates": {
@@ -143,7 +254,7 @@
         }
     },
     "api": {
-        "title": "Interface de Programação (API)",
+        "title": "Quantum API Terminal",
         "sdk_download": "Baixar SDK",
         "api_keys": "Chaves de API",
         "documentation": "Ver Documentação da API",
@@ -152,10 +263,27 @@
         "rest_api": "API REST",
         "copy_code": "Copiar Código",
         "qsharp_copy_success": "Script copiado para o clipboard.",
-        "qsharp_copy_error": "Falha ao copiar script."
+        "qsharp_copy_error": "Falha ao copiar script.",
+        "subtitle": "Interactive REPL for quantum circuit programming",
+        "execute": "Execute",
+        "running": "Running...",
+        "output_title": "Output",
+        "quick_ref": "Quick Reference",
+        "library_title": "Library",
+        "library_desc": "Use in other systems",
+        "download_zip": "Download library (zip)",
+        "lib_docs": "Library API reference",
+        "examples_title": "Code Examples",
+        "return_value_title": "Return Value",
+        "tips_title": "Tips",
+        "copy_shortcut": "Press Ctrl+Enter or click Execute",
+        "no_circuit_found": "No circuit found in code. Make sure you have a \"const circuit = {...}\" declaration.",
+        "invalid_syntax": "Invalid circuit syntax",
+        "unbalanced_braces": "Unbalanced braces in circuit",
+        "parse_failed": "Failed to parse circuit: "
     },
     "qnlp": {
-        "title": "Processamento de Linguagem Natural Quântica (QNLP)",
+        "title": "Quantum NLP",
         "open_studio": "Abrir Quantum Studio",
         "semantic_reasoning": "Raciocínio Semântico",
         "semantic_desc": "Digite uma frase para convertê-la em um circuito quântico",
@@ -189,7 +317,7 @@
         "how_it_works_desc3": "O \"sentimento\" final é medido pela probabilidade do sistema colapsar em um estado base."
     },
     "algorithms": {
-        "title": "Algoritmos Quânticos",
+        "title": "Quantum Algorithms",
         "open_studio": "Abrir no Studio",
         "search_placeholder": "Pesquisar algoritmos...",
         "library_title": "Biblioteca de Algoritmos ({{count}})",
@@ -245,7 +373,7 @@
         }
     },
     "datalab": {
-        "title": "Data Lab",
+        "title": "Quantum Data Lab",
         "upload_title": "Carregar Dataset",
         "upload_desc": "Carregar arquivos CSV ou TSV",
         "preview_title": "Prévia do Dataset",
@@ -282,7 +410,7 @@
         "column": "Col"
     },
     "stateviewer": {
-        "title": "Visualizador de Estados",
+        "title": "Quantum State Viewer",
         "desc": "Visualize amplitudes, fases e probabilidades para qualquer circuito ou algoritmo. Use \"Sincronizar Estado do Studio\" para carregar do editor.",
         "view_current_btn": "Sincronizar Estado do Studio",
         "detailed": "Vista Detalhada",
@@ -306,16 +434,34 @@
         "prob_csv": "Exportar Probabilidades (CSV)"
     },
     "visual_lab": {
+        "title": "Quantum Visual Lab",
         "telemetry_scan": "VARREDURA DE TELEMETRIA",
         "state_sync": "SINCRONIZAÇÃO DE ESTADO",
         "engine_stability": "ESTABILIDADE DO MOTOR",
         "control_interface": "INTERFACE DE CONTROLE",
         "initialize_collapse": "INICIALIZAR COLAPSO",
         "hard_reset": "HARD RESET DO SISTEMA",
-        "subsystem": "SUBSISTEMA"
+        "subsystem": "SUBSISTEMA",
+        "desc": "Interactive visualization of quantum state behavior.",
+        "measure": "Measure",
+        "explanation_title": "Understanding the State",
+        "super_title": "Superposition",
+        "basis_title": "Basis State",
+        "super_desc": "The qubit exists in both |0⟩ and |1⟩ simultaneously. It is not \"between\" them, but rather a \"cloud of probability\" until measured.",
+        "zero_desc": "The qubit is strictly in state |0⟩. If measured, it will yield \"0\" with 100% probability.",
+        "one_desc": "The qubit is strictly in state |1⟩. If measured, it will yield \"1\" with 100% probability.",
+        "collapsing": "Wavefunction Collapse...",
+        "collapse_desc": "The observation forces the system into a single classical state.",
+        "tips_title": "Try these steps:",
+        "tip1": "Apply X to flip from 0 to 1.",
+        "tip2": "Apply H to enter superposition (the cloud).",
+        "tip3": "Wait for the cloud to pulse, then click Measure.",
+        "tip4": "Observe the \"Snap\" as it collapses to a single point.",
+        "analysis_report": "Analysis Report",
+        "target_core": "Target Core Selection"
     },
     "oracles": {
-        "title": "Livraria de Oráculos",
+        "title": "Quantum Oracles",
         "desc": "Oráculos quânticos são funções de 'caixa preta' essenciais para algoritmos como Grover e Deutsch-Jozsa.",
         "search_placeholder": "Pesquisar oráculos...",
         "constant": "Constante",
@@ -327,10 +473,12 @@
         "running": "Executando análise quântica...",
         "select_to_test": "Selecione um oráculo para testar sua natureza.",
         "about_title": "Sobre Oráculos Quânticos",
-        "about_desc": "Um oráculo quântico codifica uma função clássica em uma operação unitária. Eles são fundamentais para demonstrar aceleração quântica."
+        "about_desc": "Um oráculo quântico codifica uma função clássica em uma operação unitária. Eles são fundamentais para demonstrar aceleração quântica.",
+        "custom": "custom",
+        "library_title": "Oracle Library ({{count}})"
     },
     "gates_lib": {
-        "title": "Biblioteca de Portas",
+        "title": "Quantum Gates Library",
         "build_in_studio": "Construir no Studio",
         "selected_gate": "Porta Selecionada",
         "matrix_label": "Representação Matricial",
@@ -344,5 +492,35 @@
             "rotation": "Rotação",
             "two_qubit": "Dois Qubits"
         }
+    },
+    "documentation": {
+        "title": "Quantum Docs"
+    },
+    "qml": {
+        "title": "Quantum QML Hub",
+        "subtitle": "Variational Algorithms",
+        "desc": "Explore Quantum Machine Learning and Variational Optimization (NISQ-Era computing).",
+        "templates_title": "Available Templates",
+        "templates_desc": "Select a predefined variational circuit.",
+        "stats_title": "Algorithm Stats",
+        "dashboard_title": "Training Dashboard",
+        "dashboard_desc": "Run the variational optimizer loop.",
+        "target_objective": "Target Objective",
+        "run_optimization": "Run Optimization",
+        "optimizing": "Optimizing...",
+        "awaiting_data": "Awaiting execution data...",
+        "topology_title": "Topology Preview",
+        "topology_desc": "Hardware-Efficient mapping",
+        "advantage_title": "Quantum Advantage",
+        "chemistry_advantage": "VQE algorithms bypass the exponential Hilbert space memory requirement of classical diagonalization (Full CI).",
+        "optimization_advantage": "QAOA provides a heuristic pathway to solve combinatorial optimization problems traditionally hard for classical simulated annealing."
+    },
+    "shell": {
+        "simulator_engine": "SIMULATOR ENGINE V2.0",
+        "qubits": "QUBITS",
+        "gates": "GATES",
+        "states": "STATES",
+        "active_circuit": "Active Circuit",
+        "operators": "operators"
     }
 }

@@ -1,51 +1,51 @@
 import React, { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFlask, faChartLine, faChartBar, faGlobe, faHashtag, faCog, faBook, faTerminal, faMinus, faExpand, faTimes, faHome, faCode, faTachometerAlt, faSlidersH, faBox, faBars, faCommentDots, faVial, faBrain, faMicrochip } from '@fortawesome/free-solid-svg-icons'
+import { faFlask, faChartLine, faChartBar, faGlobe, faHashtag, faCog, faBook, faTerminal, faMinus, faExpand, faTimes, faHome, faCode, faTachometerAlt, faSlidersH, faBox, faBars, faCommentDots, faVial, faBrain, faMicrochip, faBolt, faPlay, faWaveSquare } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import Button from '../components/Button'
 import { CircuitPrefsProvider } from './CircuitPrefs'
 import { useQuantumStore } from '../store/quantumStore'
 import { useTranslation } from 'react-i18next'
 
-interface NavItem { path: string; key: string; icon: any }
+interface NavItem { path: string; key: string; icon: any; titleKey: string }
 
 const NAV_GROUPS: { category: string; items: NavItem[] }[] = [
   {
     category: 'cat_build',
     items: [
-      { path: '/circuits', key: 'studio', icon: faFlask },
-      { path: '/algorithms', key: 'algorithms', icon: faChartLine },
-      { path: '/oracles', key: 'oracles', icon: faMicrochip },
+      { path: '/circuits', key: 'studio', icon: faBolt, titleKey: 'studio.title' },
+      { path: '/algorithms', key: 'algorithms', icon: faPlay, titleKey: 'algorithms.title' },
+      { path: '/oracles', key: 'oracles', icon: faMicrochip, titleKey: 'oracles.title' },
     ]
   },
   {
     category: 'cat_labs',
     items: [
-      { path: '/visual-lab', key: 'visual_lab', icon: faVial },
-      { path: '/data-lab', key: 'data_lab', icon: faChartBar },
-      { path: '/state-viewer', key: 'state_viewer', icon: faGlobe },
+      { path: '/visual-lab', key: 'visual_lab', icon: faVial, titleKey: 'visual_lab.title' },
+      { path: '/data-lab', key: 'data_lab', icon: faChartBar, titleKey: 'datalab.title' },
+      { path: '/state-viewer', key: 'state_viewer', icon: faWaveSquare, titleKey: 'stateviewer.title' },
     ]
   },
   {
     category: 'cat_research',
     items: [
-      { path: '/qml-hub', key: 'qml_hub', icon: faBrain },
-      { path: '/qnlp', key: 'qnlp', icon: faCommentDots },
+      { path: '/qml-hub', key: 'qml_hub', icon: faBrain, titleKey: 'qml.title' },
+      { path: '/qnlp', key: 'qnlp', icon: faCommentDots, titleKey: 'qnlp.title' },
     ]
   },
   {
     category: 'cat_resources',
     items: [
-      { path: '/gates', key: 'gates', icon: faHashtag },
-      { path: '/docs', key: 'documentation', icon: faBook },
-      { path: '/api', key: 'api_terminal', icon: faTerminal },
+      { path: '/gates', key: 'gates', icon: faHashtag, titleKey: 'gates_lib.title' },
+      { path: '/docs', key: 'documentation', icon: faBook, titleKey: 'documentation.title' },
+      { path: '/api', key: 'api_terminal', icon: faTerminal, titleKey: 'api.title' },
     ]
   },
   {
     category: 'cat_system',
     items: [
-      { path: '/settings', key: 'settings', icon: faSlidersH },
+      { path: '/settings', key: 'settings', icon: faSlidersH, titleKey: 'settings.title' },
     ]
   }
 ]
@@ -143,7 +143,9 @@ export default function QuantumShell() {
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
                       <FontAwesomeIcon icon={NAV_GROUPS.flatMap(g => g.items).find(i => i.path === location.pathname)?.icon || faFlask} className="text-xs text-primary" />
                     </div>
-                    {t(NAV_GROUPS.flatMap(g => g.items).find(i => i.path === location.pathname)?.key || 'studio')}
+                    <span className="text-sm font-black text-theme-text uppercase tracking-tighter">
+                      {t(NAV_GROUPS.flatMap(g => g.items).find(i => i.path === location.pathname)?.titleKey || 'studio.title')}
+                    </span>
                   </h1>
                 </div>
               )}

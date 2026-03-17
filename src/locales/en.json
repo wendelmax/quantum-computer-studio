@@ -20,6 +20,7 @@
         "gates": "Component Library",
         "oracles": "Oracles",
         "qnlp": "QNLP",
+        "visual_lab": "Visual Lab",
         "api_terminal": "API Terminal",
         "library_api": "Library API",
         "settings": "Settings"
@@ -296,6 +297,7 @@
         "prob_csv": "Export Probabilities (CSV)"
     },
     "visual_lab": {
+        "title": "Quantum Visual Lab",
         "desc": "Interactive visualization of quantum state behavior.",
         "measure": "Measure",
         "explanation_title": "Understanding the State",
@@ -322,7 +324,7 @@
         "hard_reset": "Hard Reset System"
     },
     "api": {
-      "title": "Quantum API",
+      "title": "Quantum API Terminal",
       "subtitle": "Interactive REPL for quantum circuit programming",
       "execute": "Execute",
       "running": "Running...",
@@ -342,7 +344,7 @@
       "parse_failed": "Failed to parse circuit: "
     },
     "qml": {
-      "title": "QML Hub",
+      "title": "Quantum QML Hub",
       "subtitle": "Variational Algorithms",
       "desc": "Explore Quantum Machine Learning and Variational Optimization (NISQ-Era computing).",
       "templates_title": "Available Templates",
@@ -394,10 +396,13 @@
       "matrix_label": "Matrix:"
     },
     "settings": {
-      "title": "Settings",
+      "title": "Quantum Settings",
       "appearance": "Appearance",
       "integrations": "Integrations",
       "language": "Language",
       "system_config": "System Configuration"
+    },
+    "documentation": {
+      "title": "Quantum Docs"
     }
 }
